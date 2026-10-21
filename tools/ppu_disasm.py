@@ -93,6 +93,8 @@ def decode(word: int, address: int) -> str:
         if extended == 8:
             return f"stdu {reg(rS)},{simm}({reg(rA)})"
         return f"stw {reg(rS)},{simm}({reg(rA)})"
+    if opcode == 36:
+        return f"stw {reg(rS)},{simm}({reg(rA)})"
     if opcode == 32:
         return f"lwz {reg(rD)},{simm}({reg(rA)})"
     if opcode == 34:

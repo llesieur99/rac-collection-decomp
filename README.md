@@ -31,7 +31,7 @@ The pinned release has been read and measured:
 | Symbol table | **none** — the retail executables are stripped |
 | Compiler | **GCC 4.1.1, as the PlayStation 3 SDK 400 ships it** — 124 objects, plus 5 from the SDK 360 |
 | Functions bounded | 20,939 — 17,728 of them ending on a return |
-| First matching body | `src/text/module_init.c`, 44 bytes at `0x10200` — byte-exact |
+| Matching bodies | 6 — byte-exact, with two different toolchain builds |
 | Disc files | 13,149 — 12,429,594,706 bytes |
 | Working copy files | 13,148 — 12,161,159,250 bytes |
 | Identical on both sides | 10 (the metadata); the other 13,138 are encrypted on the disc |

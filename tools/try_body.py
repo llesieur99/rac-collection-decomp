@@ -30,9 +30,17 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
 # The flag sets to try, in the order they are tried.
+#
+# -mno-nop-after-bl is the SCE option that shortens the call sequence: the
+# SCE backend emits the branch and a second word that restores the TOC, and
+# the option drops that second word.  The retail program has both shapes, so
+# the game was built with the option on some files and off on others.
 FLAG_SETS = [
     ["-O1", "-mno-save-restore-tocbase"],
+    ["-O1", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
+    ["-O1", "-mno-nop-after-bl"],
     ["-O2", "-mno-save-restore-tocbase"],
+    ["-O2", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
     ["-O0", "-mno-save-restore-tocbase"],
     ["-O1"],
     ["-O2"],

@@ -12,7 +12,9 @@
   },
   "flags": {
     "qualified": ["-O1", "-mno-save-restore-tocbase"],
-    "note": "The flag that matters is -mno-save-restore-tocbase: without it the compiler keeps a TOC base and a back chain in the frame, which the retail code does not have. At -O2 the same function differs by two instructions: the compiler restores the stack pointer before the link register, where the retail code does the opposite."
+    "second_profile": ["-O1", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
+    "note": "The flag that matters is -mno-save-restore-tocbase: without it the compiler keeps a TOC base and a back chain in the frame, which the retail code does not have. At -O2 the same function differs by two instructions: the compiler restores the stack pointer before the link register, where the retail code does the opposite.",
+    "the_two_profiles": "The SCE backend emits the call as the branch and a second word that restores the TOC, eight bytes in all. The option -mno-nop-after-bl drops that second word and the call is four bytes long. The launcher holds both shapes -- the eight byte call in 0x512F4 and 0x143158, the four byte one in 0x2CF24, 0x4EB7C and 0x68088 -- so the game was built with the option on some files and off on others."
   },
   "bodies": [
     {
@@ -21,7 +23,53 @@
       "address": "0x00010200",
       "bytes": 44,
       "result": "byte-exact",
+      "flags": ["-O1", "-mno-save-restore-tocbase"],
       "source": "src/text/module_init.c"
+    },
+    {
+      "program": "EBOOT",
+      "function": "func_512F4",
+      "address": "0x000512F4",
+      "bytes": 36,
+      "result": "byte-exact",
+      "flags": ["-O1", "-mno-save-restore-tocbase"],
+      "source": "src/text/func_512F4.c"
+    },
+    {
+      "program": "EBOOT",
+      "function": "func_143158",
+      "address": "0x00143158",
+      "bytes": 36,
+      "result": "byte-exact",
+      "flags": ["-O1", "-mno-save-restore-tocbase"],
+      "source": "src/text/func_143158.c"
+    },
+    {
+      "program": "EBOOT",
+      "function": "func_2CF24",
+      "address": "0x0002CF24",
+      "bytes": 32,
+      "result": "byte-exact",
+      "flags": ["-O1", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
+      "source": "src/text/func_2CF24.c"
+    },
+    {
+      "program": "EBOOT",
+      "function": "func_4EB7C",
+      "address": "0x0004EB7C",
+      "bytes": 32,
+      "result": "byte-exact",
+      "flags": ["-O1", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
+      "source": "src/text/func_4EB7C.c"
+    },
+    {
+      "program": "EBOOT",
+      "function": "func_68088",
+      "address": "0x00068088",
+      "bytes": 32,
+      "result": "byte-exact",
+      "flags": ["-O1", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
+      "source": "src/text/func_68088.c"
     }
   ],
   "runtime_cross_check": {

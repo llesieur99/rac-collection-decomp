@@ -54,19 +54,26 @@ of the compiler. The compiler is now named — GCC 4.1.1 as the SDK 400 ships
 it — so the question is precise, and step 4 gave the bodies of known extent
 to measure against.
 
-**What was done.** The Cell OS Lv-2 toolchain was built from its own
-sources, in a container, with a host compiler old enough to build GCC 4.1.1.
-The profile `-O1 -mno-save-restore-tocbase` reproduces one body exactly, and
-four functions of the SDK's runtime are byte-identical in the retail
-executable.
+**What was done.** Two builds of the Cell OS Lv-2 toolchain were made from
+their sources, in a container, with a host compiler old enough to build
+GCC 4.1.1. The profiles `-O1 -mno-save-restore-tocbase` and
+`-O1 -mno-save-restore-tocbase -mno-nop-after-bl` reproduce six bodies
+exactly, and four functions of the SDK's runtime are byte-identical in the
+retail executable.
 
-**What is left.** One function is not a qualification. The profile has to
-hold on more of the game's own code.
+**What was found.** The game was built with `-mno-nop-after-bl` on some
+files and without it on others: the SCE backend emits a call as the branch
+and a second word that restores the TOC, and the option drops that second
+word. Which one a file uses is visible in its code.
 
-**Needs.** More bodies — step 6.
+**What is left.** The six bodies are all of the same shape — a frame, a
+call, an epilogue. The profile has to hold on bodies with arguments, with
+branches and with arithmetic.
+
+**Needs.** More bodies.
 
 **Done when.** The toolchain gate passes: the profile holds on a set of
-bodies, and the complete-program gate can be attempted.
+bodies of different shapes, and the complete-program gate can be attempted.
 
 ## Step 4 — recover the function boundaries *(done)*
 
@@ -102,20 +109,28 @@ strings, and from the callers.
 **What.** Write the function in C/C++ in the form the original author would
 have used, and take it through the gates.
 
-**The result.** `src/text/module_init.c` — the first function of the
-launcher, at `0x10200`, 44 bytes. The candidate is compiled with the
-qualified profile, linked at the measured address with the callees at their
-retail addresses, and compared with the retail bytes: **match**.
+**The result.** Six bodies of the launcher, in `src/text/`. Each candidate is
+compiled with the qualified profile, linked at the measured address with the
+callees at their retail addresses, and compared with the retail bytes:
+**match**.
+
+| Function | Address | Bytes | Profile |
+|---|---|---|---|
+| `module_init` | `0x10200` | 44 | the eight byte call |
+| `func_512F4` | `0x512F4` | 36 | the eight byte call |
+| `func_143158` | `0x143158` | 36 | the eight byte call |
+| `func_2CF24` | `0x2CF24` | 32 | the four byte call |
+| `func_4EB7C` | `0x4EB7C` | 32 | the four byte call |
+| `func_68088` | `0x68088` | 32 | the four byte call |
 
 ```sh
-python tools/try_body.py work/gate/module_init.c 0x10200 \
-    --elf work/decrypted/eboot.elf \
-    --symbol sub_147B0=0x147B0 --symbol sub_14820=0x14820
-match: 44 bytes at 0x10200
+python tools/try_body.py work/gate/func_2CF24.c 0x2CF24 \
+    --elf work/decrypted/eboot.elf --symbol sub_2CE90=0x2CE90
+match: 32 bytes at 0x2CF24
 ```
 
-**Needs.** Nothing more for this one. The next bodies need the same work:
-read the code, write the source, compile, compare.
+**Needs.** Nothing more for these. The next bodies need the same work: read
+the code, write the source, compile, compare.
 
 ## Step 7 — the catalogue writer
 

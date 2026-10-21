@@ -35,9 +35,19 @@ ROOT = os.path.dirname(HERE)
 # SCE backend emits the branch and a second word that restores the TOC, and
 # the option drops that second word.  The retail program has both shapes, so
 # the game was built with the option on some files and off on others.
+#
+# -mcellos-kernel is the SDK's own switch: it turns on -mno-nop-after-bl and
+# -mno-save-restore-tocbase at once.
+#
+# -mno-toc removes the table of contents: the globals are then addressed by
+# their absolute address, which is what the retail code does.
 FLAG_SETS = [
     ["-O1", "-mno-save-restore-tocbase"],
     ["-O1", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
+    ["-O1", "-mno-save-restore-tocbase", "-mno-nop-after-bl", "-mno-toc"],
+    ["-O1", "-mno-save-restore-tocbase", "-mno-toc"],
+    ["-O1", "-mcellos-kernel", "-mno-toc"],
+    ["-O1", "-mcellos-kernel"],
     ["-O1", "-mno-nop-after-bl"],
     ["-O2", "-mno-save-restore-tocbase"],
     ["-O2", "-mno-save-restore-tocbase", "-mno-nop-after-bl"],
@@ -56,7 +66,8 @@ def run(cmd: list[str]) -> subprocess.CompletedProcess:
 
 def compile_and_link(source: str, flags: list[str], address: int,
                       symbols: dict[str, int], out_dir: str,
-                      image: str, toolchain: str) -> tuple[str | None, str]:
+                      image: str, toolchain: str,
+                      places: dict[str, int] | None = None) -> tuple[str | None, str]:
     """Compile and link in the container; return the linked file's path."""
     obj = os.path.join(out_dir, "candidate.o")
     linked = os.path.join(out_dir, "candidate.elf")
@@ -66,6 +77,11 @@ def compile_and_link(source: str, flags: list[str], address: int,
         # GCC 4.1 calls an undefined function through a ".sub_" alias.
         lines.insert(2, f"  {name} = {hex(value)};")
         lines.insert(2, f"  .{name} = {hex(value)};")
+    for name, value in (places or {}).items():
+        # A section of the candidate -- the small data, the data -- placed
+        # at the address the retail program gives it.
+        lines.insert(2, f"  . = {hex(value)};")
+        lines.insert(3, f"  {name} : {{ *({name}) }}")
     with open(script, "w", encoding="utf-8") as handle:
         handle.write("\n".join(lines) + "\n")
 
@@ -102,6 +118,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--elf", required=True, help="the rebuilt retail PPU ELF")
     parser.add_argument("--symbol", action="append", default=[],
                         help="a callee, as NAME=0xADDRESS (repeatable)")
+    parser.add_argument("--place", action="append", default=[],
+                        help="a section of the candidate, as NAME=0xADDRESS (repeatable)")
     parser.add_argument("--image", default="ps3gcc-toolchain",
                         help="the container that holds the compiler")
     parser.add_argument("--toolchain", default=r"D:\RAC-COLLECTION\toolchain",
@@ -113,12 +131,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     for item in args.symbol:
         name, _, value = item.partition("=")
         symbols[name] = int(value, 0)
+    places = {}
+    for item in args.place:
+        name, _, value = item.partition("=")
+        places[name] = int(value, 0)
 
     out_dir = tempfile.mkdtemp(prefix="body-")
     try:
         for flags in FLAG_SETS:
             linked, error = compile_and_link(args.source, flags, address, symbols,
-                                             out_dir, args.image, args.toolchain)
+                                             out_dir, args.image, args.toolchain,
+                                             places)
             label = " ".join(flags)
             if linked is None:
                 print(f"{label:46s} failed: {error}")

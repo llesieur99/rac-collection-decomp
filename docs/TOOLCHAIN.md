@@ -93,6 +93,61 @@ same bytes out of a body with a comparison therefore needs the compiler the
 retail used — the one that is not public. The bodies that *are* reproduced
 have no comparison, and the two public builds agree on them.
 
+### The second difference: the table of contents
+
+The retail code reaches its globals **by their absolute address**, and it
+reuses the register of the address for the value:
+
+```
+0x2B4B0  3C600021  addis r3,r0,0x0021     ; the address, from the null base
+0x2B4B4  80631D48  lwz   r3,0x1D48(r3)    ; the value, in the same register
+```
+
+That is not a detail of one function: in the whole launcher, **339 of the
+362** global accesses are of that shape, against 23 that use two registers.
+The retail compiler coalesces them, systematically.
+
+The public compilers reach the globals through the **table of contents** of
+the SCE ABI — two instructions and two registers:
+
+```
+lwz  r9,.LC0@toc(r2)     ; the address of the global, from the table
+lwz  r3,0(r9)           ; the value
+```
+
+The compiler has a family of options for that table — `-mtoc` (the
+default), `-mno-toc`, `-mfull-toc`, `-mminimal-toc`, `-mbase-toc`,
+`-mall-base-toc` and `-mno-save-restore-tocbase` — and the whole family was
+measured on the body at `0x2B4A4`, whose retail code is:
+
+```
+0x2B4A4  stdu r1,-111(r1)
+0x2B4A8  mflr r0
+0x2B4AC  stw  r0,128(r1)
+0x2B4B0  addis r3,r0,0x0021
+0x2B4B4  lwz   r3,0x1D48(r3)
+0x2B4B8  bl    0x4A98C
+0x2B4BC  nop                    ; the word of the delay slot
+0x2B4C0  ld    r0,128(r1)
+```
+
+| Option | The address | The delay slot |
+|---|---|---|
+| the default | `lwz r9,.LC0@toc(r2)` — the table | `nop` |
+| `-mno-toc` | `addis r9,r0,0x0021` — **the absolute address** | **dropped** |
+| `-mbase-toc`, `-mall-base-toc` | `addis r9,r2,.LANCHOR0@toc@ha` — the table | `nop` |
+| `-mminimal-toc`, `-mfull-toc` | two loads from the table | `nop` |
+
+**No combination gives the retail's form**: the option that makes the
+address absolute also drops the word of the delay slot, which the retail
+keeps. The retail's compiler is not in the public archive, and the two
+public ones do not reproduce the bodies that touch the globals.
+
+Two ways out, and they are not the same: the compiler of the SDK 4.0 is
+rebuilt from a private copy of the SDK, or the source form is found that
+makes a public compiler emit the retail's code. The second is cheaper to try
+first, and the first is the one that closes the gate for good.
+
 ## The flags
 
 | Flag | Why |
@@ -221,12 +276,20 @@ put it on CR7 where the retail code puts it on CR0. The measurement is in
 `work/gate/`: the forms are `v1` to `v16`, and the tool that compiles them
 all is `work/gate/try_many.py`.
 
+A second body, `0x2B4A4`, shows the other difference: the table of
+contents, measured above. The data that the body reads was read too: the
+address `0x00211D48` is an entry of a **table of function pointers** in the
+data of the launcher, and the function passes that entry to a dispatcher —
+`sub_4A98C(g_table[0x3A9])` is the shape of the source, and the table is
+what the retail code points at.
+
 That is the shape of the remaining work: the profile is right, the sources
 are recoverable, and the *compiler* that turns them into the retail bytes is
 the one version that was not published. Two ways out: the profile is
-qualified on the bodies that do not compare, and the bodies that compare are
-left for a compiler that can be built from a private SDK 4.0 — or for the
-equivalent source form to be found, which is cheaper to try first.
+qualified on the bodies that do not compare and do not touch the globals,
+and the bodies that do are left for a compiler that can be built from a
+private SDK 4.0 — or for the equivalent source form to be found, which is
+cheaper to try first.
 
 The toolchain gate of [GATES.md](GATES.md) stays open until then.
 

@@ -106,13 +106,17 @@ def cmd_verify(args: argparse.Namespace) -> int:
     return 1 if bad else 0
 
 
+def tree_digests(root: str) -> dict[str, tuple[str, int]]:
+    """Return ``{relative path: (sha256, size)}`` for a tree."""
+    out: dict[str, tuple[str, int]] = {}
+    for relative, absolute, size in iter_files(root):
+        out[relative] = (digest_of(absolute), size)
+    return out
+
+
 def cmd_compare(args: argparse.Namespace) -> int:
-    left = {rel: (digest, size) for rel, size, digest in
-            ((rel, size, digest_of(os.path.join(args.left, rel.replace("/", os.sep))))
-             for rel, _, _ in iter_files(args.left))}
-    right = {rel: (digest, size) for rel, size, digest in
-             ((rel, size, digest_of(os.path.join(args.right, rel.replace("/", os.sep))))
-              for rel, _, _ in iter_files(args.right))}
+    left = tree_digests(args.left)
+    right = tree_digests(args.right)
     same = 0
     for relative in sorted(set(left) & set(right)):
         if left[relative] == right[relative]:

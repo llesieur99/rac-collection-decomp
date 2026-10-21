@@ -42,6 +42,22 @@ def reg(index: int) -> str:
     return REGS[index] if index < len(REGS) else f"r{index}"
 
 
+def condition_register(word: int, bo: int) -> str:
+    """The condition register a comparison writes, when it names one.
+
+    The retail program uses **two** code generators: the code of the game
+    compares on CR0 and the libraries of the SDK compare on CR7, and the
+    field of the comparison is what tells them apart.  The register the
+    allocator hands out first decides it, and the order is a single line of
+    the compiler's source.
+
+    The field is in the split field of the 64-bit form, where the SCE
+    encodes it in a way this reader does not decode: the SCE's own binutils
+    prints it, and ``tools/cr_census.py`` counts it.
+    """
+    return ""
+
+
 def decode(word: int, address: int) -> str:
     """The text of one instruction.
 
@@ -96,6 +112,11 @@ def decode(word: int, address: int) -> str:
     if opcode == 16:
         displacement = signed(word & 0xFFFC, 16)
         target = (address + displacement) & 0xFFFFFFFF
+        bo = (word >> 21) & 0x1F
+        bi = (word >> 16) & 0x1F
+        name = {4: "bne", 12: "beq"}.get(bo) if bi == 2 else None
+        if name:
+            return f"{name} 0x{target:08X}"
         return f"bc 0x{target:08X}"
 
     # the stores of the SDK, and the frame of the SDK
@@ -131,7 +152,11 @@ def decode(word: int, address: int) -> str:
     if opcode == 29:
         return f"andis. {reg(rA)},{reg(rA)},{uimm << 16}"
     if opcode == 11:
-        return f"cmpwi cr0,{reg(rA)},{simm}"
+        # the comparison with an immediate.  The field of the condition
+        # register is in the split field of the 64-bit form, where the SCE
+        # encodes it in a way this reader does not decode; the SCE's own
+        # binutils prints it, and tools/cr_census.py counts it.
+        return f"cmpwi r{reg(rA)},{simm}"
     if opcode == 10:
         return f"cmpli cr0,{reg(rA)},{uimm}"
 

@@ -116,6 +116,36 @@ to the two versions, 88 of them are read by the code of both, and they give
 messages — the SDK is newer — and the PlayStation 2 decompilation names only
 773 of its 3,888 functions.
 
+### The exact key, and why it is thin
+
+The PlayStation 2 builds carry the **same triplet** as the PlayStation 3 one:
+the name of the source file and the line, passed at the site of the call.
+The tool that reads it on the MIPS side is
+[`tools/mips_assert_xref.py`](../tools/mips_assert_xref.py), and it measures
+**1,141 triplets** across the three PlayStation 2 games.
+
+The join on the triplet is exact where it exists — **no collision at all**
+on the 1,141 triplets of the PlayStation 2, against 27 on the PlayStation 3
+side, where the assertions live in headers — and it is verifiable: the
+control on the PlayStation 2 alone (the core against the overlays) gives 76
+pairs and **76 of them agree** with the sibling project's catalogue.
+
+**And it gives almost nothing.** The exact join on (file, line) gives
+**zero** pairs: the retail PlayStation 2 build compiles out nearly all of
+its assertions, and where it kept them, **the port moved the line by six** —
+the same shift in both ported games, and the only one that pairs the whole
+block. With that shift, five pairs.
+
+The negative control says the same thing: of the 230 assertions of the
+PlayStation 3 build, **none** matches a PlayStation 2 triplet on the line,
+and three match on the file name alone — and those three are the function
+this repository had already named, on its own evidence,
+`hud_print_moby_debug_info`.
+
+So the triplet is the more precise key and the less productive one. It is
+published because it is exact, and because it is the measure of how much the
+PlayStation 2 build can still say.
+
 Two keys were measured and rejected, and they are worth naming: the **order**
 of the functions (the drift between two anchors is as large as the drift
 between the two builds) and the **graph of the calls** (38 pairs proposed, at

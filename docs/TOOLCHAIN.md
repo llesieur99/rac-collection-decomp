@@ -83,15 +83,68 @@ byte with zero.
 
 | Compiler | The comparison it emits |
 |---|---|
-| the retail build | `cmpwi cr0, r6, 0` — the byte is compared directly, on **CR0** |
-| SDK 2.7.0 and SDK 4.2.0 | `cmpwi 7, r0, 0` — the same comparison, on **CR7** |
+| the retail build | `cmpwi r6, 0` on **CR0** — the byte is compared directly |
+| SDK 2.7.0, 3.6.0 and 4.2.0 | the same comparison, on **CR7** |
 
-The two public compilers behave *identically* here, and neither behaves like
-the retail one. The 64-bit ABI reserves CR7 for the boolean values and CR0
-for the flags of a comparison; the retail code compares on CR0. Getting the
-same bytes out of a body with a comparison therefore needs the compiler the
-retail used — the one that is not public. The bodies that *are* reproduced
-have no comparison, and the two public builds agree on them.
+The four public compilers this machine holds behave **identically** here: 320
+compilations of the sixteen source forms, under five sets of options, and
+**264 comparisons on CR7, none on CR0**. Eighteen other options were tried
+and none changes it.
+
+### Where the register is chosen
+
+The choice is made in **one line** of the compiler's source:
+`gcc/gcc/config/rs6000/rs6000.h`, the macro `REG_ALLOC_ORDER`, which lists
+
+```
+cr7, cr6, cr1, cr0, cr4, cr3, cr2
+```
+
+**cr7 comes first**, and the register allocator follows the list: a
+comparison is a pseudo-register of the class `CR_REGS`, and the first one
+the allocator hands out is the one the comparison lands on. The retail
+compiler had a different order.
+
+### The retail has two code generators
+
+The census of the four retail programs changes the reading of the project:
+the program **mixes CR0 and CR7, and the mixture is by blocks of
+addresses** — 821 functions in a row on CR0, then 144 on CR7, in the
+launcher. The CR7 blocks are the **libraries of the SDK**, linked at the end
+of the text segment; the CR0 blocks are the code of the game.
+
+So the retail program is not the work of one compiler: the code of the game
+comes from the revision `3538`, and the SDK's own libraries come from the
+public toolchain — and the four functions of the runtime that this project
+already reproduces byte for byte (`docs/TOOLCHAIN.md`, below) are exactly
+those libraries ✓. The mixture is the explanation of why the public
+compilers reproduce them and not the game.
+
+### The revision that is not public
+
+The archive of the toolchain sources holds **twenty commits**, and its
+history is a **straight line**: each version is the direct child of the one
+before it. The jump from `3509` to `3547` is therefore **a single commit**,
+and there is no intermediate state in the public history. The search is
+exhaustive: `git grep "SDK400"` over the twenty revisions returns nothing,
+and the occurrences of "3538" are line numbers in the binutils tests.
+
+The revision `3538` was distributed by **SCE, on request**: the PlayStation 3
+Developer Wiki records the toolchain of the SDK 4.0 with that revision, and
+the sources of the toolchain are the GPL sources of the compiler. That is a
+path, and it is outside the repository.
+
+### The patch that would do the same
+
+The order of the allocation is a list in a header file, and moving `cr0` in
+front of `cr7` is a **one line change** to the compiler of the SDK 4.2.0.
+A patched build is the cheapest way to the retail's code: it is a tool, it
+stays in the workspace, and the test is immediate — the body at `0x38D20` must
+come out with the comparison on CR0, with `addic`, and with the registers
+`r5` and `r6`.
+
+The bodies that *are* reproduced have no comparison, and the two public
+builds agree on them.
 
 ### The second difference: the table of contents
 

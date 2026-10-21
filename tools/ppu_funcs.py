@@ -5,13 +5,15 @@ table and no section name.  The boundaries have to come from the code
 itself, and a boundary that only one method sees is a candidate, not a
 function.
 
-This tool offers the two cheap, independent methods:
+This tool offers the cheap, independent methods:
 
 * **prologue scan** — the PS3 SDK's PPU functions open with a fixed
   pattern: the stack pointer is moved down with ``stdu r1, -N(r1)`` and the
   link register is saved with ``mflr r0`` / ``stw r0, 0x10(r1)``;
 * **call scan** — every ``bl`` (branch and link) names an address that the
-  program calls, and a called address is a function.
+  program calls, and a called address is a function;
+* **entry scan** — an address the flow cannot fall into is the start of a
+  new block, and a function starts with a new block.
 
 Both sets are published separately, so that they can be compared.  Only the
 tool needs the Python standard library: the few opcodes that matter are
@@ -23,8 +25,17 @@ from.
 
     python tools/ppu_funcs.py prologue <eboot.elf> [--out FILE]
     python tools/ppu_funcs.py calls    <eboot.elf> [--out FILE]
-    python tools/ppu_funcs.py catalogue <eboot.elf> [--out FILE]
-    python tools/ppu_funcs.py bounds   <eboot.elf> [--out FILE]
+    python tools/ppu_funcs.py entries  <eboot.elf> [--out FILE]
+    python tools/ppu_funcs.py catalogue <eboot.elf> [--out FILE] [--wide]
+    python tools/ppu_funcs.py bounds   <eboot.elf> [--out FILE] [--wide]
+
+The **narrow** prologue is the frame at the first instruction of the
+function.  The measurement showed that the compiler does not always put it
+there, so the **wide** prologue accepts the frame a few instructions later,
+and accepts the frame without the save of the link register.  The wide
+catalogue weighs four signals — the prologue, the call, the entry and the
+return: an address that two of them agree on is a function, an address that
+only one of them sees is a candidate.
 """
 
 from __future__ import annotations
@@ -47,9 +58,11 @@ from ppu_elf import PpuElf, ElfError  # noqa: E402
 # ``mflr rX`` (the mfspr/mflr family, extended opcode 0x2A6).
 STDU_R1 = 0xF8210000
 # ``mflr rX`` is the mfspr family with the extended opcode 0x2A6; the
-# destination register sits in bits 21-25.
-MFLR_MASK = 0xFF1FFCFF
-MFLR_VALUE = 0x7C0800A6
+# destination register sits in bits 21-25.  The mask keeps every bit but
+# the destination and the link bit: ``mtlr`` (the extended opcode 0x1D3)
+# must not pass for a ``mflr``.
+MFLR_MASK = 0xFC1FFFFE
+MFLR_VALUE = 0x7C0802A6
 
 # The call instruction: the unconditional branch with the link bit set
 # (opcode 18, LK at bit 0; AA at bit 1).
@@ -140,6 +153,10 @@ def prologue_candidates(elf: PpuElf) -> list[Candidate]:
     * ``mflr rX`` followed by ``stdu r1, -N(r1)`` (the compiler's other
       order, seen when the frame is set up before the link register is
       saved).
+
+    This is the *narrow* prologue: the frame is the first instruction of
+    the function.  :func:`prologue_forms` is the wide one, and it is what
+    the extended catalogue uses.
     """
     out = []
     base, data = text_code(elf)
@@ -163,6 +180,127 @@ def prologue_candidates(elf: PpuElf) -> list[Candidate]:
     return out
 
 
+# -- the signals of a function entry ---------------------------------------
+#
+# The narrow prologue above is the shape the SDK uses when the frame is the
+# first instruction of the function.  The measurement showed that it is not
+# always: the compiler sometimes emits one or two instructions before the
+# frame, and sometimes no link-register save at all.  The three signals
+# below are the ones the extended catalogue weighs.
+#
+# * **the prologue** — the shape of the code: the frame of the SDK, with or
+#   without the save of the link register, at or shortly after the address;
+# * **the call** — the references of the code: a ``bl`` lands on the address;
+# * **the entry** — the control flow: the instruction before the address
+#   does not fall through, so the address opens a new block.
+
+# The frame of the SDK: ``stdu r1, -N(r1)``.  On the PPU the instruction
+# keeps the old stack pointer and moves it down; the displacement is a
+# 16-bit signed value whose low two bits are ignored.
+def is_frame(word: int) -> bool:
+    """``stdu r1, -N(r1)``: the stack pointer moves down."""
+    return (word & 0xFFFF0000) == STDU_R1 and (word & 0x8000) != 0
+
+
+def is_link_save(word: int) -> bool:
+    """``mflr rX``: the link register is saved."""
+    return (word & MFLR_MASK) == MFLR_VALUE
+
+
+def falls_through(word: int) -> bool:
+    """The flow continues on the instruction that follows.
+
+    A return, an unconditional branch and an indirect jump do not; every
+    other instruction does.  The conditional branch of the PPU that
+    targets itself is a spin — the code never goes on — and does not
+    fall through either.
+    """
+    opcode = word >> 26
+    if opcode == 18:
+        # b / bl: only the call falls through.
+        return (word & 3) == 1
+    if opcode == 16:
+        # The conditional branch of the PPU: a branch to itself spins.
+        return (word & 0xFFFC) != 0
+    if opcode == 19:
+        xo = (word >> 1) & 0x3FF
+        bo = (word >> 21) & 0x1F
+        if xo == 16:
+            # bclr: the conditional forms fall through, the plain return does not.
+            return bo != 20
+        if xo == 528:
+            # bcctr: bctrl falls through, bctr does not.
+            return (word & 1) != 0
+    return True
+
+
+# How far the frame of the SDK may be from the entry of the function.  The
+# measurement put the frame at +0, +1 and +2 for the functions the narrow
+# prologue misses; the values beyond are the frame of the *next* function.
+# The block is found by the two instructions that make it, not by a window:
+# the address of the block is the address of the first of the two.
+
+# The forms the prologue takes, from the strongest to the weakest.
+PROLOGUE_FRAME_LR = "frame+lr"
+PROLOGUE_FRAME = "frame"
+
+
+def prologue_forms(elf: PpuElf) -> dict[int, str]:
+    """The prologue block that starts at every address of the program.
+
+    The prologue of the SDK is a block of two instructions: the frame
+    (``stdu r1, -N(r1)``) and the save of the link register
+    (``mflr r0``).  The block has two orders — the frame first, the link
+    register first — and the frame may stand alone when the function
+    calls nothing and never has to save the link register.
+
+    The form is recorded at the address where the block **starts**: the
+    frame when the frame comes first, the link register when it comes
+    first.  The address of the frame alone is not a prologue of its own
+    when the link register was saved just before it: the block started
+    one instruction earlier.
+
+    This is what the narrow prologue cannot see.  It records the address
+    of the frame, and the compiler does not always put the frame at the
+    first instruction of the function.
+    """
+    base, data = text_code(elf)
+    count = len(data) // 4
+    words = struct.unpack_from(">%dI" % count, data, 0)
+    out: dict[int, str] = {}
+    for index in range(count):
+        word = words[index]
+        following = words[index + 1] if index + 1 < count else 0
+        preceding = words[index - 1] if index > 0 else 0
+        if is_frame(word):
+            if is_link_save(following):
+                out[base + index * 4] = PROLOGUE_FRAME_LR
+            elif not is_link_save(preceding):
+                # The frame alone: the function has locals but calls nothing.
+                out[base + index * 4] = PROLOGUE_FRAME
+        elif is_link_save(word) and is_frame(following):
+            # The link register first: the block starts here.
+            out[base + index * 4] = PROLOGUE_FRAME_LR
+    return out
+
+
+def entry_candidates(elf: PpuElf) -> list[Candidate]:
+    """The addresses that open a new block: the flow cannot fall into them.
+
+    The instruction that precedes the address does not fall through: it is
+    a return, an unconditional branch or an indirect jump.  The address is
+    then the start of a new block, and a function starts with a new block.
+    """
+    base, data = text_code(elf)
+    count = len(data) // 4
+    words = struct.unpack_from(">%dI" % count, data, 0)
+    out = []
+    for index in range(1, count):
+        if not falls_through(words[index - 1]):
+            out.append(Candidate(base + index * 4, "entry"))
+    return out
+
+
 def call_targets(elf: PpuElf) -> list[Candidate]:
     """The addresses the program calls."""
     seen = set()
@@ -181,18 +319,107 @@ def call_targets(elf: PpuElf) -> list[Candidate]:
     return out
 
 
-def build_catalogue(elf: PpuElf) -> list[tuple[int, str, str]]:
-    """The union of both methods, with the evidence for each address."""
-    prologues = {c.address for c in prologue_candidates(elf)}
+def signals(elf: PpuElf) -> dict[str, set[int]]:
+    """The three signals of the **start** of a function, as sets of addresses.
+
+    * ``prologue`` — the frame of the SDK, with or without the save of the
+      link register, at the address;
+    * ``call`` — the addresses a ``bl`` lands on;
+    * ``entry`` — the addresses the flow cannot fall into.
+
+    The fourth signal — the return the walk ends on — needs the walk, and
+    :func:`entry_evidence` weighs it.  The forms of the prologue are in
+    :func:`prologue_forms`.
+    """
+    forms = prologue_forms(elf)
+    return {
+        "prologue": set(forms),
+        "call": {c.address for c in call_targets(elf)},
+        "entry": {c.address for c in entry_candidates(elf)},
+    }
+
+
+def entry_evidence(elf: PpuElf) -> tuple[dict[int, list[str]], set[int]]:
+    """The signals of every candidate address, and the confirmed ones.
+
+    The signals of the start of a function are the prologue, the call and
+    the entry.  Two of them agree on a function.  The prologue alone is
+    not enough — a frame in the middle of a function would pass it — so
+    the prologue is confirmed by a fourth signal: the walk from the
+    address must end on a return.
+
+    The addresses that only the *entry* signal sees are the starts of
+    the blocks that are not functions; they are not in the catalogue.
+    """
+    forms = prologue_forms(elf)
     calls = {c.address for c in call_targets(elf)}
-    rows = []
-    for address in sorted(prologues | calls):
-        evidence = []
-        if address in prologues:
-            evidence.append("prologue")
+    entries = {c.address for c in entry_candidates(elf)}
+    universe = set(forms) | calls
+    evidence: dict[int, list[str]] = {}
+    for address in sorted(universe):
+        seen = []
+        if address in forms:
+            seen.append(forms[address])
         if address in calls:
-            evidence.append("call")
-        rows.append((address, "+".join(evidence), "both" if len(evidence) == 2 else evidence[0]))
+            seen.append("call")
+        if address in entries:
+            seen.append("entry")
+        evidence[address] = seen
+    confirmed = {address for address, seen in evidence.items() if len(seen) >= 2}
+
+    # The prologue alone: the walk has to end on a return for the address
+    # to be a function and not a frame in the middle of one.
+    bound = confirmed | calls
+    for address in sorted(universe - confirmed):
+        if len(evidence[address]) != 1:
+            continue
+        if evidence[address][0] not in (PROLOGUE_FRAME_LR, PROLOGUE_FRAME):
+            continue
+        _end, why, _body = function_body(elf, address, entries=bound)
+        if why == "return":
+            evidence[address].append("return")
+            confirmed.add(address)
+    return evidence, confirmed
+
+
+def build_catalogue(elf: PpuElf, wide: bool = False) -> list[tuple[int, str, str]]:
+    """The union of both methods, with the evidence for each address.
+
+    With ``wide``, the signals of a function entry are weighed instead
+    of the two of the narrow method:
+
+    * **prologue** — the frame of the SDK, with or without the save of
+      the link register, at the address;
+    * **call** — a ``bl`` lands on the address;
+    * **entry** — the flow cannot fall into the address;
+    * **return** — the walk from the address ends on a return.
+
+    An address that two of the signals agree on is a function; an
+    address that only one of them sees is a candidate, and the evidence
+    says which one.  The addresses that only the *entry* signal sees are
+    the starts of the blocks that are not functions; they are not in the
+    catalogue.
+    """
+    if not wide:
+        prologues = {c.address for c in prologue_candidates(elf)}
+        calls = {c.address for c in call_targets(elf)}
+        rows = []
+        for address in sorted(prologues | calls):
+            evidence = []
+            if address in prologues:
+                evidence.append("prologue")
+            if address in calls:
+                evidence.append("call")
+            rows.append((address, "+".join(evidence),
+                         "both" if len(evidence) == 2 else evidence[0]))
+        return rows
+
+    evidence, _confirmed = entry_evidence(elf)
+    rows = []
+    for address in sorted(evidence):
+        seen = evidence[address]
+        rows.append((address, "+".join(seen),
+                     "both" if len(seen) >= 2 else seen[0]))
     return rows
 
 
@@ -207,7 +434,9 @@ def cmd_calls(elf: PpuElf, args: argparse.Namespace) -> int:
 
 
 def cmd_catalogue(elf: PpuElf, args: argparse.Namespace) -> int:
-    rows = [(address, kind, evidence) for address, kind, evidence in build_catalogue(elf)]
+    rows = [(address, kind, evidence)
+            for address, kind, evidence in
+            build_catalogue(elf, wide=getattr(args, "wide", False))]
     if getattr(args, "confirmed", False):
         rows = [row for row in rows if row[2] == "both"]
     return _write(rows, args)
@@ -333,9 +562,14 @@ def function_extent(elf: PpuElf, start: int, limit: int = 200000,
     return end, why
 
 
+def cmd_entries(elf: PpuElf, args: argparse.Namespace) -> int:
+    rows = [(c.address, "", "entry") for c in entry_candidates(elf)]
+    return _write(rows, args)
+
+
 def cmd_bounds(elf: PpuElf, args: argparse.Namespace) -> int:
     rows = []
-    catalogue = build_catalogue(elf)
+    catalogue = build_catalogue(elf, wide=getattr(args, "wide", False))
     entries = {address for address, _kind, _evidence in catalogue}
     for address, kind, evidence in catalogue:
         if getattr(args, "confirmed", False) and evidence != "both":
@@ -383,14 +617,19 @@ def main(argv: list[str] | None = None) -> int:
 
     add("prologue", "the addresses with the SDK function prologue").set_defaults(func=cmd_prologue)
     add("calls", "the addresses the program calls").set_defaults(func=cmd_calls)
+    add("entries", "the addresses the flow cannot fall into").set_defaults(func=cmd_entries)
     p_catalogue = add("catalogue", "both methods, with their evidence")
     p_catalogue.add_argument("--confirmed", action="store_true",
                              help="keep only the addresses both methods agree on")
+    p_catalogue.add_argument("--wide", action="store_true",
+                             help="weigh the three signals of an entry")
     p_catalogue.set_defaults(func=cmd_catalogue)
 
     p_bounds = add("bounds", "the extent of every candidate")
     p_bounds.add_argument("--confirmed", action="store_true",
                            help="keep only the addresses both methods agree on")
+    p_bounds.add_argument("--wide", action="store_true",
+                           help="weigh the three signals of an entry")
     p_bounds.set_defaults(func=cmd_bounds)
 
     args = parser.parse_args(argv)

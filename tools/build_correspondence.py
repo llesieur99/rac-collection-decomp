@@ -200,7 +200,10 @@ class Program:
 
     def analyse(self) -> None:
         """Recover the functions and compute their signatures."""
-        catalogue = build_catalogue(self.elf)
+        # The wide catalogue: the confirmed functions of the release, with
+        # the four signals of an entry instead of the two of the narrow
+        # method.  The correspondence covers the whole confirmed corpus.
+        catalogue = build_catalogue(self.elf, wide=True)
         entries = {address for address, _kind, _evidence in catalogue}
         self.functions = []
         self.bodies = []

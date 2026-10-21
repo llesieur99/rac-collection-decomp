@@ -77,13 +77,15 @@ class CorrespondenceTest(unittest.TestCase):
         self.left = program("left", build_elf(0x10000), self.directory)
         self.right = program("right", build_elf(0x20000), self.directory)
 
-    def test_the_two_functions_are_found(self):
-        self.assertEqual(len(self.left.functions), 2)
-        self.assertEqual(len(self.right.functions), 2)
+    def test_the_three_functions_are_found(self):
+        # the wide catalogue sees the first function too: the narrow one
+        # only saw the two that are called
+        self.assertEqual(len(self.left.functions), 3)
+        self.assertEqual(len(self.right.functions), 3)
 
     def test_the_functions_are_matched_across_the_addresses(self):
         rows, summary = build_correspondence.match(self.left, self.right)
-        self.assertEqual(summary["matched"], 2)
+        self.assertEqual(summary["matched"], 3)
         for row in rows:
             self.assertEqual(row["size_a"], row["size_b"])
             self.assertEqual(row["identity"], 1.0)

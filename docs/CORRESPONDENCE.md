@@ -28,9 +28,10 @@ others — and it is the one that pays.
 An address says nothing, so the relation is measured on the **body** of the
 functions.
 
-1. **The boundaries** are recovered in each build on its own, with the two
-   independent methods of [CATALOGUE.md](CATALOGUE.md): the SDK's prologue and
-   the calls that land on an address.
+1. **The boundaries** are recovered in each build on its own, with the four
+   independent signals of [CATALOGUE.md](CATALOGUE.md): the prologue of the
+   SDK, the targets of the calls, the entries of the control flow and the
+   returns of the walk. Two of them have to agree.
 2. **Every function gets a signature**: the sequence of its instructions, with
    the opcodes, the registers and — in the strictest form — the immediates.
    The immediates are the offsets of the data, and the data of two builds does
@@ -52,36 +53,73 @@ The tool is [`tools/build_correspondence.py`](../tools/build_correspondence.py).
 
 | Pair | Functions | Matched | Same size | Same bytes | Median identity |
 |---|---|---|---|---|---|
-| `rc1` ↔ `NPUA80643` | 3,054 | **3,047** (99 %) | 3,047 | 37 % | 95.2 % |
-| `rc2` ↔ `NPUA80644` | 9,884 | **9,873** (99 %) | 9,873 | 13 % | 93.0 % |
-| `rc3` ↔ `NPUA80645` | 6,711 | **6,691** (99 %) | 6,691 | 24 % | 93.7 % |
+| `rc1` ↔ `NPUA80643` | 9,243 | **9,211** (99 %) | 9,211 | 56 % | **100 %** |
+| `rc2` ↔ `NPUA80644` | 20,058 | **20,010** (99 %) | 20,010 | 30 % | 94 % |
+| `rc3` ↔ `NPUA80645` | 17,342 | **17,242** (99 %) | 17,242 | 39 % | 95 % |
 
-The two builds of one game hold **the same number of functions** — 3,054,
-9,884 and 6,711, to the unit — and the tool matches 99 % of them, every
-matched pair having **exactly the same size**.
+The two builds of one game hold **the same number of functions** — 9,243 and
+9,235, 20,058 and 20,051, 17,342 and 17,338 — and the tool matches 99 % of
+them, every matched pair having **exactly the same size**.
 
 The addresses, on the other hand, are not the same: the shift is constant
-inside a block of code and changes from block to block — 77 blocks for
-`rc1`, 227 for `rc2`, 140 for `rc3`. That is the linker of the other SDK
-placing the pieces of the program elsewhere, and it is why an address is not
-a name.
+inside a block of code and changes from block to block — 385 blocks for `rc1`,
+719 for `rc2`, 558 for `rc3`. That is the linker of the other SDK placing the
+pieces of the program elsewhere, and it is why an address is not a name.
 
 ### The same engine, three games
 
 | Pair | Matched | Same size | Same bytes | Median identity |
 |---|---|---|---|---|
-| `rc1` ↔ `rc2` | 1,242 of `rc1`'s 3,054 (40 %) | 1,242 | **56 %** | **100 %** |
-| `rc2` ↔ `rc3` | 2,182 of `rc2`'s 9,884 (22 %) | 2,182 | 33 % | 95.7 % |
-| `rc1` ↔ `rc3` | 1,264 of `rc1`'s 3,054 (41 %) | 1,264 | **54 %** | **100 %** |
+| `rc1` ↔ `rc2` | 5,259 of `rc1`'s 9,243 (56 %) | 5,259 | 61 % | **100 %** |
+| `rc2` ↔ `rc3` | 7,979 of `rc2`'s 20,058 (39 %) | 7,979 | 44 % | 96 % |
+| `rc1` ↔ `rc3` | 5,269 of `rc1`'s 9,243 (57 %) | 5,269 | 60 % | **100 %** |
 
-**1,226 functions of `rc1` have a counterpart in all three other builds** at
-once: the standalone title, `rc2` and `rc3`. They are the engine's own code,
-and the instructions of more than half of them are **literally the same bytes**
-in the three games.
+**5,151 functions of `rc1` have a counterpart in the three other builds at
+once**: the standalone title, `rc2` and `rc3`. They are the engine's own code,
+and more than half of those pairs are **literally the same bytes**.
 
 That is the important number. A name proved on the engine's code of one game
 is not a guess on the engine's code of another: the body is the same body,
 and the body gate would reproduce the same bytes at the other address.
+
+## The relation with the PlayStation 2
+
+The PlayStation 2 versions of the three games are the **originals** the
+PlayStation 3 builds are ports of, and the sibling project has already
+recovered a good part of their vocabulary: 3,888 functions of the PlayStation
+2 games, 773 of them with the name of the source file they come from.
+
+The two versions cannot be matched by the instructions — one is a MIPS
+PowerPC-like processor, the other a PowerPC — but they can be matched by
+**what they say**: the same literal in the same function.
+
+The key is a **distinctive message**: a string long enough, and rare enough,
+to name one function and one only. The control is measured: a pair of
+functions picked at random shares a message 0,18 % of the time.
+
+| Program | Functions of the PS3 | Verified pairs | Named |
+|---|---|---|---|
+| `RC1` | 10,160 | **27** | 10 |
+| `RC2` | 21,387 | **10** | 5 |
+| `RC3` | 18,572 | **9** | 3 |
+| `EBOOT` | 4,985 | **2** | 0 |
+
+**48 functions of the PlayStation 3 builds are matched with confidence with
+a function of the PlayStation 2**, and 18 of them carry a name of source that
+can be used (`gameplay/state/do_space_transition`, `ui/menus/draw_prompt_box`,
+`rendering/draw_ties_2`, `storage/memory_card/memcard_get_data_size`…). The
+table is in [config/proposals.tsv](../config/proposals.tsv).
+
+**The ceiling is measured, not conjectured.** There are 380 messages common
+to the two versions, 88 of them are read by the code of both, and they give
+16 distinct pairs. The PlayStation 3 build reads two and a half times more
+messages — the SDK is newer — and the PlayStation 2 decompilation names only
+773 of its 3,888 functions.
+
+Two keys were measured and rejected, and they are worth naming: the **order**
+of the functions (the drift between two anchors is as large as the drift
+between the two builds) and the **graph of the calls** (38 pairs proposed, at
+least six of them demonstrably wrong).
 
 ## What a name is worth across a correspondence
 
@@ -90,6 +128,7 @@ and the body gate would reproduce the same bytes at the other address.
 | the same game, two builds | the address, the code, the subject | a proposal on the other build, to be proved there |
 | the same engine, two games, **same bytes** | the body itself | the body gate reproduces the same bytes at the other address: the name is proved twice |
 | the same engine, two games, different bytes | the subject, the role | a proposal, to be proved on the second game |
+| the PlayStation 2, same message | the name of the source | a proposal, with the message as the proof that it is the same function |
 
 The tool that carries the name over is
 [`tools/propose_name.py`](../tools/propose_name.py):
@@ -120,9 +159,14 @@ is not a fact: only the body gate makes a name a fact.
   function. It does not say what the function is called.
 * **The ambiguous pairs are marked.** When several candidates share the
   signature and the size and the bytes do not decide, the method ends with a
-  `?` — 106 pairs for `rc1`, 4,893 for `rc2`, 411 for `rc3`. They are
-  proposals like the others, but weaker ones, and the table says so.* **The functions of the launcher are not in the table.** The `EBOOT` is the
+  `?` — 1,195 pairs for `rc1`, 8,490 for `rc2`, 2,331 for `rc3`. They are
+  proposals like the others, but weaker ones, and the table says so.
+* **The functions of the launcher are not in the table.** The `EBOOT` is the
   collection's own module; the standalone titles have no counterpart for it.
-* **A function that the rebuild changed a lot may not be found at all.** 7
-  functions of `rc1`, 11 of `rc2` and 20 of `rc3` have no counterpart in the
+* **A function that the rebuild changed a lot may not be found at all.** 32
+  functions of `rc1`, 48 of `rc2` and 100 of `rc3` have no counterpart in the
   standalone title. They are the functions the rebuild touched the most.
+* **The PlayStation 2 relation is thin, and that is the measure.** 48
+  functions out of 55,104: 0,09 %. The engine is shared, but the *messages*
+  that name its functions were compiled out of the retail builds, and the
+  strings that remain are the ones the game prints.

@@ -44,6 +44,7 @@ a match; it is a coincidence, and it does not survive the next function.
 | State | Meaning |
 |---|---|
 | `unbounded` | nothing is known about where it starts or ends |
+| `candidate` | one method sees the address and the others do not: it may be a function, and it is not counted as one |
 | `bounded` | the extent is known, and the evidence is recorded |
 | `named` | the extent and the name are both backed by evidence |
 | `nonmatching` | authored, but the bytes do not match |
@@ -51,6 +52,12 @@ a match; it is a coincidence, and it does not survive the next function.
 
 Only `matching` functions live in `src/`. A `nonmatching` attempt that is
 worth keeping lives in `nonmatching/`, indexed by function.
+
+The `candidate` state is the one the catalogue uses for the addresses the
+boundary methods do not agree on.  A candidate is published — the address
+is worth knowing — but it is not a function, and the extent that the walk
+covers from it is **provisional**: it is the block the walk reaches, not a
+claim about the size of a function.
 
 ## The evidence the code carries
 
@@ -90,15 +97,16 @@ classic 32-bit PowerPC:
   scattered — a jump table, a cold block the compiler moved — owns the
   instructions of those blocks too.
 
-The result is in [config/evidence.tsv](../config/evidence.tsv): **1,518
-functions** of the release touch a string, out of 20,939.
+The result is in [config/evidence.tsv](../config/evidence.tsv): **2,679
+functions** of the release touch a string, out of the 50,877 functions of the
+catalogue.
 
 | Program | Functions with a string |
 |---|---|
-| `EBOOT` — the collection launcher | 181 |
-| `RC1` — Ratchet & Clank (2002) | 146 |
-| `RC2` — Going Commando | 477 |
-| `RC3` — Up Your Arsenal | 714 |
+| `EBOOT` — the collection launcher | 500 |
+| `RC1` — Ratchet & Clank (2002) | 340 |
+| `RC2` — Going Commando | 635 |
+| `RC3` — Up Your Arsenal | 1,204 |
 
 The strings are the engine's and the game's own: `CS_INIT`, `map level 0`,
 `sky texs`, `rc2/ps3data/level%d/audiowad/speech[%d].xvag`, `WARNING, CAN
@@ -111,6 +119,62 @@ They are in the data, in a table of the SDK, and the table is not reached by
 the addresses the tool reads: the table is filled by the module's start-up,
 and the game refers to the assertions by their number. Recovering them is
 the next piece of work.
+
+### The assert messages
+
+The assert messages are the strongest naming evidence the program carries: a
+message names the **source file** and the **line** inside it, so a function
+that asserts says where it comes from.
+
+The mechanism was measured, and it is not a table: the code calls a logging
+function with the **triplet (file, line, condition)**, or with a single
+message that already carries the file and the line.
+
+```
+0x010D4358:  3C600124  addis r3,r0,0x0124
+0x010D435C:  3C800124  addis r4,r0,0x0124
+0x010D4360:  306394AC  addic r3,r3,0x94AC   ; the condition
+0x010D4364:  38A00167  li    r5,359         ; the line
+0x010D4368:  308494F4  addic r4,r4,0x94F4   ; "j:/Ratchet/.../IMSeqMem.cpp"
+0x010D436C:  48000EC5  bl    0x010D5230    ; the logger
+```
+
+Two details of the addressing of the PPU are worth writing down, because
+they are what makes the measurement possible:
+
+* the low half of an address is added **with its sign**: when the offset has
+  its top bit set, the compiler takes the high half one greater and codes the
+  low half negative;
+* `r0` reads as **zero** in the idiom, even where the code has just put the
+  link register there: the compiler uses `r0` as the null base. The control
+  is statistical — on RC2, 366 of the addresses built that way land exactly
+  on the first byte of a string, against 24 when `r0` is read as the link
+  register.
+
+The tool is [`tools/assert_xref.py`](../tools/assert_xref.py), and the table
+is in [config/asserts.tsv](../config/asserts.tsv): **707 asserts, 246
+functions, 56 source files**. The criterion that keeps the false positives
+out is the **line**: a call that names a source file but no line is a log
+call that happens to carry a file name.
+
+| Program | Asserts | Functions | Source files |
+|---|---|---|---|
+| `EBOOT` — the collection launcher | 17 | 9 | 6 |
+| `RC1` — Ratchet & Clank (2002) | 3 | 3 | 2 |
+| `RC2` — Going Commando | 5 | 4 | 3 |
+| `RC3` — Up Your Arsenal | 682 | 230 | 47 |
+
+**RC3 is the richest source of naming evidence in the release**: it carries
+the code of the lobby — the multiplayer — and 47 source files, among them
+`lobby_net/src/lobby_net_main.cpp` and `lobby_gui/src/lobby_gui_manager.cpp`.
+
+**The strings that look better than they are.** The six strings of the
+`cell/samples/common/gcmutil/old/` library — `texture.cpp:91 p != NULL` and
+its neighbours — are **dead data**: no instruction of RC1, RC2 or RC3 builds
+their address, and the table of pointers that holds them is never read. They
+are the `.data` of a statically linked library whose code was not called;
+the linker kept them all the same. A string that no code reaches can name no
+function, and the tool reports those separately.
 
 ## Writing a claim down
 

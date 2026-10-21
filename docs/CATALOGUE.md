@@ -17,12 +17,17 @@ by evidence, and it names a function only when the evidence is there.
 | `size` | the length of the block the function occupies, in bytes |
 | `instructions` | the number of instructions of the body |
 | `name` | the proposed name, or the placeholder `func_<address>` |
-| `state` | `unbounded`, `bounded`, `named`, `proposed`, `nonmatching` or `matching` |
+| `state` | `unbounded`, `candidate`, `bounded`, `named`, `proposed`, `nonmatching` or `matching` |
 | `evidence` | what proves the boundary and the name |
 
 `config/functions.tsv` holds the machine-readable form, one row per
-function, tab separated. It is **measured** by
+address, tab separated. It is **measured** by
 [`tools/build_catalogue.py`](../tools/build_catalogue.py), never typed.
+
+The `candidate` state marks the addresses that only one of the methods
+sees. A candidate is published — the address is worth knowing — but it is
+not a function, and the size the walk measures from it is **provisional**:
+it is the block the walk covers, not a claim about the size of a function.
 
 ## Recovering a boundary
 
@@ -31,18 +36,49 @@ section name. A boundary has to be **proved** by the bytes.
 
 ### The start
 
-Two independent methods, and only the addresses that **both** agree on are
-kept:
+Four independent signals, and only the addresses that **two** of them agree
+on are functions:
 
-* **the prologue** — the PS3 SDK's functions open with a fixed pattern: the
-  stack pointer is moved down with `stdu r1, -N(r1)`, and the link register
-  is saved with `mflr r0` and `stw r0, 0x10(r1)`;
+* **the prologue** — the frame of the SDK: `stdu r1, -N(r1)`, with or
+  without the save of the link register (`mflr r0`). The frame is not
+  always the first instruction of the function: the compiler sometimes
+  saves the link register first, and sometimes puts an instruction or two
+  before the frame. The signal is recorded at the address where the
+  prologue block **starts**, not at the address of the frame;
 * **the call** — every `bl` (branch and link) names an address the program
-  calls, and a called address is a function.
+  calls, and a called address is a function;
+* **the entry** — the instruction that precedes the address does not fall
+  through: it is a return, an unconditional branch or an indirect jump.
+  The address then opens a new block, and a function opens with a new
+  block;
+* **the return** — the walk from the address ends on a `blr`. This is
+  what confirms the prologue on its own: a frame in the middle of a
+  function is not followed by the return of that function.
 
-The two methods are independent: one reads the shape of the code, the other
-the references of the code. An address that only one of them sees is a
-**candidate**, not a function, and it is not counted.
+The signals are independent: one reads the shape of the code, one the
+references of the code, one the control flow, one the end of the body. An
+address that only one of them sees is a **candidate**, not a function, and
+it is published as such.
+
+The narrow method — the prologue of the SDK and the targets of the calls —
+is still there, and it still reproduces the catalogue it produced before:
+`tools/build_catalogue.py --narrow` writes it, row for row. It is the
+baseline the extended method is measured against.
+
+### The forms of the prologue
+
+The prologue is not one shape. The measurement gives four, and the narrow
+method misses three of them:
+
+| Form | What it is | `EBOOT` | `RC1` | `RC2` | `RC3` |
+|---|---|---|---|---|---|
+| `frame+lr` | the frame, then the save of the link register | 3,286 | 7,338 | 16,904 | 14,411 |
+| `frame` | the frame alone: the function has locals but calls nothing, so the link register is never saved | 167 | 401 | 811 | 535 |
+| the link register first | the compiler saves the link register before the frame: the narrow method records the frame, one instruction after the entry | 348 | 949 | 949 | 964 |
+| no frame at all | the leaf function: no locals, no call | 1,644 | 2,639 | 3,886 | 3,876 |
+
+The first row is what the narrow method finds; the three others are what
+it misses. The example of each is in the report of the measurement.
 
 ### The end
 
@@ -69,23 +105,83 @@ Two bounds keep the walk honest, and both were needed:
 The tool reports how the walk ended: `return`, `branch`, `entry`, `indirect`
 or `limit`.
 
+## The population
+
+The catalogue was measured, but the population was not. Every function ends
+on a return, so the number of the returns of a program bounds the number of
+its functions; and the functions the catalogue holds own on average **one**
+return each, so the number of the returns is also a good estimate of the
+number of the functions.
+
+| Program | The text | `blr` | The conditional returns | The returns | The functions of the catalogue |
+|---|---|---|---|---|---|
+| `EBOOT` | 1,994,728 | 5,586 | 54 | 5,640 | 4,234 |
+| `RC1` | 7,583,720 | 12,396 | 139 | 12,535 | 9,243 |
+| `RC2` | 19,691,880 | 25,617 | 139 | 25,756 | 20,058 |
+| `RC3` | 12,267,240 | 22,084 | 140 | 22,224 | 17,342 |
+| **Total** | **41,537,568** | **75,683** | **472** | **76,155** | **50,877** |
+
+The narrow catalogue held 9,884 functions for `RC2` against the 25,617
+returns of the program: it knew **38 %** of the return sites. The extended
+one holds 20,058 functions and owns 20,017 of the returns: **78 %**.
+
 ## The result
 
-| Program | Functions | Of which the end is a return |
-|---|---|---|
-| `EBOOT` — the collection launcher | 1,290 | 1,070 |
-| `RC1` — Ratchet & Clank (2002) | 3,054 | 2,569 |
-| `RC2` — Going Commando | 9,884 | 8,192 |
-| `RC3` — Up Your Arsenal | 6,711 | 5,614 |
-| **Total** | **20,939** | **17,445** |
-
-The median function is 216 bytes long, and 99 % of them are under 2,048 bytes.
-One function of `RC3` is bigger than 20 kilobytes: the walk covered 221,300
-bytes of it, and it is the only one of that kind in the release.
+| Program | Functions | Of which the end is a return | Candidates |
+|---|---|---|---|
+| `EBOOT` — the collection launcher | 4,234 | 3,407 | 255 |
+| `RC1` — Ratchet & Clank (2002) | 9,243 | 7,576 | 663 |
+| `RC2` — Going Commando | 20,058 | 16,754 | 1,090 |
+| `RC3` — Up Your Arsenal | 17,342 | 14,644 | 893 |
+| **Total** | **50,877** | **42,381** | **2,901** |
 
 The names are not known yet, so every function carries the placeholder of its
-address. The state of every one of them is `bounded`: the extent is known and
-the evidence is recorded, but the name is a hypothesis.
+address. The state of every confirmed one is `bounded`: the extent is known
+and the evidence is recorded, but the name is a hypothesis.
+
+### The coverage
+
+Two measures, both measured by
+[`tools/ppu_census.py`](../tools/ppu_census.py): the **extent** is the sum of
+the blocks the walk covers, and the **code owned** is the union of the
+instructions the walk reaches — a function whose blocks are scattered owns
+them all.
+
+| Program | The extent, before | The extent, after | The code owned, before | The code owned, after |
+|---|---|---|---|---|
+| `EBOOT` | 245,056 (12.3 %) | 589,944 (29.6 %) | 141,081 (7.1 %) | 260,461 (13.1 %) |
+| `RC1` | 923,776 (12.2 %) | 1,974,084 (26.0 %) | 531,237 (7.0 %) | 936,779 (12.4 %) |
+| `RC2` | 3,258,292 (16.6 %) | 5,078,832 (25.8 %) | 2,345,425 (11.9 %) | 2,737,662 (13.9 %) |
+| `RC3` | 2,626,700 (21.4 %) | 4,456,876 (36.3 %) | 1,355,267 (11.1 %) | 1,916,211 (15.6 %) |
+| **Total** | **7,053,824 (17.0 %)** | **12,099,736 (29.1 %)** | **4,373,010 (10.5 %)** | **5,851,113 (14.1 %)** |
+
+The percentages are of the text segment of the program. It holds more than
+code — the tables of the engine and of the game are in it — so they are a
+lower bound of the share of the code that is covered.
+
+### The false positives
+
+Widening the detection raises the risk of false positives, and the risk is
+measured, not asserted. Three counts:
+
+* **the extent is eight bytes or less** — a function of one or two
+  instructions. The narrow catalogue has none; the extended one has some,
+  and the review of a sample shows the real ones are the stubs of the
+  compiler (`li r3,0` then `blr`, one per `return 0;` of the source);
+* **the extents overlap** — two functions that claim the same bytes. There
+  are **none**, before and after;
+* **the end is not proven** — the walk ended on the next entry or gave up,
+  instead of on a return or a tail call.
+
+| Program | Before: short, overlapped, unproven | After: short, overlapped, unproven |
+|---|---|---|
+| `EBOOT` | 0, 0, 58 (4.5 %) | 189, 0, 258 (6.1 %) |
+| `RC1` | 0, 0, 100 (3.3 %) | 595, 0, 552 (6.0 %) |
+| `RC2` | 0, 0, 428 (4.3 %) | 646, 0, 1,013 (5.0 %) |
+| `RC3` | 0, 0, 209 (3.1 %) | 788, 0, 812 (4.7 %) |
+
+The share of the rows whose end is not proven grows from 3 to 5 %: that is
+the price of the wider detection, and it is the honest measure of it.
 
 ## Reading a boundary
 
@@ -105,7 +201,7 @@ python tools/ppu_disasm.py work/eboot.elf --start 0x10200 --count 11
 0x00010214:  4800460D  bl 0x00014820        a call
 0x00010218:  60000000  nop
 0x0001021C:  E8010080  .long 0xE8010080     an extension of the SDK
-0x00010220:  7C0803A6  mflr r1              the epilogue
+0x00010220:  7C0803A6  mtlr r0              the epilogue
 0x00010224:  38210070  addi r1,r1,112       the frame is torn down
 0x00010228:  4E800020  blr                  the return
 ```
@@ -127,8 +223,15 @@ path falls through from.
   prologue method covers them.
 * **A function that ends by an indirect jump** — a tail call through a
   register — cannot be bounded by the walk; the extent is then provisional.
-  There are 66 such cases in the launcher.* **A boundary that is only "the next known boundary"** is provisional, and it
-  is recorded as such.
+  There are 66 such cases in the launcher.* **A boundary that is only "the next known boundary"** is provisional, and
+  it is recorded as such.
+* **A function that is only called through a pointer** is not seen by the
+  call method. The prologue method sees it when it has a frame; a leaf
+  function reached only through a pointer stays a candidate.
+* **The correspondence table was re-measured on the wide catalogue.** The
+  standalone copy of each game is another program, and the functions match
+  it one by one, on the body and never on the address: 99 % of them, with
+  the same size. See [CORRESPONDENCE.md](CORRESPONDENCE.md).
 
 ## The next step
 

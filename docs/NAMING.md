@@ -85,10 +85,11 @@ the bytes.
 
 | | Count |
 |---|---|
-| functions bounded | 20,939 |
-| functions that touch a string | 1,518 — the subject of the function, measured |
-| functions with a proved name | 6 — and those six carry the placeholder of their address, because nothing yet says what they do |
-| functions with a proposed name | 0 |
+| functions bounded | 50,877 |
+| functions that touch a string | 2,679 - the subject of the function, measured |
+| functions that carry an assert | 246 - the source file and the line, measured |
+| functions with a proved name | 6 - and those six carry the placeholder of their address, because nothing yet says what they do |
+| functions with a proposed name | 14 - from the PlayStation 2 decompilation, with the shared message as the proof |
 
 The six proved bodies are the first ones, and they are deliberately the
 simplest: a frame, a call, an epilogue. They prove the toolchain and the
@@ -133,6 +134,35 @@ python tools/propose_name.py --program collection-RC1 --address 0x000128B8 --nam
 
 A proposal is still a hypothesis. Only the body gate makes a name a fact —
 but a hypothesis with a measured counterpart is a much cheaper hypothesis.
+
+## The first proposals
+
+The PlayStation 2 decompilation of the sibling project knows the name of 773
+functions of the original games, with the source file they come from. The
+message a function prints is the proof that the PlayStation 2 function and
+the PlayStation 3 one are the same function: a pair of functions picked at
+random shares a message 0,18 % of the time.
+
+The table is in [config/proposals.tsv](../config/proposals.tsv), and it holds
+**37 verified pairs, 14 of them with a name**:
+
+| Program | Address | Proposed name | The message that proves it |
+|---|---|---|---|
+| `RC1` | `0x000716B0` | `do_space_transition` | `unloaded sound bank %#010x\n` |
+| `RC1` | `0x000F3370` | `copy_text_to_shared_buffer` | `(Message too long)` |
+| `RC1` | `0x00179E40` | `draw_prompt_box` | `(error)` |
+| `RC1` | `0x001971B8` | `draw_ties_2` | `tie draw`, `tie texs` |
+| `RC1` | `0x0019C300` | `set_scrolling_status_message` | `%s` |
+| `RC2` | `0x00096C60` | `memcard_get_data_size` | `ERROR: could not init memcard lib\n` |
+| `RC2` | `0x00BE79F8` | `draw_prompt_box` | `(error)` |
+| `RC3` | `0x001F2504` | `memcard_get_data_size` | `ERROR: could not init memcard lib\n` |
+
+Two of them land on **the same function in two different games** —
+`draw_prompt_box` in `RC1` and in `RC2` — which is the control the method
+needs: the key is not a coincidence of one program.
+
+These are proposals, not names: the body gate still has to reproduce the
+retail bytes before a name is a fact.
 
 ## What a name is worth
 

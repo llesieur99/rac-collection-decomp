@@ -382,11 +382,17 @@ def _line_of(call: Call, register: int,
 
 
 def read_catalogue(path: str, program: str | None) -> list[tuple[int, int]]:
-    """The (address, size) of the functions of the catalogue."""
+    """The (address, size) of the functions of the catalogue.
+
+    Only the confirmed functions are read: the extent of a candidate is
+    provisional, and an assert belongs to the function that owns the code.
+    """
     functions: list[tuple[int, int]] = []
     with open(path, encoding="utf-8") as handle:
         for row in csv.DictReader(handle, delimiter="\t"):
             if program and row["program"] != program:
+                continue
+            if row.get("state", "bounded") != "bounded":
                 continue
             functions.append((int(row["address"], 0), int(row["size"])))
     functions.sort()

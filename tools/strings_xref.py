@@ -261,6 +261,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             for row in csv.DictReader(handle, delimiter="\t"):
                 if args.program and row["program"] != args.program:
                     continue
+                # Only the confirmed functions own an address: the extent of a
+                # candidate is provisional, and a string is attributed to the
+                # function that owns the code, not to a guess.
+                if row.get("state", "bounded") != "bounded":
+                    continue
                 functions.append((int(row["address"], 0), int(row["size"])))
         functions.sort()
 

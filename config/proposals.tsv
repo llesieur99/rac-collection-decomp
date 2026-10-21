@@ -1,0 +1,38 @@
+program	address	name	ps2_source	ps2_name	evidence	keys	state
+EBOOT	0x00048BC0			FUN_L00_001f58e0	Control | Text	profile	matched
+EBOOT	0x0007ADBC			FUN_L05_00266710	%s: 	profile	matched
+RC1	0x00035848			FUN_L00_002da660	cleaned up moby:%d (oclass:%d)\n	graph,profile,string	matched
+RC1	0x000716B0	do_space_transition	gameplay/state/do_space_transition	FUN_00231ff0	unloaded sound bank %#010x\n	profile,string	proposed
+RC1	0x00085CA8			FUN_L00_001f58e0	%.02f | %d = %d | ----	profile,string	matched
+RC1	0x000F3370	copy_text_to_shared_buffer	ui/text/copy_text_to_shared_buffer	FUN_001ff658	(Message too long)	profile,string	proposed
+RC1	0x001076C8			FUN_L00_00244110	internal level sound mismatch\n	profile,string	matched
+RC1	0x00169B10			FUN_L00_00276bd0	Transition to level %d\n	profile,string	matched
+RC1	0x0016E650	fun_0021a328	assembly/textbin/fun_0021a328	FUN_0021a328	(null) | default	profile	proposed
+RC1	0x00179E40	draw_prompt_box	ui/menus/draw_prompt_box	FUN_00221b50	(error)	profile	proposed
+RC1	0x001971B8	draw_ties_2	rendering/draw_ties_2	FUN_00235990	tie draw | tie texs	profile,string	proposed
+RC1	0x0019C300	set_scrolling_status_message	ui/text/set_scrolling_status_message	FUN_00237e90	                  %s	profile,string	proposed
+RC1	0x001A5F08			FUN_L00_00241940	D1_CHCR=%X\nD1_TADR=%X	profile	matched
+RC1	0x001A6098			FUN_L04_002923b8	\n\nInvalid anim detected on pLD->anims[%d]->anim in walk_in | sizeof(w_2legData) = %d bytes \n	profile,string	matched
+RC1	0x001DC530			FUN_L07_0030ed30	Illegal Hero Detect path for moby 1059 instance #%d.\n	profile,string	matched
+RC1	0x001DD718			FUN_L07_0030f5f0	Initialization failed for moby 1059 instance #%d. Deleting.\	profile,string	matched
+RC1	0x00216D30			FUN_L07_0031d2e0	ERRORS, killing moby %d \n	profile,string	matched
+RC1	0x003BDFD0			FUN_L08_00305270	Deserter	profile,string	matched
+RC1	0x00426530			FUN_L14_002eaf88	*Error: Moby 610 (wind-control) with no cuboid index (wind p	profile,string	matched
+RC1	0x004F8310			FUN_L14_002fc0f0	Enemy Fighter (moby908) with no flyPath. UID: %d - RAR\n	profile,string	matched
+RC1	0x00520F00	fun_00216c48	ui/menus/fun_00216c48	FUN_00216c48	%d%s%03d	profile,string	proposed
+RC2	0x00096C60	memcard_get_data_size	storage/memory_card/memcard_get_data_size	FUN_0020ac88	ERROR: could not init memcard lib\n	profile	proposed
+RC2	0x0037D0E0			FUN_L05_00266320	 %d/3 | %s: 	profile	matched
+RC2	0x0038DA98			FUN_L05_00266710	%d:%02d:%02d | %s:   | %s:  0:00:00	profile,string	matched
+RC2	0x0056AF50			FUN_L05_00262f50	%s + %s + %d Flips	profile,string	matched
+RC2	0x00A30DD8	fun_002239e0	ui/menus/fun_002239e0	FUN_002239e0	%02d:%02d	string	proposed
+RC2	0x00B5F544			FUN_L00_00244110	internal level sound mismatch\n	profile,string	matched
+RC2	0x00BD2998	fun_0021a328	assembly/textbin/fun_0021a328	FUN_0021a328	(null) | default	profile	proposed
+RC2	0x00BE79F8	draw_prompt_box	ui/menus/draw_prompt_box	FUN_00221b50	(error)	profile	proposed
+RC2	0x00C1B8D4			FUN_L00_00241940	D1_CHCR=%X\nD1_TADR=%X	profile	matched
+RC2	0x010A5AB8	fun_00216c48	ui/menus/fun_00216c48	FUN_00216c48	%d%s%03d	profile,string	proposed
+RC3	0x00093BA0			FUN_L00_00208b60	333?	profile	matched
+RC3	0x001E492C			FUN_L00_00244110	internal level sound mismatch\n	profile,string	matched
+RC3	0x001F2504	memcard_get_data_size	storage/memory_card/memcard_get_data_size	FUN_0020ac88	ERROR: could not init memcard lib\n	profile	proposed
+RC3	0x002AFB0C			FUN_L00_00241940	D1_CHCR=%X\nD1_TADR=%X	profile	matched
+RC3	0x00317BE8			FUN_L05_00266710	%s: %d	profile	matched
+RC3	0x008B7440	fun_00216c48	ui/menus/fun_00216c48	FUN_00216c48	%d%s%03d	profile	proposed

@@ -77,18 +77,20 @@ bodies of different shapes, and the complete-program gate can be attempted.
 
 ## Step 4 — recover the function boundaries *(done)*
 
-**What.** Two independent methods, and only the addresses that both agree on:
-the prologue of the SDK, and the targets of the calls. The end of a function
-is the return that no path falls through from.
+**What.** Four independent signals — the prologue of the SDK, the targets of
+the calls, the entries of the control flow and the returns of the walk — and
+only the addresses that two of them agree on. The end of a function is the
+return that no path falls through from.
 
-**The result.** 20,939 functions, of which 17,445 end on a return:
+**The result.** 50,877 functions, of which 42,381 end on a return, and 2,901
+addresses that are still candidates:
 
 | Program | Functions | Ending on a return |
 |---|---|---|
-| `EBOOT` — the collection launcher | 1,290 | 1,070 |
-| `RC1` — Ratchet & Clank (2002) | 3,054 | 2,569 |
-| `RC2` — Going Commando | 9,884 | 8,192 |
-| `RC3` — Up Your Arsenal | 6,711 | 5,614 |
+| `EBOOT` — the collection launcher | 4,234 | 3,407 |
+| `RC1` — Ratchet & Clank (2002) | 9,243 | 7,576 |
+| `RC2` — Going Commando | 20,058 | 16,754 |
+| `RC3` — Up Your Arsenal | 17,342 | 14,644 |
 
 The names are not known yet: every function carries the placeholder of its
 address, and its state is `bounded`. See [CATALOGUE.md](CATALOGUE.md).

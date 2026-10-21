@@ -33,8 +33,15 @@ For `EBOOT.BIN`:
 | 3 | `PT_LOAD` | — | `0x224A80` | `0x0` | 0 | 0 |
 | 4 | `PT_LOAD` | `SPU_W`, `SPU_R`, `RSX_W`, `RSX_R` | `0x224A80` | `0x0` | 0 | 0 |
 | 5 | `PT_TLS` | — | `0x1FDD8C` | `0x20DD8C` | `0x114` | `0x114` |
-| 6 | `PT_SCE_DYNAMIC` | — | `0x1E6F80` | `0x1F6F80` | `0x28` | `0x28` |
-| 7 | `PT_SCE_SEGSYM` | — | `0x1E6FA8` | `0x1F6FA8` | `0x40` | `0x40` |
+| 6 | `0x60000001` | — | `0x1E6F80` | `0x1F6F80` | `0x28` | `0x28` |
+| 7 | `0x60000002` | — | `0x1E6FA8` | `0x1F6FA8` | `0x40` | `0x40` |
+
+The last two types are SCE-specific. The reader reports them by their raw
+value, because the two projects of this family that read PS3 executables do
+not agree on their names, and a name that is not certain is not used. What is
+certain is their extent and their role: they hold the relocation records and
+the segment symbols of the program, and they sit at the end of the text
+segment.
 
 Two things are worth noting:
 

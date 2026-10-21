@@ -32,9 +32,9 @@ from ppu_funcs import build_catalogue, function_extent  # noqa: E402
 # catalogue.
 PROGRAMS = (
     ("EBOOT", "eboot.elf", "collection launcher"),
-    ("RC1", "RC1.elf", "Tools of Destruction"),
-    ("RC2", "RC2.elf", "Going Commando"),
-    ("RC3", "RC3.elf", "Up Your Arsenal"),
+    ("RC1", "RC1.elf", "Ratchet & Clank (2002)"),
+    ("RC2", "RC2.elf", "Ratchet & Clank 2: Going Commando"),
+    ("RC3", "RC3.elf", "Ratchet & Clank 3: Up Your Arsenal"),
 )
 
 # The states a function can be in.

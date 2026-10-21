@@ -207,7 +207,7 @@ shapes of the container. Both were measured.
 
 | | The release | The standalone titles |
 |---|---|---|
-| Key revision | `0x001C` | `0x0019` (Tools of Destruction: `0x001C`) |
+| Key revision | `0x001C` | `0x0019` (the Tools of Destruction title: `0x001C`) |
 | Header block | `0x980` | `0xA80` |
 | Control information | `0x70` | `0x100` |
 | Offset of the encrypted metadata | `0x410` | `0x4A0` |

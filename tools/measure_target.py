@@ -34,10 +34,10 @@ from compiler_stamp import compiler_stamps, library_stamps, module_names  # noqa
 from payload_state import entropy, segments_of  # noqa: E402
 
 EXECUTABLES = (
-    ("EBOOT.BIN", "launcher"),
-    ("RC1.ppu.self", "Ratchet & Clank: Tools of Destruction"),
-    ("RC2.ppu.self", "Ratchet & Clank: Going Commando"),
-    ("RC3.ppu.self", "Ratchet & Clank: Up Your Arsenal"),
+    ("EBOOT.BIN", "collection launcher"),
+    ("RC1.ppu.self", "Ratchet & Clank (2002)"),
+    ("RC2.ppu.self", "Ratchet & Clank 2: Going Commando"),
+    ("RC3.ppu.self", "Ratchet & Clank 3: Up Your Arsenal"),
 )
 
 # The digital manual the disc carries, in PS3_GAME/PKGDIR.

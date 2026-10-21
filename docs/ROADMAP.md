@@ -86,7 +86,7 @@ is the return that no path falls through from.
 | Program | Functions | Ending on a return |
 |---|---|---|
 | `EBOOT` — the collection launcher | 1,290 | 1,077 |
-| `RC1` — Tools of Destruction | 3,054 | 2,591 |
+| `RC1` — Ratchet & Clank (2002) | 3,054 | 2,591 |
 | `RC2` — Going Commando | 9,884 | 8,383 |
 | `RC3` — Up Your Arsenal | 6,711 | 5,677 |
 

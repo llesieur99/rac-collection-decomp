@@ -113,7 +113,8 @@ times a name appears is the number of times the module is referenced, which
 is a rough measure of how much of it the program uses.
 
 `EBOOT.BIN` links 22 modules, `RC1.ppu.self` 26, `RC2.ppu.self` 28,
-`RC3.ppu.self` 28, and the standalone `Tools of Destruction` only 15.
+`RC3.ppu.self` 28, and the standalone `Ratchet and Clank Future: Tools of
+Destruction` only 15.
 
 ## The consequence
 

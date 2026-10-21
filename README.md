@@ -41,7 +41,7 @@ The release carries three titles plus a launcher:
 | File | Title | Size | PPU ELF |
 |---|---|---|---|
 | `USRDIR/EBOOT.BIN` | collection launcher | 2,258,408 | 2,255,976 |
-| `USRDIR/RC1.ppu.self` | Ratchet & Clank: Tools of Destruction | 9,767,328 | 9,764,896 |
+| `USRDIR/RC1.ppu.self` | Ratchet & Clank (2002) | 9,767,328 | 9,764,896 |
 | `USRDIR/RC2.ppu.self` | Ratchet & Clank: Going Commando | 21,072,432 | 21,070,000 |
 | `USRDIR/RC3.ppu.self` | Ratchet & Clank: Up Your Arsenal | 13,339,600 | 13,337,168 |
 

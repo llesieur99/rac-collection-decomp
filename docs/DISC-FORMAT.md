@@ -43,8 +43,8 @@ PS3_GAME/
 ```
 
 The three `rcN` directories hold the assets of one title each: `rc1` is
-Tools of Destruction, `rc2` is Going Commando, `rc3` is Up Your Arsenal.
-`EBOOT.BIN` is the collection launcher.
+Ratchet & Clank, the first game of the series, `rc2` is Going Commando, `rc3`
+is Up Your Arsenal. `EBOOT.BIN` is the collection launcher.
 
 ## The volume descriptor
 

@@ -1,5 +1,5 @@
 program	role	build_stamp	original_titles	engine_symbols	save_paths
+RC1	Ratchet & Clank (2002)	rt_udp 3.05.201103091800		rt_mempool_check_integrity_	
+RC2	Ratchet & Clank 2: Going Commando	rt_udp 3.05.201103091800	BESCES-51607RATCHET	rt_mempool_check_integrity_	/BESCES-51607RATCHET/* /BESCES-51607RATCHET/BESCES-50916RATCHET /BESCES-51607RATCHET/icon.sys /BESCES-51607RATCHET/save%d.bin /BESCES-51607RATCHET/static.ico
+RC3	Ratchet & Clank 3: Up Your Arsenal	rt_udp 3.05.201103091800	BESCES-50916RATCHET	rt_mempool_check_integrity_	/BESCES-50916RATCHET/* /BESCES-50916RATCHET/BESCES-50916RATCHET /BESCES-50916RATCHET/icon.sys /BESCES-50916RATCHET/net.bin /BESCES-50916RATCHET/save%d.bin /BESCES-50916RATCHET/static.ico
 EBOOT	collection launcher				
-RC1	Tools of Destruction	rt_udp 3.05.201103091800		rt_mempool_check_integrity_	
-RC2	Going Commando	rt_udp 3.05.201103091800	BESCES-51607RATCHET	rt_mempool_check_integrity_	/BESCES-51607RATCHET/* /BESCES-51607RATCHET/BESCES-50916RATCHET /BESCES-51607RATCHET/icon.sys /BESCES-51607RATCHET/save%d.bin /BESCES-51607RATCHET/static.ico
-RC3	Up Your Arsenal	rt_udp 3.05.201103091800	BESCES-50916RATCHET	rt_mempool_check_integrity_	/BESCES-50916RATCHET/* /BESCES-50916RATCHET/BESCES-50916RATCHET /BESCES-50916RATCHET/icon.sys /BESCES-50916RATCHET/net.bin /BESCES-50916RATCHET/save%d.bin /BESCES-50916RATCHET/static.ico

@@ -67,9 +67,9 @@ function belongs to exactly one:
 | Program | Role |
 |---|---|
 | `EBOOT.BIN` | the collection launcher |
-| `RC1.ppu.self` | Ratchet & Clank: Tools of Destruction |
-| `RC2.ppu.self` | Ratchet & Clank: Going Commando |
-| `RC3.ppu.self` | Ratchet & Clank: Up Your Arsenal |
+| `RC1.ppu.self` | Ratchet & Clank (2002) |
+| `RC2.ppu.self` | Ratchet & Clank 2: Going Commando |
+| `RC3.ppu.self` | Ratchet & Clank 3: Up Your Arsenal |
 
 The three titles share an engine, and the engine is where the interesting
 matching work is. A name recovered on one program is a **hypothesis** until the

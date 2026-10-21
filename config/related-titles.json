@@ -1,172 +1,81 @@
 {
-  "note": "The three titles of the collection also exist as separate PlayStation Network titles, packaged as retail .pkg files. Each is a second, independent reference for the same game: another build of the same program, with another content id and another NPDRM key revision. The executables are measured here in the clear, after the removal of the encryption of the container.",
+  "note": "The three titles of the collection also exist as separate PlayStation Network titles, packaged as retail .pkg files.  Each of them is a second, independent reference for the same game: another build of the same program, with another content id and another NPDRM key revision.  The names of the collection are not the numbers of the series: its rc1 is the first game of the series, not the sixth.",
   "titles": [
     {
-      "title": "Ratchet & Clank: Going Commando",
-      "title_id": "NPUA80644",
-      "package_size": 4158743936,
-      "package_sha256": null,
-      "content_id": "UP9000-NPUA80644_00-RC2REMASTER00100",
-      "platform": "PS3",
-      "revision": "0x8000",
-      "encryption": "AES-128-CTR",
-      "entries": 3862,
-      "executable": {
-        "path": "USRDIR/EBOOT.BIN",
-        "size": 21072608,
-        "sha256": "29f096569c96c5c468e7807d84f7598773bbfd37d4f8cb167a8aad157e231d7a",
-        "key_revision": "0x0019",
-        "header_size": "0xA80",
-        "elf_size": 21069872,
-        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
-        "modules": [
-          "crt1",
-          "libaudio_stub",
-          "libc",
-          "libcgb",
-          "libfios",
-          "libfs_stub",
-          "libgcm_cmd",
-          "libgcm_sys_stub",
-          "libhttp_stub",
-          "libio_stub",
-          "libl10n_stub",
-          "liblv2_stub",
-          "libm",
-          "libnet_stub",
-          "libnetctl_stub",
-          "librtc_stub",
-          "libspurs_stub",
-          "libssl_stub",
-          "libstdc++",
-          "libsysmodule_stub",
-          "libsysutil_avconf_ext_stub",
-          "libsysutil_game_stub",
-          "libsysutil_np_clans_stub",
-          "libsysutil_np_stub",
-          "libsysutil_np_trophy_stub",
-          "libsysutil_np_tus_stub",
-          "libsysutil_stub",
-          "libvoice_stub"
-        ],
-        "decrypted_elf_sha256": "77f8839ade62f57c78282395c6a51e2da58c9fb14238331e134ddf80fb59e40f",
-        "compiler_stamps": {
-          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
-          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
-        },
-        "libraries": [
-          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
-          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
-        ]
+      "content_id": "NPUA80643",
+      "collection_program": "RC1",
+      "param_sfo": {
+        "title": "Ratchet & Clank™",
+        "title_id": "NPUA80643",
+        "version": "01.00"
+      },
+      "trophy_sets": [
+        "NPWR02335_00"
+      ],
+      "ppu_elf": {
+        "elf_size": 7583080,
+        "entry": "0x10000"
       }
     },
     {
-      "title": "Ratchet & Clank: Up Your Arsenal",
-      "title_id": "NPUA80645",
-      "package_size": 4370489088,
-      "package_sha256": null,
-      "content_id": "UP9000-NPUA80645_00-RC3REMASTER00100",
-      "platform": "PS3",
-      "revision": "0x8000",
-      "encryption": "AES-128-CTR",
-      "entries": 7409,
-      "executable": {
-        "path": "USRDIR/EBOOT.BIN",
-        "size": 13339904,
-        "sha256": "60eb8ecc0cdb6e05e9428c00f687aee52a76cb8524961e202a88ddfa667bb8d3",
-        "key_revision": "0x0019",
-        "header_size": "0xA80",
-        "elf_size": 13337168,
-        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
-        "modules": [
-          "crt1",
-          "libaudio_stub",
-          "libc",
-          "libcgb",
-          "libfios",
-          "libfs_stub",
-          "libgcm_cmd",
-          "libgcm_sys_stub",
-          "libhttp_stub",
-          "libio_stub",
-          "libl10n_stub",
-          "liblv2_stub",
-          "libm",
-          "libnet_stub",
-          "libnetctl_stub",
-          "librtc_stub",
-          "libspurs_stub",
-          "libssl_stub",
-          "libstdc++",
-          "libsysmodule_stub",
-          "libsysutil_avconf_ext_stub",
-          "libsysutil_game_stub",
-          "libsysutil_np_clans_stub",
-          "libsysutil_np_stub",
-          "libsysutil_np_trophy_stub",
-          "libsysutil_np_tus_stub",
-          "libsysutil_stub",
-          "libvoice_stub"
-        ],
-        "decrypted_elf_sha256": "184bd694ffb01ba85377211604f955473452de4f80b21e401493f1d06c3f099b",
-        "compiler_stamps": {
-          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
-          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
-        },
-        "libraries": [
-          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
-          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
-        ]
+      "content_id": "NPUA80644",
+      "collection_program": "RC2",
+      "param_sfo": {
+        "title": "Ratchet & Clank™: Going Commando",
+        "title_id": "NPUA80644",
+        "version": "01.00"
+      },
+      "trophy_sets": [
+        "NPWR02346_00"
+      ],
+      "ppu_elf": {
+        "elf_size": 19691240,
+        "entry": "0x10000"
       }
     },
     {
-      "title": "Ratchet & Clank: Tools of Destruction",
-      "title_id": "NPUA80965",
-      "package_size": 16933424960,
-      "package_sha256": null,
-      "content_id": "UP9000-NPUA80965_00-TOOLSOFDESTRUCT1",
-      "platform": "PS3",
-      "revision": "0x8000",
-      "encryption": "AES-128-CTR",
-      "entries": 784,
-      "executable": {
-        "path": "USRDIR/EBOOT.BIN",
-        "size": 11161440,
-        "sha256": "d10633b0febc3b45af1199c7f579cd69d332ac7d5e04886e4e435e203937fc42",
-        "key_revision": "0x001C",
-        "header_size": "0xA80",
-        "elf_size": 11158696,
-        "compiler_stamp": "GCC: (GNU) 4.1.1 (CELL 4.1.2.7, RTTI, $Rev: 1826 $)",
-        "modules": [
-          "crt1",
-          "libaudio_stub",
-          "libc",
-          "libfs_stub",
-          "libgcm_cmd",
-          "libgcm_sys_stub",
-          "libio_stub",
-          "liblv2_stub",
-          "libm",
-          "libspurs_stub",
-          "libstdc++",
-          "libsync_stub",
-          "libsysmodule_stub",
-          "libsysutil_np_stub",
-          "libsysutil_stub"
-        ],
-        "decrypted_elf_sha256": "7eca538e030a0bcfc3d3b0011c63e50ddbbd70ca7d26f587f5a4cb5fc6aa3afe",
-        "compiler_stamps": {
-          "GCC: (GNU) 4.1.1 (CELL 4.1.2.7, RTTI, $Rev: 1830 $)": 8,
-          "GCC: (GNU) 4.1.1 (CELL 4.1.2.7, RTTI, $Rev: 1826 $)": 24
-        },
-        "libraries": [
-          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
-          "Dinkumware, Ltd. ALL RIGHTS RESERVED.",
-          "Lua 5.0.2",
-          "Lua 5.0.2 Copyright (C) 1994-2004 Tecgraf, PUC-Ri",
-          "deflate 1.2.3 Copyright 1995-2005 Jean-loup",
-          "inflate 1.2.3 Copyright 1995-2005 Mark Adle"
-        ]
+      "content_id": "NPUA80645",
+      "collection_program": "RC3",
+      "param_sfo": {
+        "title": "Ratchet & Clank™: Up Your Arsenal",
+        "title_id": "NPUA80645",
+        "version": "01.00"
+      },
+      "trophy_sets": [
+        "NPWR02347_00"
+      ],
+      "ppu_elf": {
+        "elf_size": 12264552,
+        "entry": "0x10000"
+      }
+    },
+    {
+      "content_id": "NPUA80646",
+      "collection_program": null,
+      "param_sfo": {
+        "title": "Ratchet: Deadlocked™",
+        "title_id": "NPUA80646",
+        "version": "01.01"
+      },
+      "trophy_sets": [
+        "NPWR02348_00"
+      ],
+      "ppu_elf": {
+        "elf_size": 9833448,
+        "entry": "0x10000"
+      }
+    },
+    {
+      "content_id": "NPUA80965",
+      "collection_program": null,
+      "param_sfo": {
+        "title": "Ratchet and Clank® Future: Tools of Destruction™",
+        "title_id": "NPUA80965",
+        "version": "01.00"
+      },
+      "ppu_elf": {
+        "elf_size": 8746720,
+        "entry": "0x10000"
       }
     }
   ]

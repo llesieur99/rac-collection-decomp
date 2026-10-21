@@ -8,7 +8,8 @@ what ties a program to a game, to a date and to a family.
         --out config/engine.tsv
 
 The tool reads the rebuilt PPU ELFs, so it needs the decryption to have been
-done first.  Only metadata is written: no game bytes.
+done first.  Every ``.elf`` of the directory is read, and the program is
+named after its file.  Only metadata is written: no game bytes.
 """
 
 from __future__ import annotations
@@ -22,14 +23,6 @@ from typing import Sequence
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ppu_elf import ElfError, PpuElf  # noqa: E402
-
-# The programs of the release, and the file the tool expects.
-PROGRAMS = (
-    ("EBOOT", "eboot.elf", "collection launcher"),
-    ("RC1", "RC1.elf", "Tools of Destruction"),
-    ("RC2", "RC2.elf", "Going Commando"),
-    ("RC3", "RC3.elf", "Up Your Arsenal"),
-)
 
 # The build stamp of the engine: a name, a version, a date.
 STAMP = re.compile(rb"rt_[a-z]+ [0-9][0-9.\- ]*[0-9]")
@@ -71,6 +64,17 @@ def identity(path: str) -> dict:
     }
 
 
+# The programs of the release, and the game each one is.  The names are not
+# the series numbers: the collection numbers its own titles rc1, rc2 and rc3,
+# and rc1 is the first game of the series, not the sixth.
+ROLES = {
+    "EBOOT": "collection launcher",
+    "RC1": "Ratchet & Clank (2002)",
+    "RC2": "Ratchet & Clank 2: Going Commando",
+    "RC3": "Ratchet & Clank 3: Up Your Arsenal",
+}
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         try:
@@ -84,17 +88,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     rows = []
-    for program, filename, role in PROGRAMS:
-        path = os.path.join(args.work, filename)
-        if not os.path.exists(path):
-            print(f"skipping {program}: {path} is missing")
+    for filename in sorted(os.listdir(args.work)):
+        if not filename.endswith(".elf"):
             continue
+        program = filename[:-4]
+        path = os.path.join(args.work, filename)
         try:
             found = identity(path)
         except (OSError, ElfError) as exc:
             print(f"skipping {program}: {exc}")
             continue
-        rows.append((program, role, found))
+        role = ROLES.get(program) or ROLES.get(program.upper()) or program
+        rows.append((program.upper() if program.upper() in ROLES else program,
+                     role, found))
 
     with open(args.out, "w", encoding="utf-8", newline="\n") as out:
         out.write("program\trole\tbuild_stamp\toriginal_titles\tengine_symbols\tsave_paths\n")

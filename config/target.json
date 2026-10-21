@@ -28,7 +28,7 @@
   "executables": [
     {
       "path": "PS3_GAME/USRDIR/EBOOT.BIN",
-      "role": "launcher",
+      "role": "collection launcher",
       "size": 2258408,
       "sha256": "0f0e1fa0a36a762fb91402566b7466d05329700b072461d82b2b1d6abd6981cd",
       "kind": "retail SELF (NPDRM), code and data still encrypted",
@@ -98,7 +98,7 @@
     },
     {
       "path": "PS3_GAME/USRDIR/RC1.ppu.self",
-      "role": "Ratchet & Clank: Tools of Destruction",
+      "role": "Ratchet & Clank (2002)",
       "size": 9767328,
       "sha256": "c084c3bd741477ac0ea77a9b770461373e94c196f9aa609e78a7f1ba778480b1",
       "kind": "retail SELF (NPDRM), code and data still encrypted",
@@ -172,7 +172,7 @@
     },
     {
       "path": "PS3_GAME/USRDIR/RC2.ppu.self",
-      "role": "Ratchet & Clank: Going Commando",
+      "role": "Ratchet & Clank 2: Going Commando",
       "size": 21072432,
       "sha256": "0913d021cb68a22da78a1d2e72ab1003243dc00ffae556b6d6b5e74d2616e392",
       "kind": "retail SELF (NPDRM), code and data still encrypted",
@@ -248,7 +248,7 @@
     },
     {
       "path": "PS3_GAME/USRDIR/RC3.ppu.self",
-      "role": "Ratchet & Clank: Up Your Arsenal",
+      "role": "Ratchet & Clank 3: Up Your Arsenal",
       "size": 13339600,
       "sha256": "697e98331a5a06892272cded3a2d85e0e4679d655f2d8cf0c811ac85dc89b09e",
       "kind": "retail SELF (NPDRM), code and data still encrypted",

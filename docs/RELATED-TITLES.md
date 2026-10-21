@@ -5,95 +5,70 @@ Network titles**, packaged as retail `.pkg` files. Each of them is a second,
 independent reference for the same game: another build of the same program,
 with another content id and another NPDRM key revision.
 
-This document records what was measured on them and why they matter.
+This document records what was measured on them, and the one thing that was
+got wrong before it was measured.
 
-## The three titles
+## The five titles
 
-| Title | Content id | Package | Entries | Executable | Key revision |
-|---|---|---|---|---|---|
-| Ratchet & Clank: Going Commando | `UP9000-NPUA80644_00-RC2REMASTER00100` | 4,158,743,936 | 3,862 | 21,072,608 | `0x0019` |
-| Ratchet & Clank: Up Your Arsenal | `UP9000-NPUA80645_00-RC3REMASTER00100` | 4,370,489,088 | 7,409 | 13,339,904 | `0x0019` |
-| Ratchet & Clank: Tools of Destruction | `UP9000-NPUA80965_00-TOOLSOFDESTRUCT1` | 16,933,424,960 | 784 | 11,161,440 | `0x001C` |
-
-All three are retail packages: revision `0x8000`, platform PS3, payload
-encrypted with AES-128-CTR.
-
-The machine-readable form is in
-[config/related-titles.json](../config/related-titles.json), and it is
-measured by [`tools/measure_package.py`](../tools/measure_package.py).
-
-## The match with the collection
-
-The trophy directories give the correspondence without ambiguity:
-
-| Title | Content id | Trophy set | In the collection |
+| Content id | Title | Trophy set | In the collection |
 |---|---|---|---|
-| Going Commando | `NPUA80644` | `NPWR02346` | `USRDIR/rc2` |
-| Up Your Arsenal | `NPUA80645` | `NPWR02347` | `USRDIR/rc3` |
-| Tools of Destruction | `NPUA80965` | — | `USRDIR/rc1` |
+| `UP9000-NPUA80643_00-RC1REMASTER00100` | **Ratchet & Clank™** (2002) | `NPWR02335` | **`rc1`** |
+| `UP9000-NPUA80644_00-RC2REMASTER00100` | Ratchet & Clank™: Going Commando | `NPWR02346` | **`rc2`** |
+| `UP9000-NPUA80645_00-RC3REMASTER00100` | Ratchet & Clank™: Up Your Arsenal | `NPWR02347` | **`rc3`** |
+| `UP9000-NPUA80646_00-RC4REMASTER00101` | Ratchet: Deadlocked™ | `NPWR02348` | — |
+| `UP9000-NPUA80965_00-TOOLSOFDESTRUCT1` | Ratchet and Clank® **Future: Tools of Destruction™** | — | — |
 
-The collection's `TROPDIR` holds `NPWR02335`, `NPWR02346` and `NPWR02347`,
-and the two standalone packages that carry trophies use `NPWR02346` and
-`NPWR02347`. The layout of the packages matches the layout of the
-collection: `USRDIR/rc2/ps3data/level0` … `levelN`, each with `audiowad` and
-`scene[0]` … `scene[5]`.
+The collection is the **trilogy**: the first game, Going Commando and Up Your
+Arsenal. Ratchet: Deadlocked and Tools of Destruction are **not** in it, and
+neither is A Crack in Time.
 
-## They are different builds
+**The names of the collection are not the numbers of the series.** The
+collection numbers its own titles `rc1`, `rc2` and `rc3`, and its `rc1` is the
+*first* game of the series, not the sixth. That was measured: the standalone
+title whose content id is `UP9000-NPUA80643_00-RC1REMASTER00100` carries the
+name `Ratchet & Clank™` in its `PARAM.SFO`, the trophy set `NPWR02335`, and an
+executable of exactly the size of the collection's `rc1` — 9,764,896 bytes.
 
-The executable of the collection and the executable of the standalone title
-are **not** the same bytes. The comparison is structural, because the code
-is encrypted on both sides — and now that the encryption is removed, it is
-exact:
+The trophy sets are the proof that needs no interpretation: the collection's
+`TROPDIR` holds `NPWR02335`, `NPWR02346` and `NPWR02347`, and those are
+exactly the three sets of the three remasters.
 
-| | Collection | Standalone |
+## What was measured
+
+| | The collection | The standalone title |
 |---|---|---|
-| `rc2` / Going Commando | text `0x12C7968`, data mem `0x1020F8` | text `0x12C76E8` (0x280 smaller) |
-| `rc3` / Up Your Arsenal | text `0xBB2EE8` | text `0xBB2468` (0xA80 smaller) |
-| Entry point | `0x12E38A8` | `0x12E38A8` — **the same** |
-| Compiler | 124 × SDK 400, 5 × SDK 360 | 124 × SDK 400, 5 × SDK 360 — **the same** |
+| `rc1` / `NPUA80643` | 9,764,896 bytes | 9,764,896 bytes |
+| `rc2` / `NPUA80644` | 21,070,000 | 21,069,872 |
+| `rc3` / `NPUA80645` | 13,337,168 | 13,337,168 |
 
-The entry point of the two Up Your Arsenal builds is identical while the
-text segment is 2,688 bytes shorter, and both were built with the same
-toolchain: they are two builds of the same program from the same source, made
-with different settings.
+The two builds of one game have the same size to the byte for `rc1` and
+`rc3`, and differ by 128 bytes for `rc2`. The *text* differs by 640 bytes in
+each case: the programs are the same source, built with slightly different
+settings.
 
-**Tools of Destruction is the exception, and the exception is telling.**
+The toolchain differs too, and it is the clearest sign of a different build:
 
-| | Collection `rc1` | Standalone `NPUA80965` |
-|---|---|---|
-| Size of the ELF | 9,764,896 | 11,158,696 |
-| Compiler | 124 × SDK 400, 5 × SDK 360 | 24 × **CELL 4.1.2.7** rev 1826, 8 × **CELL 4.1.2.7** rev 1830 |
-| Modules | 26 | 15 |
+| Program | Compiler |
+|---|---|
+| the collection's three titles | `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)` |
+| `NPUA80644`, `NPUA80645` | `GCC: (GNU) 4.1.1 (SDK270, $Rev: 3019 $)` |
+| `NPUA80965`, Tools of Destruction | `GCC: (GNU) 4.1.1 (CELL 4.1.2.7, RTTI, $Rev: 1826 $)` |
 
-The standalone Tools of Destruction was built with a **different toolchain
-altogether** — the `CELL` branch of the SDK, which is an earlier
-configuration — and it is 1.4 megabytes larger. The `rc1` of the collection
-is a **rebuild** of the game with the SDK 400, not the program that the
-standalone title carries.
+The collection's copies are the **newer** builds, and the standalone
+Going Commando and Up Your Arsenal are the older ones. The Tools of
+Destruction is a different game on an older toolchain still.
 
-That is worth knowing before anything is ported from one to the other: for
-Tools of Destruction, the two are not the same program, and the collection
-carries the newer one.
+## Why the correction matters
 
-The NPDRM key revision tells the order for the other two: `0x0019` for the
-standalone titles, `0x001C` for the collection, and `0x001C` again for the
-standalone Tools of Destruction. The standalone Going Commando and Up Your
-Arsenal are the **older** builds; the collection ships newer ones.
+The first reading of this project called the collection's `rc1` *Tools of
+Destruction*, from the numbering of the series. The measurement says otherwise:
+`rc1` is the first game, and Tools of Destruction is not in the collection at
+all.
 
-## Why they matter
-
-1. **A second reference for the same code.** When a name, a layout or a
-   behaviour is recovered from one build, the other build either confirms it
-   or shows that it moved. That is a cheap, strong form of evidence.
-2. **The content id convention.** The three ids show the shape of a PS3
-   content id: `UP9000-<title id>_00-<name>`, the name being sixteen or
-   seventeen characters with a four digit suffix. The release follows the
-   same convention, and its own content id is therefore very likely
-   `UP9000-BCUS98282_00-RATCHETCLANK0001`. That value is still a
-   **derivation**: the real one is encrypted in the NPDRM metadata.
-3. **The licence files.** Each package comes with a `.rap` file named after
-   its content id. The method is public and RPCS3 implements it; the keys
-   belong to the console.
+That is the rule of the project in one case: **a name is a hypothesis until
+the code proves it**, and the same goes for the *program* a name belongs to.
+Here the evidence was a `PARAM.SFO`, a trophy set and a file size, and it
+overturned a name that had been written down from memory.
 
 ## Reading them
 
@@ -107,10 +82,6 @@ python tools/self_decrypt.py "path/to/EBOOT.BIN" --keys work/self-keys.json --ra
 Hashing a whole package is optional: they run from 4 to 17 gigabytes, and
 reading one of them over a network takes hours. The hash of the executable
 is always computed, because that is the part the project measures.
-
-The three titles carry an NPDRM licence, so their decryption needs the
-licence file of the title — the `.rap` of the PlayStation Network. See
-[NPDRM.md](NPDRM.md).
 
 ## What is not published
 

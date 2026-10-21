@@ -54,24 +54,26 @@ Before handing over:
 
 ## The current wave
 
-**Wave 1 — the naming wave.** The bounding stage is done: 53,456 functions of
-the four programs are confirmed, and 3 addresses are still candidates.
-The naming evidence is measured: 3,029 functions touch a string, 246 carry an
-assert message that names their source file and line, and 14 names have
-already been proposed through the PlayStation 2 decompilation.
+**Wave 1 — the naming wave** is finished. The bounding stage is done: 53,456
+functions of the four programs are confirmed, 3 addresses are still
+candidates, and 319 have been measured and rejected. The naming evidence is
+measured: 3,029 functions touch a string, 246 carry an assert that names
+their source file and their line, 35,703 have a call graph, and 506 names
+are proposed.
 
-The wave is **seven lots, one writer each**, all of them in
-`work/lots/wave1-*/`:
+**Wave 2 — the frontier wave.** Eight lots, one writer each, all of them
+private to their directory under `work/lots/wave2-*/`:
 
-| Lot | Scope | Program |
-|---|---|---|
-| `wave1-lobby` | the names of the lobby code, which carries the asserts | `RC3` |
-| `wave1-engine` | the names of the functions the three games share | `RC1`, `RC2`, `RC3` |
-| `wave1-candidates` | the 3 addresses that are still candidates | all four |
-| `wave1-extents` | the function extents the walk truncates | all four |
-| `wave1-compiler` | the revision `3538` of the SDK, never published | — |
-| `wave1-toolchain` | the SDK 3.7.0 build, and the comparison of a byte | `EBOOT` |
-| `wave1-ps2join` | the exact join of the two versions, on the (file, line) triplet | all four |
+| Lot | Scope |
+|---|---|
+| `wave2-holes` | the functions the catalogue misses: the returns that fall in a hole |
+| `wave2-prologues` | the prologue forms the catalogue does not know |
+| `wave2-called` | the most called functions of the engine, which have no naming proof |
+| `wave2-verify` | the verification of the 506 proposed names, at scale |
+| `wave2-form` | the source form of the body the toolchain cannot reproduce |
+| `wave2-toolchain` | the patched compiler, and the way to the revision that was never published |
+| `wave2-launcher` | the names of the launcher's functions |
+| `wave2-names` | the names of the engine's own symbols, applied to the engine's groups |
 
 The lot directories are private to their writer, and only the root
 integrates. A lot that produces names writes them in `config/proposals.tsv`

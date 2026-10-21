@@ -1,8 +1,9 @@
 {
-  "note": "The three titles of the collection also exist as separate PlayStation Network titles, packaged as retail .pkg files. Each is a second, independent reference for the same game: another build of the same program, with another content id and another NPDRM key revision.",
+  "note": "The three titles of the collection also exist as separate PlayStation Network titles, packaged as retail .pkg files. Each is a second, independent reference for the same game: another build of the same program, with another content id and another NPDRM key revision. The executables are measured here in the clear, after the removal of the encryption of the container.",
   "titles": [
     {
       "title": "Ratchet & Clank: Going Commando",
+      "title_id": "NPUA80644",
       "package_size": 4158743936,
       "package_sha256": null,
       "content_id": "UP9000-NPUA80644_00-RC2REMASTER00100",
@@ -17,7 +18,7 @@
         "key_revision": "0x0019",
         "header_size": "0xA80",
         "elf_size": 21069872,
-        "compiler_stamp": null,
+        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
         "modules": [
           "crt1",
           "libaudio_stub",
@@ -47,11 +48,21 @@
           "libsysutil_np_tus_stub",
           "libsysutil_stub",
           "libvoice_stub"
+        ],
+        "decrypted_elf_sha256": "77f8839ade62f57c78282395c6a51e2da58c9fb14238331e134ddf80fb59e40f",
+        "compiler_stamps": {
+          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
+          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
+        },
+        "libraries": [
+          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
+          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
         ]
       }
     },
     {
       "title": "Ratchet & Clank: Up Your Arsenal",
+      "title_id": "NPUA80645",
       "package_size": 4370489088,
       "package_sha256": null,
       "content_id": "UP9000-NPUA80645_00-RC3REMASTER00100",
@@ -66,7 +77,7 @@
         "key_revision": "0x0019",
         "header_size": "0xA80",
         "elf_size": 13337168,
-        "compiler_stamp": null,
+        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
         "modules": [
           "crt1",
           "libaudio_stub",
@@ -96,11 +107,21 @@
           "libsysutil_np_tus_stub",
           "libsysutil_stub",
           "libvoice_stub"
+        ],
+        "decrypted_elf_sha256": "184bd694ffb01ba85377211604f955473452de4f80b21e401493f1d06c3f099b",
+        "compiler_stamps": {
+          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
+          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
+        },
+        "libraries": [
+          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
+          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
         ]
       }
     },
     {
       "title": "Ratchet & Clank: Tools of Destruction",
+      "title_id": "NPUA80965",
       "package_size": 16933424960,
       "package_sha256": null,
       "content_id": "UP9000-NPUA80965_00-TOOLSOFDESTRUCT1",
@@ -115,7 +136,7 @@
         "key_revision": "0x001C",
         "header_size": "0xA80",
         "elf_size": 11158696,
-        "compiler_stamp": null,
+        "compiler_stamp": "GCC: (GNU) 4.1.1 (CELL 4.1.2.7, RTTI, $Rev: 1826 $)",
         "modules": [
           "crt1",
           "libaudio_stub",
@@ -132,6 +153,19 @@
           "libsysmodule_stub",
           "libsysutil_np_stub",
           "libsysutil_stub"
+        ],
+        "decrypted_elf_sha256": "7eca538e030a0bcfc3d3b0011c63e50ddbbd70ca7d26f587f5a4cb5fc6aa3afe",
+        "compiler_stamps": {
+          "GCC: (GNU) 4.1.1 (CELL 4.1.2.7, RTTI, $Rev: 1830 $)": 8,
+          "GCC: (GNU) 4.1.1 (CELL 4.1.2.7, RTTI, $Rev: 1826 $)": 24
+        },
+        "libraries": [
+          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
+          "Dinkumware, Ltd. ALL RIGHTS RESERVED.",
+          "Lua 5.0.2",
+          "Lua 5.0.2 Copyright (C) 1994-2004 Tecgraf, PUC-Ri",
+          "deflate 1.2.3 Copyright 1995-2005 Jean-loup",
+          "inflate 1.2.3 Copyright 1995-2005 Mark Adle"
         ]
       }
     }

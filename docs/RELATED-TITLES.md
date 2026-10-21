@@ -42,22 +42,43 @@ collection: `USRDIR/rc2/ps3data/level0` … `levelN`, each with `audiowad` and
 
 The executable of the collection and the executable of the standalone title
 are **not** the same bytes. The comparison is structural, because the code
-is encrypted on both sides:
+is encrypted on both sides — and now that the encryption is removed, it is
+exact:
 
 | | Collection | Standalone |
 |---|---|---|
 | `rc2` / Going Commando | text `0x12C7968`, data mem `0x1020F8` | text `0x12C76E8` (0x280 smaller) |
 | `rc3` / Up Your Arsenal | text `0xBB2EE8` | text `0xBB2468` (0xA80 smaller) |
 | Entry point | `0x12E38A8` | `0x12E38A8` — **the same** |
+| Compiler | 124 × SDK 400, 5 × SDK 360 | 124 × SDK 400, 5 × SDK 360 — **the same** |
 
 The entry point of the two Up Your Arsenal builds is identical while the
-text segment is 2,688 bytes shorter. That is the signature of two builds of
-the same program from the same source, made with different settings.
+text segment is 2,688 bytes shorter, and both were built with the same
+toolchain: they are two builds of the same program from the same source, made
+with different settings.
 
-The NPDRM key revision tells the order: `0x0019` for the standalone titles,
-`0x001C` for the collection, and `0x001C` again for the standalone Tools of
-Destruction. The standalone Going Commando and Up Your Arsenal are the
-**older** builds; the collection ships newer ones.
+**Tools of Destruction is the exception, and the exception is telling.**
+
+| | Collection `rc1` | Standalone `NPUA80965` |
+|---|---|---|
+| Size of the ELF | 9,764,896 | 11,158,696 |
+| Compiler | 124 × SDK 400, 5 × SDK 360 | 24 × **CELL 4.1.2.7** rev 1826, 8 × **CELL 4.1.2.7** rev 1830 |
+| Modules | 26 | 15 |
+
+The standalone Tools of Destruction was built with a **different toolchain
+altogether** — the `CELL` branch of the SDK, which is an earlier
+configuration — and it is 1.4 megabytes larger. The `rc1` of the collection
+is a **rebuild** of the game with the SDK 400, not the program that the
+standalone title carries.
+
+That is worth knowing before anything is ported from one to the other: for
+Tools of Destruction, the two are not the same program, and the collection
+carries the newer one.
+
+The NPDRM key revision tells the order for the other two: `0x0019` for the
+standalone titles, `0x001C` for the collection, and `0x001C` again for the
+standalone Tools of Destruction. The standalone Going Commando and Up Your
+Arsenal are the **older** builds; the collection ships newer ones.
 
 ## Why they matter
 
@@ -80,11 +101,16 @@ Destruction. The standalone Going Commando and Up Your Arsenal are the
 python tools/pkg.py inspect "path/to/the.pkg"
 python tools/pkg.py list    "path/to/the.pkg" --pattern TROPDIR
 python tools/measure_package.py --pkg "path/to/the.pkg" --out work/pkg.json
+python tools/self_decrypt.py "path/to/EBOOT.BIN" --keys work/self-keys.json --rap work/<content id>.rap --out work/gc.elf
 ```
 
 Hashing a whole package is optional: they run from 4 to 17 gigabytes, and
 reading one of them over a network takes hours. The hash of the executable
 is always computed, because that is the part the project measures.
+
+The three titles carry an NPDRM licence, so their decryption needs the
+licence file of the title — the `.rap` of the PlayStation Network. See
+[NPDRM.md](NPDRM.md).
 
 ## What is not published
 

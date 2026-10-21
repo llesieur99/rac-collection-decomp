@@ -90,6 +90,29 @@ def read_vocab(path: str) -> list[dict]:
     return rows
 
 
+def read_engine(path: str) -> list[dict]:
+    """The names a lot of the shared engine read.
+
+    The table has a header: anchor, name, base, justification.  The anchor
+    is "PROGRAM:0xADDRESS".
+    """
+    rows = []
+    with open(path, encoding="utf-8") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            anchor = row.get("anchor", "")
+            program, _, address = anchor.partition(":")
+            if not address:
+                continue
+            rows.append({
+                "program": program,
+                "address": address,
+                "name": row.get("name", ""),
+                "base": row.get("base", ""),
+                "justification": row.get("justification", ""),
+            })
+    return rows
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         try:
@@ -104,6 +127,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--vocab", action="append", default=[],
                         help="a table of the names read from the sibling "
                              "projects")
+    parser.add_argument("--engine", action="append", default=[],
+                        help="a table of the names of the shared engine")
     parser.add_argument("--name-program", default="",
                         help="the program the names belong to")
     parser.add_argument("--out", required=True, help="the table to write")
@@ -154,6 +179,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "origin_detail": f"{project}: {detail}" if detail else project,
                 "evidence": row.get("evidence_strings", ""),
                 "state": row.get("state", "proposed") if name else "undecided",
+            })
+
+    for path in args.engine:
+        for row in read_engine(path):
+            base = row.get("base", "")
+            strength = {"message": "verified", "assert": "verified"}.get(base, "weak")
+            rows.append({
+                "program": row["program"],
+                "address": row["address"],
+                "name": row["name"],
+                "strength": strength,
+                "origin": "engine",
+                "origin_detail": base,
+                "evidence": row.get("justification", ""),
+                "state": "proposed" if row["name"] else "undecided",
             })
 
     rows.sort(key=lambda row: (row["program"], row["address"]))

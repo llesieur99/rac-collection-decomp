@@ -1,6 +1,7 @@
 program	address	name	strength	origin	origin_detail	evidence	state
 EBOOT	0x00048BC0		verified	ps2		Control | Text	matched
 EBOOT	0x0007ADBC		verified	ps2		%s: 	matched
+RC1	0x00013D14	sysutil_game_exit_callback	verified	engine	message	le message nomme la fonction : sysutil_gameexit_callback	proposed
 RC1	0x00035848		verified	ps2		cleaned up moby:%d (oclass:%d)\n	matched
 RC1	0x00035848	nanotech_ball	ambiguous	vocabulary	rac1: src/overlays/shared/gameplay/entities/nanotech_ball.c	cleaned up moby:%d (oclass:%d)\n	proposed
 RC1	0x000716B0	do_space_transition	verified	ps2	gameplay/state/do_space_transition	unloaded sound bank %#010x\n	proposed
@@ -13,12 +14,17 @@ RC1	0x001076C8	load_level_gameplay	ambiguous	vocabulary	rac1: src/overlays/share
 RC1	0x0010B290	MapUnavailableReport	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	No Map Available	proposed
 RC1	0x0010FAEC	SaveOutOfDateReport	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Out of date save!\n	proposed
 RC1	0x00110D70	UpdateMoby_4070	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	hey, shouldn't be in init!\n	proposed
+RC1	0x0011197C	ps3_eula_accept	verified	engine	message	la fonction affiche le message d'acceptation de la licence ('User agrees.  Time for the pain!')	proposed
+RC1	0x00111C80	ps3_memcard_saving_callback	verified	engine	message	le message nomme la fonction : PS3_SavingGame Callback in Idol/memcard.cpp	proposed
+RC1	0x00111CB0	ps3_memcard_loading_callback	verified	engine	message	le message nomme la fonction : LoadingCB_PS3 Callback	proposed
 RC1	0x00126290	BoltsSpawnNegativeCount	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	 Scale: 5	proposed
 RC1	0x00148A94	OnTertiaryVoiceStarted	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	named on RC2 at 0x00BA9170 (correspondence of the builds)	proposed
+RC1	0x00148A94	audio_music_handle_lost	verified	engine	message	la fonction signale la perte d'un handle de musique (wtf - music handle got lost)	proposed
 RC1	0x00164400	PathDrawInvalidIndex	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	tried to draw path -1 \n	proposed
 RC1	0x00169B10		verified	ps2		Transition to level %d\n	matched
 RC1	0x0016E650	fun_0021a328	verified	ps2	assembly/textbin/fun_0021a328	(null) | default	proposed
 RC1	0x0016E650	fun_0021a328	ambiguous	vocabulary	rac1: assembly/textbin/fun_0021a328	(null) | default	proposed
+RC1	0x00179A8C	draw_galactic_map	verified	engine	message	le message nomme la fonction : Galactic Map Draw	proposed
 RC1	0x00179E40	draw_prompt_box	verified	ps2	ui/menus/draw_prompt_box	(error)	proposed
 RC1	0x00179E40	draw_prompt_box	ambiguous	vocabulary	rac1: ui/menus/draw_prompt_box	(error)	proposed
 RC1	0x001971B8	draw_ties_2	verified	ps2	rendering/draw_ties_2	tie draw | tie texs	proposed
@@ -27,6 +33,7 @@ RC1	0x0019C300	set_scrolling_status_message	verified	ps2	ui/text/set_scrolling_s
 RC1	0x0019C300	set_scrolling_status_message	ambiguous	vocabulary	rac1: ui/text/set_scrolling_status_message	                  %s	proposed
 RC1	0x001A5F08		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
 RC1	0x001A5F08	OnDmacBusError	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	D1_CHCR=%X\nD1_TADR=%X | DMAC(15) - Bus Error\n | Why doesn't this work?	proposed
+RC1	0x001A5F08	spurs_dma_bus_error_handler	verified	engine	message	la fonction est la gestionnaire d'erreur de bus du DMA (DMAC(15) - Bus Error, D1_CHCR, D1_TADR) ; une paire verifiee de la decompilation PS2 porte le meme message	proposed
 RC1	0x001A6098		verified	ps2		\n\nInvalid anim detected on pLD->anims[%d]->anim in walk_in | sizeof(w_2legData) = %d bytes \n	matched
 RC1	0x001DC530		verified	ps2		Illegal Hero Detect path for moby 1059 instance #%d.\n	matched
 RC1	0x001DC530	taxi_platform	ambiguous	vocabulary	rac1: src/overlays/l07/gameplay/entities/taxi_platform.c	Illegal Hero Detect path for moby 1059 instance #%d.\n	proposed
@@ -42,6 +49,113 @@ RC1	0x004F8310		verified	ps2		Enemy Fighter (moby908) with no flyPath. UID: %d -
 RC1	0x004F8310	jet	ambiguous	vocabulary	rac1: src/overlays/l14/gameplay/entities/jet.c	Enemy Fighter (moby908) with no flyPath. UID: %d - RAR\n	proposed
 RC1	0x00520F00	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
 RC1	0x00520F00	fun_00216c48	ambiguous	vocabulary	rac1: ui/menus/fun_00216c48	%d%s%03d	proposed
+RC1	0x00528BE8	ps3_gpu_wait_flip	verified	engine	message	la fonction attend le flip de l'image (Wait Flip, Wait Done) ; elle recoit un appel direct	proposed
+RC1	0x00529530	ps3_gpu_wait_flip_b	verified	engine	message	la fonction attend le flip de l'image (Wait Flip, Wait Done) ; corps de 3992 octets, elle ne recoit pas d'appel direct	proposed
+RC1	0x0052C540	ps3_render_shutdown	verified	engine	message	la fonction arrete le systeme graphique et libere SPURS (Shutting down graphic system, cellSpursFinalize)	proposed
+RC1	0x0052C928	ps3_file_open_error	verified	engine	message	la fonction signale l'echec de l'ouverture d'un fichier (ERROR: open file %s)	proposed
+RC1	0x00531138	ps3_file_open_error_b	verified	engine	message	la fonction porte le meme message que ps3_file_open_error ; la difference de role n'est pas etablie	proposed
+RC1	0x00532F5C	ps3_gcm_set_tile_info	verified	engine	message	le message nomme la fonction : cellGcmSetTileInfo()	proposed
+RC1	0x005330E8	ps3_gcm_set_tile_info_b	verified	engine	message	la fonction porte le meme message que ps3_gcm_set_tile_info ; la difference de role n'est pas etablie	proposed
+RC1	0x005339B0	ps3_gcm_set_tile_info_c	verified	engine	message	la fonction porte le meme message que ps3_gcm_set_tile_info ; la difference de role n'est pas etablie	proposed
+RC1	0x00533B40	rt_mem_heap_startup	verified	engine	message	la fonction nomme le tas de demarrage (From Startup Heap, MainMem)	proposed
+RC1	0x00533DF4	ps3_video_get_display_mode	verified	engine	message	la fonction annonce le mode d'affichage (1080, 4:3, %dx%d)	proposed
+RC1	0x00533FD8	rt_mem_info_print	verified	engine	message	la fonction affiche l'etat de la memoire (mem_info - total, available)	proposed
+RC1	0x0053403C	rt_mem_get_heap	verified	engine	message	le message nomme la fonction : GetHeap	proposed
+RC1	0x005340B4	ps3_spu_init	verified	engine	message	le message signale l'echec de l'initialisation des unites SPU	proposed
+RC1	0x0053428C	ps3_network_init	verified	engine	message	le message nomme la fonction : CHWSystem_PS::InitNetwork	proposed
+RC1	0x00534370	mem_map_allocate	verified	engine	message	la fonction alloue et mappe la memoire (sys_mmapper_allocate_memory, map_memory)	proposed
+RC1	0x005344BC	mem_map_create	verified	engine	message	la fonction cree l'espace d'adressage et mappe les blocs physiques (sys_mmapper_allocate_address, allocate_memory, map_memory)	proposed
+RC1	0x005346E8	mem_map_destroy	verified	engine	message	la fonction libere les blocs physiques et demappe (sys_mmapper_free_memory, unmap_memory)	proposed
+RC1	0x00534840	mem_container_create	verified	engine	message	la fonction cree le conteneur de memoire (Creating a memory container, sys_memory_container_create() failed)	proposed
+RC1	0x005349F0	mem_container_destroy	verified	engine	message	la fonction detruit le conteneur de memoire (sys_memory_container_destroy)	proposed
+RC1	0x00534AAC	save_error_state_set	verified	engine	message	la fonction met l'etat d'erreur de la sauvegarde (Setting ErrorState to PS3_SAVETYPE_ERR_CORRUPTION)	proposed
+RC1	0x00534BD8	save_error_no_space	verified	engine	message	la fonction signale l'absence d'espace de sauvegarde (PS3_SAVETYPE_ERR_NO_SPACE Occurred)	proposed
+RC1	0x00534CA4	save_data_list_dump	verified	engine	message	la fonction vide le resultat de CellSaveDataListGet	proposed
+RC1	0x00534D70	save_stat_dump	verified	engine	message	la fonction vide la liste des statistiques de sauvegarde (CellSaveDataStatGet) et les champs PARAM.SFO	proposed
+RC1	0x005353F4	ps3_error_status_print	verified	engine	message	la fonction affiche un code de retour du SDK (%s failed: status = 0x%x)	proposed
+RC1	0x0053545C	save_system_autosave_multiplayer	verified	engine	message	le message nomme la fonction : SaveSystem_PS::AutoSaveMultiplayer()	proposed
+RC1	0x00535520	save_system_load_game_data	verified	engine	message	le message nomme la fonction : SavesSystem_PS::LoadGameData(void*)	proposed
+RC1	0x005355A4	save_system_save_game_data	verified	engine	message	le message nomme la fonction : SaveSystem_PS::SaveGameData(void*)	proposed
+RC1	0x0053589C	save_thread_check_existing	verified	engine	message	le message nomme la fonction : thr_SaveSystem_CheckExisting()	proposed
+RC1	0x00535918	save_thread_fatal_exit	verified	engine	message	le message nomme la fonction : SaveSystem_PS::Fatalexit_memcardThread()	proposed
+RC1	0x00535994	save_callback_on_save	verified	engine	message	le message nomme la fonction : GameSaveSystem::OnSave Callback	proposed
+RC1	0x00535A04	save_callback_on_saving	verified	engine	message	le message nomme la fonction : GameSaveSystem::OnSaving Callback	proposed
+RC1	0x00535A6C	save_callback_on_load	verified	engine	message	le message nomme la fonction : GameSaveSystem::OnLoad Callback	proposed
+RC1	0x00535AE4	save_callback_on_loading	verified	engine	message	le message nomme la fonction : GameSaveSystem::OnLoading Callback	proposed
+RC1	0x00535FE0	save_buffer_alloc	verified	engine	message	la fonction alloue le tampon de sauvegarde (Allocation failed for save game buffer!)	proposed
+RC1	0x00537F98	save_data_list_callback	verified	engine	message	le message nomme la fonction : GameSave_PS::LoadDataListCallback	proposed
+RC1	0x00538C1C	ps3_system_message_callback	verified	engine	message	le message nomme la fonction : CSystemMessage_PS::messageCallback	proposed
+RC1	0x00539430	ps3_pad_terminate	verified	engine	message	le message nomme la fonction : CPad_PS::Terminate	proposed
+RC1	0x0053A320	ps3_job_wws_light_tfrag_submit	verified	engine	message	la fonction soumet le travail de skinning des lumieres WWS (WwsLightTfrag)	proposed
+RC1	0x0053BE60	ps3_job_light_skin_submit	verified	engine	message	la fonction soumet les travaux de skinning des lumieres (JobLightShrubs, JobLightTfrag, JobLightTie, JobSkinLightMoby)	proposed
+RC1	0x0053C144	ps3_game_content_thread	verified	engine	message	la fonction lance le fil de contenu du jeu (GameContent, gamecontent thread create failed)	proposed
+RC1	0x0053C1B4	ps3_game_content_thread_b	verified	engine	message	meme message que ps3_game_content_thread (gamecontent thread create failed %d) ; variante	proposed
+RC1	0x0053C414	ps3_game_boot_check	verified	engine	message	le message nomme la fonction : cellGameBootCheck()	proposed
+RC1	0x0053C5A4	save_get_hdd_game_parameters	verified	engine	message	le message nomme la fonction : GetHddGameParameters()	proposed
+RC1	0x0053C6E4	save_create_game_data	verified	engine	message	la fonction cree les donnees de jeu (CreateGameData Error)	proposed
+RC1	0x0053C988	save_create_game_data_b	verified	engine	message	la fonction porte le meme message que save_create_game_data ; la difference de role entre les deux n'est pas etablie	proposed
+RC1	0x0053CB54	title_parameters_get	verified	engine	message	la fonction lit les parametres du titre (Title, Title ID, parental level, version) et les remplace	proposed
+RC1	0x0053CC8C	ps3_game_boot_check_b	verified	engine	message	la fonction porte le message de cellGameBootCheck() ; elle ne recoit pas d'appel direct	proposed
+RC1	0x0053D148	ps3_home_app_execute	verified	engine	message	la fonction execute l'application du dossier personnel (/app_home, Executing %s)	proposed
+RC1	0x0053D25C	ps3_hdd_device_open	verified	engine	message	la fonction ouvre le disque dur (/dev_hdd0) ; elle est appelee 7 fois	proposed
+RC1	0x0053D4C0	trophy_set_id	verified	engine	message	la fonction renvoie l'identifiant du jeu de trophies (NPWR02346) ; corps identique dans les trois jeux	proposed
+RC1	0x0053DB84	trophy_destroy_handle	verified	engine	message	la fonction detruit la poignee de trophie (sceNpTrophyDestroyHandle)	proposed
+RC1	0x0053DC14	trophy_destroy_context	verified	engine	message	la fonction detruit le contexte et la poignee de trophie (sceNpTrophyDestroyContext, sceNpTrophyDestroyHandle)	proposed
+RC1	0x0053DCE4	trophy_register_thread	verified	engine	message	le message nomme la fonction : thr_npTrophy_register	proposed
+RC1	0x0053DE24	trophy_get_game_info	verified	engine	message	le message nomme la fonction : sceNpTrophyGetGameInfo	proposed
+RC1	0x0053E0A0	trophy_unlock_request	verified	engine	message	la fonction traite la demande de deverrouillage (ERROR: Invalid NP trophyID unlock request) ; elle est appelee 7 fois	proposed
+RC1	0x0053E16C	trophy_unlock_request_check	verified	engine	message	la fonction verifie la demande de deverrouillage avant de la faire ; elle porte le meme message que trophy_unlock_request	proposed
+RC1	0x0053E28C	trophy_get_trophy_info	verified	engine	message	le message nomme la fonction : sceNpTrophyGetTrophyInfo	proposed
+RC1	0x0053E5B0	trophy_unlock	verified	engine	message	la fonction deverrouille un trophie (sceNpTrophyUnlockTrophy, 'Platinum Trophy (%d) was unlocked!')	proposed
+RC1	0x00544000	medius_connect_to_mls	verified	engine	message	le message nomme la fonction : CMediusManager::ConnectToMLS()	proposed
+RC1	0x00544148	medius_disconnect_from_mas	verified	engine	message	le message nomme la fonction : CMediusManager::DisconnectFromMAS()	proposed
+RC1	0x00544244	medius_begin_authentication	verified	engine	message	le message nomme la fonction : BeginAuthentication()	proposed
+RC1	0x005443AC	medius_request_session_mas	verified	engine	message	le message nomme la fonction : RequestSessionMAS()	proposed
+RC1	0x0054444C	medius_connect_to_mas	verified	engine	message	le message nomme la fonction : CMediusManager::ConnectToMAS()	proposed
+RC1	0x00544CE0	medius_resolve_host_ip	verified	engine	message	la fonction resout l'adresse du serveur (Resolving Host Server IP, ratchetps3.ps3.online.scea.com)	proposed
+RC1	0x00544D9C	medius_connect	verified	engine	message	le message nomme la fonction : CMediusManager::Connect()	proposed
+RC1	0x00544EB0	net_get_host_by_name_callback	verified	engine	message	le message nomme la fonction : NetGetHostByName() callback	proposed
+RC1	0x00544FC8	net_update_error	verified	engine	message	le message nomme la fonction : NetUpdateError	proposed
+RC1	0x00545088	net_mas_ticket_login_callback	verified	engine	message	le message nomme la fonction : MASTicketLoginCallback()	proposed
+RC1	0x0054512C	net_mas_anonymous_login_callback	verified	engine	message	le message nomme la fonction : MASAnonymousLoginCallback()	proposed
+RC1	0x005452BC	net_mas_session_end_callback	verified	engine	message	le message nomme la fonction : MASSEssionEndCallback	proposed
+RC1	0x005459BC	net_manager_shutdown	verified	engine	message	le message nomme la fonction : NetManager shutdown	proposed
+RC1	0x005469F0	np_lookup_create_transaction_ctx	verified	engine	message	le message nomme la fonction : sceNpLookupCreateTransactionCtx	proposed
+RC1	0x0054BE20	rt_mem_alloc_failed	verified	engine	message	la fonction signale l'echec d'une allocation de memoire (Failed to allocate %d bytes (%d available))	proposed
+RC1	0x0054C2B4	rt_mem_alloc_failed_b	verified	engine	message	meme message que rt_mem_alloc_failed ; variante	proposed
+RC1	0x0054C414	rt_im_seq_mem_set_pointer	verified	engine	assert	la fonction porte l'assert d'IMSeqMem.cpp:377 et le message "Tried to set memory pointer to an invalid address" ; le nom vient du message	proposed
+RC1	0x0054C474	rt_mem_pool_check_bounds	verified	engine	message	la fonction verifie les bornes du tampon de memoire (You have run past the end of the memory buffer)	proposed
+RC1	0x0054C500	rt_mem_pool_print_info	verified	engine	message	la fonction affiche les informations d'un pool (===MemPool %s Info ===)	proposed
+RC1	0x0054C58C	rt_mem_pool_temp	verified	engine	message	le message nomme le pool : TempPool	proposed
+RC1	0x0054D210	debug_break	weak	engine	role	la fonction est dans le voisinage immediat du gestionnaire d'assert et imprime Post Break ; nom de role, hypothese	proposed
+RC1	0x0054D2B0	debug_assert_log	weak	engine	role	la fonction est la cible des appels d'assert des trois jeux (mesure : la colonne handler de config/asserts.tsv pointe sur elle) ; elle imprime Post Break	proposed
+RC1	0x0054D71C	debug_assert_failed	weak	engine	role	la fonction est appelee par la fonction de collision qui signale un NaN (RC2 0x00039ED8) et imprime Post Break ; elle notifie l'echec d'un controle	proposed
+RC1	0x0054D854	debug_assert_failed_b	weak	engine	role	la fonction est appelee deux fois et imprime Post Break ; elle notifie l'echec d'un controle	proposed
+RC1	0x00551194	asset_load_level_file	verified	engine	message	la fonction charge le fichier de niveau (m_LoadLevelFileS %s)	proposed
+RC1	0x00551284	asset_load_game_file_b	verified	engine	message	le message nomme la fonction : m_LoadGameFileB %s	proposed
+RC1	0x005512B4	asset_load_scene_file	verified	engine	message	le message nomme la fonction : m_LoadSceneFile %s	proposed
+RC1	0x00551A64	string_to_utf8_convert	verified	engine	message	le message nomme la conversion : Failed to convert string into UTF8!	proposed
+RC1	0x0055210C	rt_mem_pool_video	verified	engine	message	le message nomme le pool : Video Memory	proposed
+RC1	0x00552148	rt_mem_pool_scratch	verified	engine	message	le message nomme le pool : Scratch Memory	proposed
+RC1	0x00552C10	debug_printf_escape	verified	engine	message	la fonction traite les commandes d'echappement du printf (Error, unrecognized escape command %i)	proposed
+RC1	0x005533F4	ps3_audio_init	verified	engine	message	le message nomme la fonction : cellAudioInit	proposed
+RC1	0x005536EC	audio_scream_init	verified	engine	message	le message nomme la fonction : Scream Initialization	proposed
+RC1	0x00556364	asset_load_async	verified	engine	message	le message nomme la fonction : LoadAssetAsync	proposed
+RC1	0x0060F798	rt_mem_pool_alloc	verified	engine	message	la fonction alloue dans un pool du moteur et signale l'absence de pool actif (Error, no active pool) ; sept fonctions distinctes portent ce message, le role precis de chacune n'est pas etabli	proposed
+RC1	0x0060F7F8	rt_mem_pool_alloc_b	verified	engine	message	meme message que rt_mem_pool_alloc (Error, no active pool) ; variante	proposed
+RC1	0x0060F850	rt_mem_pool_alloc_c	verified	engine	message	meme message que rt_mem_pool_alloc (Error, no active pool) ; variante	proposed
+RC1	0x0060F8B4	rt_mem_pool_alloc_d	verified	engine	message	meme message que rt_mem_pool_alloc (Error, no active pool) ; variante	proposed
+RC1	0x0060F91C	rt_mem_pool_alloc_e	verified	engine	message	meme message que rt_mem_pool_alloc (Error, no active pool) ; variante	proposed
+RC1	0x0060F974	rt_mem_pool_alloc_f	verified	engine	message	meme message que rt_mem_pool_alloc (Error, no active pool) ; variante	proposed
+RC1	0x0060F9D8	rt_mem_pool_alloc_g	verified	engine	message	meme message que rt_mem_pool_alloc (Error, no active pool) ; variante	proposed
+RC1	0x0060FA70	rt_mem_pool_stack_push_overflow	verified	engine	message	la fonction signale le depassement de la pile du pool (Error, out of Pool stack space)	proposed
+RC1	0x0060FAF4	rt_mem_pool_stack_pop_underflow	verified	engine	message	la fonction signale la popping au-dela du sommet de la pile du pool (Error, popping past top of pool stack)	proposed
+RC2	0x00010240	lang_get	verified	engine	message	la fonction renvoie la langue (english)	proposed
+RC2	0x000109F0	ps3_eula_accept_b	verified	engine	message	la fonction affiche le message d'acceptation de la licence ; variante RC2+RC3	proposed
+RC2	0x00011F84	file_read_binary	verified	engine	message	la fonction lit un fichier binaire (ReadBin: Cannot read file %s)	proposed
+RC2	0x00039ED8	rt_coll_line_check_nan	verified	engine	message	la fonction verifie qu'une ligne de collision ne contient pas de NaN (CollLine: Cannot have NaN) ; elle est appelee 491 fois en RC2	proposed
+RC2	0x00040BD8	rt_coll_mobys_sphere_check_nan	verified	engine	message	la fonction verifie qu'une sphere de collision ne contient pas de NaN (CollMobysSphere: Cannot have NaN)	proposed
+RC2	0x00043CC0	render_get_alpha_params	verified	engine	message	la fonction renvoie les parametres de l'alpha (alphaInvScale, alphaOffset)	proposed
 RC2	0x00096C60	memcard_get_data_size	verified	ps2	storage/memory_card/memcard_get_data_size	ERROR: could not init memcard lib\n	proposed
 RC2	0x000A3D60	UpdateMoby_794	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	M794 %d trigger %d = NO MOBY! (-1)\n | M794 %d trigger %d = moby %d (oClass %d)\n	proposed
 RC2	0x0018A51C	UpdateMoby_2198	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	WARNING - No Connector mobys in pad group. Pad UID: %d\n | WARNING - No Decoy mobys in pad group. Pad UID: %d\n | WARNING - No Spark mobys in pad group. Pad UID: %d\n | WARNING, CAN ONLY HAVE 20 CONNECTORS IN ONE ELECTROLYZER PUZZLE. Pad UID: %d\n | WARNING, CAN ONLY HAVE 20 DECOYS IN ONE ELECTROLYZER PUZZLE. Pad UID: %d\n | WARNING, CAN ONLY HAVE 20 SPARKS IN ONE ELECTROLYZER PUZZLE. Pad UID: %d\n	proposed
@@ -63,28 +177,121 @@ RC2	0x0088FC90	Moby4869EffectMobyMissing	ambiguous	vocabulary	rac2: docs/assert-
 RC2	0x00A30DD8	fun_002239e0	verified	ps2	ui/menus/fun_002239e0	%02d:%02d	proposed
 RC2	0x00A30DD8	fun_002239e0	ambiguous	vocabulary	rac1: ui/menus/fun_002239e0	%02d:%02d	proposed
 RC2	0x00A768B0	UpdateMoby_4887	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Gravity | Hhigh Spwn Timer | Low Spwn Timer | Texture 1 | Texture 2	proposed
+RC2	0x00B10650	sound_load_wavetable	verified	engine	message	la fonction charge la table d'ondes (host0:z:/i5/shock/wavetable1.bin)	proposed
+RC2	0x00B24098	render_hook_post_pre_draw	verified	engine	message	le message nomme le point d'accroche : PostPreDraw	proposed
+RC2	0x00B24174	render_hook_pre_draw	verified	engine	message	le message nomme le point d'accroche : PreDraw	proposed
+RC2	0x00B51348	ps3_iop_memory_report	verified	engine	message	la fonction affiche la memoire de l'IOP (iop mem = %d)	proposed
+RC2	0x00B59FA0	render_fix_armor_wrap_mode	verified	engine	message	la fonction corrige le mode d'enroulement de l'armure (Fixing up Armor wrap mode)	proposed
+RC2	0x00B5A57C	render_fix_wrench_wrap_mode	verified	engine	message	la fonction corrige le mode d'enroulement de la cle (Fixing up wrench wrap mode)	proposed
 RC2	0x00B5AA00	FixupMobyClassHeader	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	moby %d is in an old format\n	proposed
 RC2	0x00B5F544		verified	ps2		internal level sound mismatch\n	matched
 RC2	0x00B5F544	load_level_gameplay	ambiguous	vocabulary	rac1: src/overlays/shared/world/loaders/load_level_gameplay.c	internal level sound mismatch\n	proposed
+RC2	0x00B601B0	asset_scene_path_get	verified	engine	message	la fonction construit le chemin du fichier de scene (host0:built/scenes/level%d/scene%d/scene.dat)	proposed
+RC2	0x00B7B068	mb_process_damage_check	verified	engine	message	la fonction verifie les parametres de MB_ProcessDamage	proposed
+RC2	0x00B80C04	mb_check_coll_pill	verified	engine	message	le message nomme la fonction : MB_CheckCollPill	proposed
+RC2	0x00BA62C0	ps3_cdrom_path_get	verified	engine	message	la fonction renvoie la racine du disque (cdrom0:)	proposed
 RC2	0x00BA7F80	UpdateDialogVoiceManager	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	load stopped\n | load stopped callback\n | wating to stop\n	proposed
 RC2	0x00BA8934	StopFileLoad	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	music_StopLoad\n	proposed
+RC2	0x00BA8934	music_stop_load	verified	engine	message	le message nomme la fonction : music_StopLoad	proposed
+RC2	0x00BA89E0	sound_load_misaligned	verified	engine	message	la fonction refuse un tampon non aligne (Tried to load to misaligned buffer)	proposed
 RC2	0x00BA9170	OnTertiaryVoiceStarted	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	wtf - music handle got lost\n	proposed
 RC2	0x00BC8690	PathSetWtoDistNullPath	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Error in Path_setWtoDist! NULL path!\n	proposed
+RC2	0x00BC8690	path_set_wto_dist	verified	engine	message	le message nomme la fonction : Path_setWtoDist	proposed
 RC2	0x00BD2998	fun_0021a328	verified	ps2	assembly/textbin/fun_0021a328	(null) | default	proposed
 RC2	0x00BD2998	fun_0021a328	ambiguous	vocabulary	rac1: assembly/textbin/fun_0021a328	(null) | default	proposed
 RC2	0x00BE79F8	draw_prompt_box	verified	ps2	ui/menus/draw_prompt_box	(error)	proposed
 RC2	0x00BE79F8	draw_prompt_box	ambiguous	vocabulary	rac1: ui/menus/draw_prompt_box	(error)	proposed
+RC2	0x00BF1940	audio_reverb_free	verified	engine	message	la fonction libere la reverberation ('*AFTER REVERB* level %d - free sram %d (max block %d)')	proposed
 RC2	0x00C1B8D4		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
 RC2	0x00C1B8D4	OnDmacBusError	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	D1_CHCR=%X\nD1_TADR=%X | DMAC(15) - Bus Error\n | Why doesn't this work?	proposed
+RC2	0x00C1F58C	thermanator_coll_data_alloc	verified	engine	message	la fonction alloue les donnees de collision de l'eau du Thermanator (Tried to allocate too much collision data for Thermanator water/ice)	proposed
+RC2	0x00C202C0	thermanator_spawn	verified	engine	message	le message nomme la fonction : thermanating %d (%d): balls:%d needed:%d	proposed
 RC2	0x00D37648	UpdateMoby_2168	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Moby Deleted\n\n	proposed
+RC2	0x00D517F0	camera_command_name_get	verified	engine	message	la fonction renvoie le nom des commandes de camera (set dist, set active, set dir)	proposed
 RC2	0x00E81430	UpdateMoby_3114	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	chunk we want:%d\n | didn't get golden bolt, warping to gliderpad \n | got glider, glider pad and gold bolt exist\n | wrench upgraded\n	proposed
 RC2	0x00ECD4D0	TrooperAnimSwitchReport	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Trooper %d switching to anim %d.\n	proposed
 RC2	0x00F3BBB8	UpdateMoby_3640	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Warning: LevelChunkCutsceneTrigger %d has no Cutscene moby\n | Warning: LevelChunkCutsceneTrigger %d has no Segment\n | Warning: LevelChunkCutsceneTrigger %d has no chunkId\n	proposed
 RC2	0x00F51CD0	UpdateMoby_3726	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	GLOBAL_RC2FLAG_L6_ROBOTS_FACTORY_CUTSCN_1       --  FLAG SET\n	proposed
 RC2	0x00F68400	MobyReplacementPathMissing	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	moby %d wanted replacement at time %d but had no replacement path and no jump path!\n	proposed
 RC2	0x00F69C78	MobyShouldNotBeShooting	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Moby %d should not be shooting!\n	proposed
+RC2	0x0101E9F8	moby_glow_rotator_update	verified	engine	message	la fonction met a jour le moby du rotateur lumineux (Glow rotator moby UID: %d is in moby mode)	proposed
+RC2	0x0109D45C	sound_bank_unload	verified	engine	message	la fonction decharge une banque de sons (unloaded sound bank %#010x)	proposed
 RC2	0x010A5AB8	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
 RC2	0x010A5AB8	fun_00216c48	ambiguous	vocabulary	rac1: ui/menus/fun_00216c48	%d%s%03d	proposed
+RC2	0x010A5AB8	fun_00216c48	weak	engine	ps2	la fonction est une paire verifiee de la decompilation PS2 (FUN_00216c48, source ui/menus/fun_00216c48) ; le nom de la source ne dit rien du role	proposed
+RC2	0x010A81E0	bink_free_movie_textures_a	verified	engine	message	la fonction libere les textures d'un film (Freeing textures from movie)	proposed
+RC2	0x010A8320	bink_free_movie_textures_b	verified	engine	message	la fonction libere les textures d'un film (Freeing textures from movie) ; elle est appelee 2 fois en RC3	proposed
+RC2	0x010A8468	bink_open_file	verified	engine	message	le message nomme la fonction : Bink_PS::OpenBinkFile	proposed
+RC2	0x010A899C	bink_get_localized_filename	verified	engine	message	la fonction construit le nom localise du film (/%s/ps3data/movies/mpeg%d_j.bik)	proposed
+RC2	0x010A8BD0	bink_open_by_id	verified	engine	message	la fonction ouvre un film par son identifiant (Opening Bink File with id = %d)	proposed
+RC2	0x010A8D18	bink_open_localized	verified	engine	message	le message nomme la fonction : OpenBinkLocalized	proposed
+RC2	0x010A962C	bink_free_movie_textures_c	verified	engine	message	la fonction libere les textures d'un film (Freeing textures from movie)	proposed
+RC2	0x010A9888	render_wait_timeout	verified	engine	message	la fonction attend la fin du rendu (Renderer timed out)	proposed
+RC2	0x010AAF84	ps3_video_detect_mode	verified	engine	message	la fonction detecte le mode video du systeme (Resolution ID reported by the system, 1080 was the mode reported)	proposed
+RC2	0x010ACEE8	render_pass_name_get	verified	engine	message	la fonction renvoie le nom des passes de rendu (ForwardPass, ShadowPass, DepthPass)	proposed
+RC2	0x010B0764	ps3_video_configure	verified	engine	message	la fonction configure la sortie video (cellVideoOutConfigure() failed)	proposed
+RC2	0x010B0948	ps3_video_configure_b	verified	engine	message	la fonction porte le meme message que ps3_video_configure ; la difference de role n'est pas etablie	proposed
+RC2	0x010B1978	render_push_buffer_check	verified	engine	message	la fonction verifie les push buffers du rendu (ERROR: PushBuffer[%d] is over by %d bytes)	proposed
+RC2	0x010B5578	render_target_name_get	verified	engine	message	la fonction renvoie le nom des cibles de rendu (ViewToShadow0, Stereo3dParams)	proposed
+RC2	0x010B9AA8	ps3_get_language	verified	engine	message	la fonction lit la langue du systeme (cellSysutilGetSystemParamInt() get language error)	proposed
+RC2	0x010BA19C	spurs_shutdown	verified	engine	message	la fonction arrete SPURS (Shutting down SPURS, cellSpursFinalized FAILED)	proposed
+RC2	0x010BB278	save_system_load_game_data_b	verified	engine	message	le message nomme la fonction : SavesSystem_PS::LoadGameData(void*) ; variante RC2+RC3	proposed
+RC2	0x010BB3C0	save_system_autosave_game_data	verified	engine	message	le message nomme la fonction : SaveSystem_PS::AutoSaveGameData(void*) ; variante RC2+RC3	proposed
+RC2	0x010BB594	save_system_save_game_data_b	verified	engine	message	le message nomme la fonction : SaveSystem_PS::SaveGameData(void*) ; variante RC2+RC3	proposed
+RC2	0x010BB99C	save_thread_check_existing_b	verified	engine	message	le message nomme la fonction : thr_SaveSystem_CheckExisting() ; variante RC2+RC3	proposed
+RC2	0x010BBA90	save_system_load_game_data_c	verified	engine	message	le message nomme la fonction : SavesSystem_PS::LoadGameData(void*) ; variante RC2+RC3, elle recoit un appel direct	proposed
+RC2	0x010BBD64	save_title_get	verified	engine	message	la fonction renvoie le titre de la sauvegarde (Ratchet & Clank Save)	proposed
+RC2	0x010BBDEC	save_data_dir_name_get	verified	engine	message	la fonction construit le nom du dossier de sauvegarde (_RC1_SAVEDATA)	proposed
+RC2	0x010BC038	ps3_file_open	verified	engine	message	la fonction signale l'echec de l'ouverture d'un fichier (file %s open error)	proposed
+RC2	0x010BC2A8	save_data_name_get	weak	engine	role	la fonction construit un nom a partir d'un format (%s %d) ; sa place dans le groupe des fonctions de sauvegarde est mesuree par ses voisins	proposed
+RC2	0x010BC5C4	save_thread_autosave_a	verified	engine	message	le message nomme la fonction : thr_SaveSystem_AutoSave() ; variante RC2+RC3	proposed
+RC2	0x010BC634	save_thread_autosave_no_space	verified	engine	message	la fonction signale l'absence d'espace (NO SPACE!) pendant la sauvegarde automatique	proposed
+RC2	0x010BC90C	save_thread_autosave_multiplayer_data	verified	engine	message	le message nomme la fonction : thr_SaveSystem_AutoSave() ; elle traite les donnees du mode multijoueur (RC3_MP_DATA)	proposed
+RC2	0x010BCAFC	save_thread_autosave_b	verified	engine	message	le message nomme la fonction : thr_SaveSystem_AutoSave() ; variante RC2+RC3	proposed
+RC2	0x010BCE54	save_thread_autoload_multiplayer	verified	engine	message	le message nomme la fonction : GameSave_PS::thr_SaveSystem_AutoLoadMP()	proposed
+RC2	0x010BD0B4	save_thread_autoload_other	verified	engine	message	le message nomme la fonction : GameSave_PS::thr_SaveSystem_AutoLoadOther()	proposed
+RC2	0x010BD3DC	save_thread_load	verified	engine	message	le message nomme la fonction : GameSave_PS::thr_SaveSystem_Load()	proposed
+RC2	0x010BD7B4	save_thread_check_existing_c	verified	engine	message	le message nomme la fonction : GameSave_PS::thr_SaveSystem_CheckExisting() ; variante RC2+RC3	proposed
+RC2	0x010BDA10	save_data_list_callback_icon	verified	engine	message	la fonction choisit l'icone de la sauvegarde (Choosing icon to save as ICON0.png) ; elle est la variante RC2+RC3 de save_data_list_callback	proposed
+RC2	0x010BE04C	save_data_status_list_callback	verified	engine	message	le message nomme la fonction : SaveDataStatusListCallback	proposed
+RC2	0x010BE634	save_file_op_list_callback	verified	engine	message	le message nomme la fonction : SaveFileOpListCallback	proposed
+RC2	0x010BE96C	save_data_list_callback_start	verified	engine	message	le message nomme la fonction : GameSave_PS::LoadDataListCallback() ; elle est la variante RC2+RC3 de save_data_list_callback	proposed
+RC2	0x010BECA4	save_data_status_load_callback	verified	engine	message	le message nomme la fonction : cb_data_status_load()	proposed
+RC2	0x010BF230	save_file_operation_load_callback	verified	engine	message	le message nomme la fonction : cb_file_operation_load()	proposed
+RC2	0x010BF43C	save_count_existing	verified	engine	message	la fonction compte les sauvegardes existantes (Found %d existing saves...)	proposed
+RC2	0x010BFDFC	ps3_pad_init	verified	engine	message	le message nomme la fonction : CPad_PS::Initialize	proposed
+RC2	0x010C09C8	ps3_pad_get_info	verified	engine	message	le message nomme la fonction : cellPadGetInfo()	proposed
+RC2	0x010C2284	ps3_light_setup_wait_tfrag	verified	engine	assert	la fonction porte l'assert de LightSetup.cpp:492 et le nom de travail TfragWait ; le nom vient du role	proposed
+RC2	0x010C4330	net_initialize	verified	engine	message	le message nomme la fonction : CNetwork_PS::Initialize()	proposed
+RC2	0x010C4E70	trophy_check_disk_space	verified	engine	message	le message nomme la fonction de verification d'espace disque des trophees (error with stupid check disk space trophy function that is broken)	proposed
+RC2	0x010CA3D4	medius_init	verified	engine	message	le message nomme la fonction : CMediusManager::Init()	proposed
+RC2	0x010CA758	medius_disconnect_b	verified	engine	message	la fonction porte le meme message que medius_disconnect ; la difference de role n'est pas etablie	proposed
+RC2	0x010CAFE0	medius_disconnect	verified	engine	message	le message nomme la fonction : CMediusManager::Disconnect()	proposed
+RC2	0x010CBDA4	net_check_health	verified	engine	message	le message nomme la fonction : CheckNetworkHealth()	proposed
+RC2	0x010CBE38	np_offline	verified	engine	message	la fonction signale le mode hors ligne (+++ NP offline)	proposed
+RC2	0x010CC080	np_basic_friend_event_callback	verified	engine	message	la fonction est le gestionnaire BASIC des amis ('Friend event detected', '<BASIC CB> event')	proposed
+RC2	0x010CC398	np_login_canceled	verified	engine	message	la fonction signale l'annulation de la connexion NP (NP Login canceled!!!)	proposed
+RC2	0x010CC520	np_ticket_callback	verified	engine	message	le message nomme la fonction : NPTicketCallback()	proposed
+RC2	0x010CC61C	np_init	verified	engine	message	le message nomme la fonction : sceNpInit()	proposed
+RC2	0x010CC760	net_manager_shutdown_b	verified	engine	message	la fonction arrete NetManager et ferme la boite de dialogue reseau (NetStartDialog CB registration failed)	proposed
+RC2	0x010CD774	np_get_ticket	verified	engine	message	le message nomme la fonction : GetNpTicket()	proposed
+RC2	0x010CDB74	np_basic_set_presence	verified	engine	message	le message nomme la fonction : sceNpBasicSetPresenceDetails2()	proposed
+RC2	0x010CDCD8	np_basic_add_friend	verified	engine	message	le message nomme la fonction : sceNpBasicAddFriend()	proposed
+RC2	0x010CDE40	np_basic_add_friend_by_id	verified	engine	message	le message nomme la fonction : sceNpBasicAddFriend(npID)	proposed
+RC2	0x010CDEA0	np_basic_add_block_list_entry	verified	engine	message	le message nomme la fonction : sceNpBasicAddBlockListEntry()	proposed
+RC2	0x010CDF9C	voice_init	verified	engine	message	le message nomme la fonction : CellVoiceInit	proposed
+RC2	0x010CE0A8	voice_get_port_info_loopback	verified	engine	message	le message nomme la fonction : cellVoiceGetPortInfo (LoopbackOutputPort)	proposed
+RC2	0x010CE3B4	voice_get_port_info_network	verified	engine	message	le message nomme la fonction : cellVoiceGetPortInfo (incoming network port)	proposed
+RC2	0x010CE720	voice_create_ports	verified	engine	message	la fonction cree les ports vocaux (cellVoiceCreatePort failed)	proposed
+RC2	0x010CEAA4	voice_delete_ports	verified	engine	message	la fonction detruit les ports vocaux (cellVoiceDeletePort failed)	proposed
+RC2	0x010CEC68	voice_chat_receive	verified	engine	message	la fonction recoit les donnees du chat vocal (CNetVoiceChat - Received data overruns incoming buffer)	proposed
+RC2	0x010D9CE4	file_open_failed	verified	engine	message	la fonction signale l'impossibilite d'ouvrir un fichier (Unable to open file!) ; elle est appelee 29 et 42 fois	proposed
+RC2	0x010DA390	ui_load_dialog_messages	verified	engine	message	le message nomme la fonction : LoadDialogMessages()	proposed
+RC2	0x010DA4C0	auth_authenticate	verified	engine	message	la fonction lance l'authentification (GameAuthenticate, Authenticating ...)	proposed
+RC2	0x010DA58C	auth_drm_key	verified	engine	message	la fonction lit la cle DRM (DRM key is %x%x%x%x)	proposed
+RC2	0x010DA8C8	ps3_activate_sku	verified	engine	message	la fonction active le SKU du jeu (Activating SKU %s, Registered SKU %d)	proposed
+RC2	0x010DB770	audio_set_speaker_mode	verified	engine	message	la fonction regle le mode des haut-parleurs (Speaker mode: Stereo)	proposed
+RC2	0x010DE1C0	render_load_random_normals	verified	engine	message	la fonction charge la carte des normales aleatoires (Common/Textures/randomNormals.ps3)	proposed
 RC3	0x00093BA0		verified	ps2		333?	matched
 RC3	0x00093BA0	hero_idle_sequence	ambiguous	vocabulary	rac1: src/overlays/shared/gameplay/hero/hero_idle_sequence.c	333?	proposed
 RC3	0x001BC2BC	hud_print_moby_debug_info	medium	assert		hud mobys | hud moby pvars | hud moby pvar list	proposed

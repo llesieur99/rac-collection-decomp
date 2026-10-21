@@ -101,6 +101,16 @@ The result is in [config/evidence.tsv](../config/evidence.tsv): **3,020
 functions** of the release touch a string, out of the 51,463 functions of the
 catalogue.
 
+Two details of the reading, both measured:
+
+* **the text of a string starts at the address the code points at**, not at
+  the beginning of the printable run. The game keeps its messages in records
+  whose first byte is a tag, and returning the whole run put a stray
+  character at the head of 16 % of the references.
+* **the tables are written by the csv module**, and not by a join: a message
+  of the game may hold a double quote, and a table that a quote breaks is a
+  table that lies — 2,042 lines were read as 760.
+
 | Program | Functions with a string |
 |---|---|
 | `EBOOT` — the collection launcher | 500 |

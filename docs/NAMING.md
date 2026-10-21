@@ -90,7 +90,7 @@ the bytes.
 | functions that carry an assert | 246 — the source file and the line, measured |
 | functions with a call graph | 35,703 — the role of the function, measured |
 | functions with a proved name | 6 — and those six carry the placeholder of their address, because nothing yet says what they do |
-| functions with a proposed name | **299** — 236 from the assert messages, 63 from the sibling projects |
+| functions with a proposed name | **506** — 236 from the assert messages, 207 from the shared engine, 63 from the sibling projects |
 
 The six proved bodies are the first ones, and they are deliberately the
 simplest: a frame, a call, an epilogue. They prove the toolchain and the
@@ -187,6 +187,27 @@ Every proposal is checked: the literal it rests on is searched in the
 measured code of the function and of its callers, and a proposal whose
 literal is nowhere near the function is a proposal that contradicts the
 code. None does.
+
+**The shared engine.** The three games share 6,498 groups of functions —
+4,669 of them in the three games at once — and a name found there is worth
+three times one found in a single game. The lot named **207** of them, and
+the strength of each name is *calculated, never declared*: 60 names are
+strong (a rare message shared by the three games, or an assert in the three),
+83 are medium, 58 are hypotheses.
+
+The confirmation across the games is measured: **142 of the 201 names (70,6 %)
+are confirmed by the same message in at least two games**, and 59 (29,4 %) in
+the three. The yield is the check: 56 % of the groups whose message is read
+by the three games are named, 72 % of the groups whose message is read by
+two, and **0 %** of the groups whose message is read by one — a name that
+rests on a message only one game prints is not proposed.
+
+The control of the method: 2,30 % of two functions drawn at random from the
+lot share a message, against 0,18 % for the whole release.
+
+The eight most called functions of the engine have **no naming proof at
+all**, up to 2,295 callers each. Naming them will take the disassembly or
+the vocabulary of the sibling projects, and it is the first extension.
 
 **The vocabulary of the sibling projects.** The six projects that
 decompiled the PlayStation 2 games of the series carry **16,049 distinct

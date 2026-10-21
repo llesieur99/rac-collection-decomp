@@ -122,14 +122,21 @@ class StringTable:
         self.starts = [start for start, _end, _text in self.runs]
 
     def at(self, address: int) -> str | None:
-        """The string that holds an address, if any."""
+        """The string that starts at an address, if any.
+
+        The text is the one that **starts at the address**, not the one of the
+        whole printable run: the game keeps its messages in records whose
+        first byte is a tag, and the code points at the text that follows
+        the tag.  Returning the whole run put a stray character at the head
+        of 16 % of the references.
+        """
         index = bisect.bisect_right(self.starts, address) - 1
         if index < 0:
             return None
         start, end, text = self.runs[index]
-        if start <= address < end:
-            return text
-        return None
+        if not start <= address < end:
+            return None
+        return text[address - start:]
 
     def __len__(self) -> int:
         return len(self.runs)
@@ -291,10 +298,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             rows.append((args.program or "",
                          f"0x{function:08X}" if function is not None else "",
                          f"0x{string_address:08X}", escape(text)))
-    with open(args.out, "w", encoding="utf-8", newline="\n") as out:
-        out.write("program\tfunction\tstring_address\tstring\n")
-        for row in rows:
-            out.write("\t".join(row) + "\n")
+    # The csv module, and not a join: a message of the game may hold a
+    # double quote, and a table that a quote breaks is a table that lies.
+    with open(args.out, "w", encoding="utf-8", newline="") as out:
+        writer = csv.writer(out, delimiter="\t", lineterminator="\n")
+        writer.writerow(["program", "function", "string_address", "string"])
+        writer.writerows(rows)
     print(f"wrote {args.out}: {len(rows)} references")
     return 0
 

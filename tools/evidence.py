@@ -171,11 +171,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                      (graph or found)["calls"], (graph or found)["callers"],
                      found["data"]))
 
-    with open(args.out, "w", encoding="utf-8", newline="\n") as out:
-        out.write("program\taddress\tsize\tname\tstate\tstrings\tasserts"
-                  "\tcalls\tcallers\tdata\n")
-        for row in rows:
-            out.write("\t".join(str(value) for value in row) + "\n")
+    with open(args.out, "w", encoding="utf-8", newline="") as out:
+        # The csv module, and not a join: a message of the game may hold a
+        # double quote, and a table that a quote breaks is a table that lies.
+        writer = csv.writer(out, delimiter="\t", lineterminator="\n")
+        writer.writerow(["program", "address", "size", "name", "state",
+                         "strings", "asserts", "calls", "callers", "data"])
+        writer.writerows(rows)
 
     total = len(catalogue)
     print(f"{total} functions in the catalogue")

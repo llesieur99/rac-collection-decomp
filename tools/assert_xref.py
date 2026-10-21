@@ -629,12 +629,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     rows.sort(key=lambda row: (row[0], row[1], row[3]))
 
     mode = "a" if args.append else "w"
-    with open(args.out, mode, encoding="utf-8", newline="\n") as out:
+    with open(args.out, mode, encoding="utf-8", newline="") as out:
+        # The csv module, and not a join: a message of the game may hold a
+        # double quote, and a table that a quote breaks is a table that lies.
+        writer = csv.writer(out, delimiter="\t", lineterminator="\n")
         if not args.append:
-            out.write("program\taddress\tmessage\tsite\tfile\tline\t"
-                      "expression\thandler\tin_catalogue\n")
-        for row in rows:
-            out.write("\t".join(row) + "\n")
+            writer.writerow(["program", "address", "message", "site", "file",
+                             "line", "expression", "handler", "in_catalogue"])
+        writer.writerows(rows)
     print(f"wrote {args.out}: {len(rows)} asserts "
           f"({sum(1 for row in rows if row[1])} in a function)")
     return 0

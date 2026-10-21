@@ -1,28 +1,37 @@
 {
-  "status": "not qualified",
-  "note": "The compiler that produced the retail programs has not been identified yet. The stamp search and the toolchain qualification are steps 1 and 2 of docs/ROADMAP.md. Nothing here may be used as evidence until the toolchain gate passes.",
-  "target": {
-    "programs": [
-      "PS3_GAME/USRDIR/EBOOT.BIN",
-      "PS3_GAME/USRDIR/RC1.ppu.self",
-      "PS3_GAME/USRDIR/RC2.ppu.self",
-      "PS3_GAME/USRDIR/RC3.ppu.self"
-    ],
-    "pinned_hash_source": "config/target.json"
+  "status": "provisionally qualified",
+  "note": "One body is byte-exact and four functions of the SDK's runtime are byte-identical in the retail executable. A build is not qualified on one function: the profile below is provisional until it holds on more.",
+  "compiler": {
+    "identification": "ppu-lv2-gcc (GCC) 4.1.1 (SDK270, $Rev: 3019 $)",
+    "family": "SCEI PPC GCC 4.1.1",
+    "target": "ppu-lv2",
+    "sources": "the Cell OS Lv-2 toolchain sources, as published by sagemono/ps3gcc at the tag toolchain-src-2.7.0-GCC411",
+    "built_in": "a Debian jessie container with a period-appropriate host compiler",
+    "built_at": "D:/RAC-COLLECTION/toolchain",
+    "note": "The toolchain is a tool. It is built by the contributor and is never published; the repository holds the written result only. The stamp of the build is the SDK 2.7.0 one, while the retail program was built with the SDK 4.0: the compiler is the same GCC 4.1.1, and the difference of the stamp does not show in the code."
   },
-  "compiler_stamps": {
-    "source": "the .comment section of the rebuilt ELF, and any identification string the binary carries",
-    "tool": "tools/ppu_elf.py",
-    "stamps": [],
-    "identified": null
+  "flags": {
+    "qualified": ["-O1", "-mno-save-restore-tocbase"],
+    "note": "The flag that matters is -mno-save-restore-tocbase: without it the compiler keeps a TOC base and a back chain in the frame, which the retail code does not have. At -O2 the same function differs by two instructions: the compiler restores the stack pointer before the link register, where the retail code does the opposite."
   },
-  "candidate_toolchains": [
+  "bodies": [
     {
-      "name": "ps3gcc",
-      "note": "the open source PowerPC toolchain for the PS3, used by the homebrew scene; the qualification is the work, not the build",
-      "qualification": "not started"
+      "program": "EBOOT",
+      "function": "module_init",
+      "address": "0x00010200",
+      "bytes": 44,
+      "result": "byte-exact",
+      "source": "src/text/module_init.c"
     }
   ],
-  "options": null,
-  "regression_control": null
+  "runtime_cross_check": {
+    "note": "The retail executable links libgcc statically, so the SDK's own runtime is in the text. Every function of our build of the runtime that is found in the retail text is byte-identical to the one the game runs. No source has to be written for that check.",
+    "tool": "tools/compare_libgcc.py",
+    "found": [
+      {"name": "_Unwind_DeleteException", "bytes": 80, "address": "0x000C9734"},
+      {"name": "fde_unencoded_compare", "bytes": 40, "address": "0x000CCBAC"},
+      {"name": "read_sleb128", "bytes": 88, "address": "0x000C96A4"},
+      {"name": "read_uleb128", "bytes": 56, "address": "0x000C966C"}
+    ]
+  }
 }

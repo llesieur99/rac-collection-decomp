@@ -27,9 +27,9 @@ compiled body.
 | Find the related titles | **done** — `NPUA80644`, `NPUA80645`, `NPUA80965` |
 | Validate the rebuild | **done** — against the published hash of the sibling project |
 | Recover the function boundaries | **done** — 20,939 functions, 17,728 ending on a return |
-| Qualify a PPU compiler | **not started** |
+| Qualify a PPU compiler | **provisionally** — one body byte-exact, four runtime functions identical |
 | Name the functions | **not started** |
-| Author the first body | **not started** |
+| Author the first body | **done, once** — `src/text/module_init.c`, 44 bytes, byte-exact |
 
 ## What is measured
 
@@ -66,6 +66,10 @@ compiled body.
   prologue of the SDK and the targets of the calls — agree on 20,939
   functions, of which 17,728 end on a return that no path falls through
   from. The names are not known yet. See [CATALOGUE.md](CATALOGUE.md).
+* **The toolchain is built and provisionally qualified**: the profile
+  `-O1 -mno-save-restore-tocbase` reproduces one body exactly — the first
+  function of the launcher — and four functions of the SDK's runtime are
+  byte-identical in the retail executable. See [TOOLCHAIN.md](TOOLCHAIN.md).
 * The disc carries the digital manual of the collection as a retail package,
   `NPUO70220`. It is not an update of the game.
 * The three titles also exist as separate PlayStation Network titles, with

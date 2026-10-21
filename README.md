@@ -31,6 +31,7 @@ The pinned release has been read and measured:
 | Symbol table | **none** — the retail executables are stripped |
 | Compiler | **GCC 4.1.1, as the PlayStation 3 SDK 400 ships it** — 124 objects, plus 5 from the SDK 360 |
 | Functions bounded | 20,939 — 17,728 of them ending on a return |
+| First matching body | `src/text/module_init.c`, 44 bytes at `0x10200` — byte-exact |
 | Disc files | 13,149 — 12,429,594,706 bytes |
 | Working copy files | 13,148 — 12,161,159,250 bytes |
 | Identical on both sides | 10 (the metadata); the other 13,138 are encrypted on the disc |
@@ -89,6 +90,7 @@ was built with the SDK 270, so the two trees are not interchangeable.
 | [docs/PPU-EXECUTABLE.md](docs/PPU-EXECUTABLE.md) | the PPU ELF, its segments and its section table |
 | [docs/DISC-PROVENANCE.md](docs/DISC-PROVENANCE.md) | where the working copy comes from, and how it is verified |
 | [docs/NPDRM.md](docs/NPDRM.md) | the encryption of the executables, and how it is removed |
+| [docs/TOOLCHAIN.md](docs/TOOLCHAIN.md) | the compiler, its build, and the flags that reproduce the bytes |
 | [docs/COMPILER.md](docs/COMPILER.md) | the compiler: the stamp, the link map, and the way forward |
 | [docs/RELATED-TITLES.md](docs/RELATED-TITLES.md) | the three titles as separate PlayStation Network titles |
 
@@ -152,6 +154,21 @@ The keys are read from a **local** file, which is not committed: they are
 the SCE constants of the revision of the container, published by the RPCS3
 sources, and the repository publishes no key material of any kind. See
 [docs/NPDRM.md](docs/NPDRM.md).
+
+The toolchain, and the comparison of a body with the retail bytes:
+
+```sh
+python tools/try_body.py work/gate/module_init.c 0x10200 \
+    --elf work/decrypted/eboot.elf \
+    --symbol sub_147B0=0x147B0 --symbol sub_14820=0x14820
+python tools/compare_libgcc.py --elf work/decrypted/eboot.elf
+```
+
+`try_body.py` compiles a candidate in the container that holds the compiler,
+links it at the retail address with the callees at their retail addresses,
+and compares every byte. `compare_libgcc.py` checks the SDK's own runtime
+against the retail text, which qualifies the compiler without writing a
+single line of source. See [docs/TOOLCHAIN.md](docs/TOOLCHAIN.md).
 
 The manifest pins the bytes of a tree, and checks one against it. The two
 manifests of the release are in `config/`:

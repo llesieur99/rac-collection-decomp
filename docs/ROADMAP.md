@@ -47,23 +47,26 @@ same size of the rebuilt ELF.
 *IN THE CLEAR* for the four executables of the release, and the stamps are
 readable.
 
-## Step 3 — build and qualify a PPU toolchain
+## Step 3 — build and qualify a PPU toolchain *(provisionally qualified)*
 
 **Why.** The toolchain gate asks which options reproduce the code generation
 of the compiler. The compiler is now named — GCC 4.1.1 as the SDK 400 ships
-it — so the question is precise, and step 4 has given the bodies of known
-extent to measure against.
+it — so the question is precise, and step 4 gave the bodies of known extent
+to measure against.
 
-**What.** Build a candidate toolchain — the `ps3gcc` sources are the obvious
-one, as the homebrew scene's PowerPC cross compiler for the PS3 — and
-qualify it against the retail bytes, the way the PS2 projects qualified
-theirs. The qualification is the work, not the build.
+**What was done.** The Cell OS Lv-2 toolchain was built from its own
+sources, in a container, with a host compiler old enough to build GCC 4.1.1.
+The profile `-O1 -mno-save-restore-tocbase` reproduces one body exactly, and
+four functions of the SDK's runtime are byte-identical in the retail
+executable.
 
-**Needs.** The `ps3gcc` sources, a host that can build them, and the bodies
-of step 4.
+**What is left.** One function is not a qualification. The profile has to
+hold on more of the game's own code.
 
-**Done when.** The toolchain gate passes: one complete body of known extent
-is reproduced byte for byte.
+**Needs.** More bodies — step 6.
+
+**Done when.** The toolchain gate passes: the profile holds on a set of
+bodies, and the complete-program gate can be attempted.
 
 ## Step 4 — recover the function boundaries *(done)*
 
@@ -94,15 +97,25 @@ strings, and from the callers.
 
 **Done when.** The first functions carry names with recorded evidence.
 
-## Step 6 — author the first body
+## Step 6 — author the first body *(done, once)*
 
 **What.** Write the function in C/C++ in the form the original author would
 have used, and take it through the gates.
 
-**Needs.** Steps 3 to 5.
+**The result.** `src/text/module_init.c` — the first function of the
+launcher, at `0x10200`, 44 bytes. The candidate is compiled with the
+qualified profile, linked at the measured address with the callees at their
+retail addresses, and compared with the retail bytes: **match**.
 
-**Done when.** One function passes the body gate, the placement gate, the
-complete-program gate and the semantics gate, and moves to `src/`.
+```sh
+python tools/try_body.py work/gate/module_init.c 0x10200 \
+    --elf work/decrypted/eboot.elf \
+    --symbol sub_147B0=0x147B0 --symbol sub_14820=0x14820
+match: 44 bytes at 0x10200
+```
+
+**Needs.** Nothing more for this one. The next bodies need the same work:
+read the code, write the source, compile, compare.
 
 ## Step 7 — the catalogue writer
 

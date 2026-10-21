@@ -19,9 +19,11 @@ linker script and the produced bytes, on a body of known extent.
 stamp is identified, and the same profile reproduces at least one complete
 body of known extent, byte for byte.
 
-**Until this gate passes, no byte-exact claim is possible.** The PPU compiler
-of the sibling projects is not the Sony compiler; it is not qualified here
-either.
+**Where it stands.** The compiler is identified — **SCEI PPC GCC 4.1.1**, the
+SDK 4.0 revision — and the profile `-O1 -mno-save-restore-tocbase` already
+reproduces one body exactly and four functions of the SDK's runtime
+byte for byte. That is a *provisional* qualification: one function is not
+enough. See [TOOLCHAIN.md](TOOLCHAIN.md).
 
 ## The body gate
 

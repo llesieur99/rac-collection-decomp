@@ -26,8 +26,8 @@ compiled body.
 | Measure the link map | **done** — the SCE modules, per executable |
 | Find the related titles | **done** — `NPUA80644`, `NPUA80645`, `NPUA80965` |
 | Validate the rebuild | **done** — against the published hash of the sibling project |
+| Recover the function boundaries | **done** — 20,939 functions, 17,728 ending on a return |
 | Qualify a PPU compiler | **not started** |
-| Recover the function boundaries | **not started** |
 | Name the functions | **not started** |
 | Author the first body | **not started** |
 
@@ -62,6 +62,10 @@ compiled body.
   covered by any encrypted section, so it stays encrypted in the container.
   The names of the modules are in the clear, and they are what the project
   uses.
+* **The boundaries of the functions are known**: two independent methods — the
+  prologue of the SDK and the targets of the calls — agree on 20,939
+  functions, of which 17,728 end on a return that no path falls through
+  from. The names are not known yet. See [CATALOGUE.md](CATALOGUE.md).
 * The disc carries the digital manual of the collection as a retail package,
   `NPUO70220`. It is not an update of the game.
 * The three titles also exist as separate PlayStation Network titles, with

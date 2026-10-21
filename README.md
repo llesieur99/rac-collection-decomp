@@ -30,6 +30,7 @@ The pinned release has been read and measured:
 | PPU ELF | ELF64, big-endian, `EM_PPC`, 8 program headers, 35 section headers |
 | Symbol table | **none** — the retail executables are stripped |
 | Compiler | **GCC 4.1.1, as the PlayStation 3 SDK 400 ships it** — 124 objects, plus 5 from the SDK 360 |
+| Functions bounded | 20,939 — 17,728 of them ending on a return |
 | Disc files | 13,149 — 12,429,594,706 bytes |
 | Working copy files | 13,148 — 12,161,159,250 bytes |
 | Identical on both sides | 10 (the metadata); the other 13,138 are encrypted on the disc |
@@ -125,10 +126,21 @@ python tools/compiler_stamp.py "path/to/USRDIR/EBOOT.BIN" --modules
 python tools/rebuild_check.py  "path/to/USRDIR/EBOOT.BIN"
 ```
 
+The boundaries of the functions, and the code that backs them:
+
+```sh
+python tools/ppu_funcs.py catalogue work/eboot.elf --confirmed
+python tools/ppu_funcs.py bounds   work/eboot.elf --confirmed
+python tools/build_catalogue.py --work work/decrypted --out config/functions.tsv
+python tools/ppu_disasm.py work/eboot.elf --start 0x10200 --count 11
+```
+
 `payload_state.py` measures the entropy of the segments and says whether the
 program is readable. `compiler_stamp.py` looks for the identification of the
 compiler and reports the link map. `rebuild_check.py` checks that a rebuilt
-ELF is aligned, without reading the code.
+ELF is aligned, without reading the code. `ppu_funcs.py` recovers the
+boundaries, `ppu_disasm.py` prints the code so that a boundary can be
+checked by reading it.
 
 The removal of the encryption of the executables:
 

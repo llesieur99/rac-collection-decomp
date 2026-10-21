@@ -49,35 +49,41 @@ readable.
 
 ## Step 3 — build and qualify a PPU toolchain
 
-**Why.** The toolchain gate asks which compiler produced the retail bytes.
-The compiler is now named — GCC 4.1.1 as the SDK 400 ships it — so the
-question is precise: which options reproduce the code generation of that
-compiler.
+**Why.** The toolchain gate asks which options reproduce the code generation
+of the compiler. The compiler is now named — GCC 4.1.1 as the SDK 400 ships
+it — so the question is precise, and step 4 has given the bodies of known
+extent to measure against.
 
 **What.** Build a candidate toolchain — the `ps3gcc` sources are the obvious
 one, as the homebrew scene's PowerPC cross compiler for the PS3 — and
 qualify it against the retail bytes, the way the PS2 projects qualified
 theirs. The qualification is the work, not the build.
 
-**Needs.** The `ps3gcc` sources, a host that can build them, a body of known
-extent to measure against — so step 4 has to be done at least partly first.
+**Needs.** The `ps3gcc` sources, a host that can build them, and the bodies
+of step 4.
 
 **Done when.** The toolchain gate passes: one complete body of known extent
 is reproduced byte for byte.
 
-## Step 4 — recover the first boundaries
+## Step 4 — recover the function boundaries *(done)*
 
-**Why.** Everything else needs a body of known extent.
+**What.** Two independent methods, and only the addresses that both agree on:
+the prologue of the SDK, and the targets of the calls. The end of a function
+is the return that no path falls through from.
 
-**What.** Work on the launcher, the smallest of the four programs. Recover
-the start of a function from a `bl` that targets it, and the end from its
-return, following the rules of [CATALOGUE.md](CATALOGUE.md).
+**The result.** 20,939 functions, of which 17,728 end on a return:
 
-**Needs.** A disassembler for the PPU (Ghidra has a PowerPC backend; the
-machine has one), and the decrypted program of step 2.
+| Program | Functions | Ending on a return |
+|---|---|---|
+| `EBOOT` — the collection launcher | 1,290 | 1,077 |
+| `RC1` — Tools of Destruction | 3,054 | 2,591 |
+| `RC2` — Going Commando | 9,884 | 8,383 |
+| `RC3` — Up Your Arsenal | 6,711 | 5,677 |
 
-**Done when.** `config/functions.tsv` holds a first set of bounded functions,
-each with its evidence.
+The names are not known yet: every function carries the placeholder of its
+address, and its state is `bounded`. See [CATALOGUE.md](CATALOGUE.md).
+
+**Needs.** Nothing more.
 
 ## Step 5 — name the first functions
 

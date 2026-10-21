@@ -164,11 +164,11 @@ one holds 21,054 functions and owns 20,017 of the returns: **78 %**.
 
 | Program | Functions | Of which the end is a return | Candidates |
 |---|---|---|---|
-| `EBOOT` — the collection launcher | 4,433 | 3,787 | 132 |
-| `RC1` — Ratchet & Clank (2002) | 9,824 | 8,122 | 609 |
-| `RC2` — Going Commando | 21,054 | 19,056 | 886 |
-| `RC3` — Up Your Arsenal | 18,145 | 16,250 | 688 |
-| **Total** | **53,456** | **47,215** | **3** |
+| `EBOOT` — the collection launcher | 4,433 | 3,888 | 0 |
+| `RC1` — Ratchet & Clank (2002) | 9,824 | 8,805 | 1 |
+| `RC2` — Going Commando | 21,054 | 20,002 | 1 |
+| `RC3` — Up Your Arsenal | 18,145 | 17,019 | 1 |
+| **Total** | **53,456** | **49,714** | **3** |
 
 The names are not known yet, so every function carries the placeholder of its
 address. The state of every confirmed one is `bounded`: the extent is known
@@ -184,11 +184,11 @@ them all.
 
 | Program | The extent, before | The extent, after | The code owned, before | The code owned, after |
 |---|---|---|---|---|
-| `EBOOT` | 245,056 (12.3 %) | 1,073,764 (53.8 %) | 141,081 (7.1 %) | 324,468 (16.3 %) |
-| `RC1` | 923,776 (12.2 %) | 6,259,736 (82.5 %) | 531,237 (7.0 %) | 1,633,586 (21.5 %) |
-| `RC2` | 3,258,292 (16.6 %) | 17,857,248 (90.7 %) | 2,345,425 (11.9 %) | 4,533,013 (23.0 %) |
-| `RC3` | 2,626,700 (21.4 %) | 10,595,468 (86.4 %) | 1,355,267 (11.1 %) | 2,717,904 (22.2 %) |
-| **Total** | **7,053,824 (17.0 %)** | **35,786,216 (86.2 %)** | **4,373,010 (10.5 %)** | **9,208,971 (22.2 %)** |
+| `EBOOT` | 487,344 (24.4 %) | 1,150,712 (57.7 %) | 122,605 (6.2 %) | 336,330 (16.9 %) |
+| `RC1` | 2,585,764 (34.1 %) | 6,478,708 (85.4 %) | 648,272 (8.6 %) | 1,668,466 (22.0 %) |
+| `RC2` | 12,878,212 (65.4 %) | 18,076,220 (91.8 %) | 3,249,425 (16.5 %) | 4,567,893 (23.2 %) |
+| `RC3` | 5,545,640 (45.2 %) | 10,815,220 (88.2 %) | 1,389,747 (11.3 %) | 2,752,822 (22.4 %) |
+| **Total** | **21,496,960 (51.7 %)** | **36,520,860 (87.9 %)** | **5,410,049 (13.0 %)** | **9,325,511 (22.4 %)** |
 
 The "before" column is the narrow method; the "after" column is the wide
 method **with the conditional branch read by its opcode** — the fix described
@@ -214,13 +214,15 @@ measured, not asserted. Three counts:
 
 | Program | Before: short, overlapped, unproven | After: short, overlapped, unproven |
 |---|---|---|
-| `EBOOT` | 0, 0, 58 (4.5 %) | 189, 0, 258 (6.1 %) |
-| `RC1` | 0, 0, 100 (3.3 %) | 595, 0, 552 (6.0 %) |
-| `RC2` | 0, 0, 428 (4.3 %) | 646, 0, 1,013 (5.0 %) |
-| `RC3` | 0, 0, 209 (3.1 %) | 788, 0, 812 (4.7 %) |
+| `EBOOT` | 0, 0, 21 (1.6 %) | 269, 0, 277 (6.3 %) |
+| `RC1` | 0, 0, 18 (0.6 %) | 733, 0, 547 (5.6 %) |
+| `RC2` | 0, 0, 26 (0.3 %) | 790, 0, 550 (2.6 %) |
+| `RC3` | 0, 0, 21 (0.3 %) | 922, 0, 583 (3.2 %) |
 
-The share of the rows whose end is not proven grows from 3 to 5 %: that is
-the price of the wider detection, and it is the honest measure of it.
+The share of the rows whose end is not proven grows, and that is the price of
+the wider detection: it is the honest measure of it. The overlaps stay at
+**zero** — the strongest structural check there is: two functions never claim
+the same bytes.
 
 ## Reading a boundary
 

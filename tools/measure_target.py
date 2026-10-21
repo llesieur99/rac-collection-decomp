@@ -6,11 +6,15 @@ copy is given on the command line, so no personal path is ever stored in the
 repository.
 
     python tools/measure_target.py --root <path to the extracted release> \\
-        --out config/target.json
+        --out config/target.json [--keys <key file>]
+
+With ``--keys``, the executables are also decrypted and the rebuilt PPU ELF is
+measured: its hash, its payload state and the identification of the compiler
+that produced it.  The key file is local and is never committed.
 
 The tool reads the ``PARAM.SFO``, the ``PS3_DISC.SFB`` descriptor and the four
-executables of the release, rebuilds their PPU ELF and records the hashes.
-Only hashes, sizes and offsets are written; no game content is copied out.
+executables of the release, and the package the disc carries.  Only hashes,
+sizes and offsets are written; no game content is copied out.
 """
 
 from __future__ import annotations
@@ -51,6 +55,38 @@ def sha256_of(path: str) -> str:
     return digester.hexdigest()
 
 
+def measure_decrypted(raw: bytes, keys_path: str, name: str) -> dict:
+    """Decrypt one container and measure the PPU ELF it holds."""
+    from self_decrypt import SelfDecryptor
+
+    container = SelfDecryptor(raw, name)
+    erk, riv = container.load_keys(keys_path)
+    if container.npdrm_licence is not None:
+        raise ValueError(f"{name} carries an NPDRM licence: a licence file is needed")
+    container.load_metadata(erk, riv, None)
+    plain = container.decrypt_data()
+    elf = container.rebuild_elf(plain)
+
+    text_entropy = None
+    for ptype, off, vaddr, size in segments_of(elf):
+        if ptype == 1 and vaddr and size:
+            text_entropy = round(entropy(elf[off:off + min(size, 65536)]), 2)
+            break
+    stamps = compiler_stamps(elf)
+    return {
+        "elf_size": len(elf),
+        "elf_sha256": hashlib.sha256(elf).hexdigest(),
+        "text_entropy": text_entropy,
+        "state": "in the clear" if (text_entropy or 0) < 7.90 else "encrypted",
+        "compiler_stamps": dict(stamps),
+        "compiler_stamp": (stamps.most_common(1)[0][0] if stamps else None),
+        "libraries": sorted(library_stamps(elf)),
+        "note": "the section string table is not covered by any encrypted "
+                "section: the names of the sections stay encrypted and cannot "
+                "be recovered from the container",
+    }
+
+
 def elf_summary(elf: bytes) -> dict:
     import struct
     entry, phoff, shoff = struct.unpack_from(">3Q", elf, 0x18)
@@ -62,14 +98,13 @@ def elf_summary(elf: bytes) -> dict:
         "endianness": "big",
         "machine": "EM_PPC (102), PPU target",
         "entry": f"0x{entry:X}",
-        "program_headers": phnum,
-        "section_headers": shnum,
+        "program_headers": phnum,        "section_headers": shnum,
         "section_names": False,
         "symbol_table": False,
     }
 
 
-def measure(root: str) -> dict:
+def measure(root: str, keys_path: str | None = None) -> dict:
     sfo_path = os.path.join(root, "PS3_GAME", "PARAM.SFO")
     sfb_path = os.path.join(root, "PS3_DISC.SFB")
     usrdir = os.path.join(root, "PS3_GAME", "USRDIR")
@@ -92,7 +127,7 @@ def measure(root: str) -> dict:
             if ptype == 1 and vaddr and size:
                 text_entropy = round(entropy(elf[off:off + min(size, 65536)]), 2)
                 break
-        executables.append({
+        entry = {
             "path": f"PS3_GAME/USRDIR/{name}",
             "role": role,
             "size": len(raw),
@@ -113,7 +148,10 @@ def measure(root: str) -> dict:
             "modules": sorted(module_names(elf)),
             "libraries": sorted(library_stamps(elf)),
             "ppu_elf": elf_summary(elf),
-        })
+        }
+        if keys_path:
+            entry["decrypted"] = measure_decrypted(raw, keys_path, name)
+        executables.append(entry)
 
     title = sfo.get("TITLE")
     version = sfo.get("VERSION")
@@ -182,8 +220,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", required=True, help="path to the extracted release")
     parser.add_argument("--out", required=True, help="file to write")
+    parser.add_argument("--keys", help="local key file, to decrypt the executables")
     args = parser.parse_args()
-    target = measure(args.root)
+    target = measure(args.root, args.keys)
     with open(args.out, "w", encoding="utf-8", newline="\n") as out:
         json.dump(target, out, indent=2, ensure_ascii=False)
         out.write("\n")

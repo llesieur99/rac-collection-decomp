@@ -28,13 +28,13 @@ measured on all four executables and is identical on each of them.
 |---|---|---|---|
 | `0x00` | 4 | magic `SCE\0` | ✓ |
 | `0x04` | 4 | version | 2 |
-| `0x08` | 2 | key revision | `0x001C` |
-| `0x0A` | 2 | header type | `0x0001` (SELF) |
-| `0x0C` | 4 | offset of the encrypted metadata | `0x410` |
+| `0x08` | 2 | revision of the container | `0x001C` |
+| `0x0A` | 2 | type | 1 (SELF) |
+| `0x0C` | 4 | offset of the metadata | `0x410` |
 | `0x10` | 8 | size of the header block | `0x980` |
 | `0x18` | 8 | size of the ELF the container holds | see below |
-| `0x20` | 8 | extension header version | 3 |
-| `0x28` | 8 | offset of the program information | `0x70` |
+| `0x20` | 8 | version of the extension | 3 |
+| `0x28` | 8 | offset of the program identification header | `0x70` |
 | `0x30` | 8 | offset of the ELF header | `0x90` |
 | `0x38` | 8 | offset of the program header table | `0xD0` |
 | `0x40` | 8 | offset of the section header table | per file |
@@ -42,6 +42,45 @@ measured on all four executables and is identical on each of them.
 | `0x50` | 8 | offset of the version header | `0x390` |
 | `0x58` | 8 | offset of the control information | `0x3C0` |
 | `0x60` | 8 | size of the control information | `0x70` |
+| `0x68` | 8 | padding | 0 |
+
+The revision at `0x08` is the field that names the constants the metadata is
+encrypted with: `0x001C` for the release of this project, `0x0019` for the
+standalone titles. Bit `0x8000` of it marks a debug container, whose
+payload is not encrypted.
+
+The ELF header at `0x90` is a normal ELF64 big-endian header; its
+`e_phoff` and `e_shoff` describe the **rebuilt** ELF, not the SELF's own
+layout.
+
+## The program identification header
+
+At `0x70`, four fields and a padding:
+
+| Offset | Size | Field | Value on the target |
+|---|---|---|---|
+| `0x00` | 8 | authority | `0x1010000001000003` |
+| `0x08` | 4 | vendor | `0x01000002` |
+| `0x0C` | 4 | type of the program | 4 (`APP`) |
+| `0x10` | 8 | version of the program | `0x1000000000000` |
+
+The type is what selects the constants of the decryption: the SCE key tables
+are indexed by it. See [NPDRM.md](NPDRM.md).
+
+## The control information
+
+A chain of supplemental headers, each with a type, a size and a pointer to
+the next one:
+
+| Type | What it holds | Size |
+|---|---|---|
+| 1 | the plaintext capability header | `0x30` |
+| 2 | the digest of the ELF | `0x40` |
+| 3 | the NPDRM licence: the content id and the licence type | `0x90` |
+
+The executables of the release carry a type 1 and a type 2; they have **no
+NPDRM header**. The standalone titles carry the three. See
+[NPDRM.md](NPDRM.md).
 
 ## The four executables
 
@@ -54,14 +93,6 @@ measured on all four executables and is identical on each of them.
 
 The container size is the ELF size plus `0x980`, on all four. That constant is
 the whole of the header block.
-
-## The program information
-
-Four 32-bit words at `0x70`. On all four executables they read:
-
-```
-0x10100000  0x01000003  0x01000002  0x00000004
-```
 
 ## The segment table
 
@@ -109,22 +140,27 @@ At `0x3C0`, `0x70` bytes:
 | `0x38` | 8 | | zero |
 | `0x40` | `0x40` | encrypted metadata | ciphertext |
 
-The encrypted metadata holds the content id and the key material. It stays
-encrypted on the disc; reading it needs the licence file of the console. The
-chain is the one RPCS3 implements:
+**That table describes the NPDRM header, and the executables of this release
+do not have one.** Their control information holds a type 1 and a type 2, and
+nothing else. The NPDRM header above is what the standalone titles carry.
+
+The encrypted metadata of an NPDRM header holds the content id and the key
+material. The chain is the one RPCS3 implements:
 
 ```
-rap --(AES-128-CBC, RAP_KEY)--> rif --(rap2rifkey)--> rifkey
-rifkey --(AES-128-ECB, NP_KLIC_KEY)--> npdrm_key
+licence file --(rap2rifkey)--> rif key --(NP_KLIC_KEY)--> NPDRM key
 metadata_info --(AES-128-CBC, npdrm_key, iv=0)--> metadata_info
 metadata_info --(AES-256-CBC, erk, riv)--> metadata_info
 metadata_headers --(AES-128-CTR, meta key/iv)--> the section table
 each encrypted section --(AES-128-CTR, data key/iv)--> plaintext
 ```
 
-The `erk`/`riv` pair depends on the key revision, `0x001C` here. A wrong
-licence file shows up as a metadata info block whose padding is not zero:
-that is the check the tooling does before going further.
+The `erk`/`riv` pair depends on the revision of the container, `0x001C` here.
+A wrong licence file shows up as a metadata info block whose padding is not
+zero: that is the check the tooling does before going further.
+
+The removal of the encryption, and what it does and does not recover, is the
+subject of [NPDRM.md](NPDRM.md).
 
 ## Rebuilding the ELF
 

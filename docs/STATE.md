@@ -21,11 +21,11 @@ compiled body.
 | Rebuild the PPU ELF | **done** — verified on all four executables |
 | Prove the provenance of a copy | **done** — `tools/manifest.py` |
 | Read the embedded package | **done** — `tools/pkg.py` |
-| Find the compiler stamp | **done, negative** — no stamp, no toolchain string |
+| Remove the NPDRM layer | **done** — `tools/self_decrypt.py` |
+| Find the compiler stamp | **done** — GCC 4.1.1, SDK 400 |
 | Measure the link map | **done** — the SCE modules, per executable |
 | Find the related titles | **done** — `NPUA80644`, `NPUA80645`, `NPUA80965` |
 | Validate the rebuild | **done** — against the published hash of the sibling project |
-| Remove the NPDRM layer | **not started** — needs the console's key material |
 | Qualify a PPU compiler | **not started** |
 | Recover the function boundaries | **not started** |
 | Name the functions | **not started** |
@@ -49,8 +49,19 @@ compiled body.
 * **The code and the data of the executables are still NPDRM-encrypted**:
   7.99 bits per byte for the text, 8.00 for the data, 1.61 for the section
   table, which stays readable. See [COMPILER.md](COMPILER.md).
-* **No compiler stamp**: not one of the 3,591 to 34,455 printable strings of
-  the four programs names a compiler, an SDK or a revision.
+* **The encryption can be removed**, and it was: `tools/self_decrypt.py`
+  rebuilds the PPU ELF in the clear, with the constants of the revision of
+  the container. The validation against the sibling project reproduces its
+  published analysis exactly — the same 106 stamps, the same libraries, the
+  same size. See [NPDRM.md](NPDRM.md).
+* **The compiler is named**: `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)` for
+  124 objects and `GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)` for 5, the same
+  for the four programs of the release. The sibling's target was built with
+  the SDK 270: the two trees are not interchangeable.
+* **The names of the sections are lost**: the string table of the ELF is not
+  covered by any encrypted section, so it stays encrypted in the container.
+  The names of the modules are in the clear, and they are what the project
+  uses.
 * The disc carries the digital manual of the collection as a retail package,
   `NPUO70220`. It is not an update of the game.
 * The three titles also exist as separate PlayStation Network titles, with

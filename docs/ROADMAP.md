@@ -14,53 +14,50 @@ Both sides of the release are pinned file by file, in
 
 **Needs.** Nothing more.
 
-## Step 1 — recover the compiler stamp *(done, negative result)*
+## Step 1 — recover the compiler stamp *(done)*
 
 The executables were searched for the identification of the compiler: the
 `.comment` section, every printable string of six characters or more, and the
 strings that would name an SDK or a revision.
 
-**There is none.** Not in the four executables of the release, and not in the
-executables of the standalone titles. The result is recorded in
-[docs/COMPILER.md](docs/COMPILER.md) and in `config/target.json`.
+**The first pass found nothing**, because the payload was still encrypted: a
+search for a string inside a ciphertext finds noise. The encryption was
+removed in step 2, and the stamp was then found immediately.
 
-What the executables *do* carry is the link map — the names of the SCE
-modules they are built against — and that is published too.
+**The answer**: 124 objects with `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)`
+and 5 with `GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)`, the same for the four
+programs of the release.
 
-**Needs.** Nothing more; the question is now answered, negatively.
+**Needs.** Nothing more; the question is answered.
 
-## Step 2 — read the program *(not started, the real prerequisite)*
+## Step 2 — remove the NPDRM layer *(done)*
 
-**This is the step that unlocks everything else.** The code and the data of
-the retail programs are still NPDRM-encrypted: the text segment measures 7.99
-bits per byte, the data segment 8.00, while the section table measures 1.61
-and the module names are readable.
+The metadata and the sections of the executables are encrypted. The removal
+needed only the constants of the revision of the container, and the tool that
+does it is `tools/self_decrypt.py`.
 
-The program can be *measured* — its layout, its sizes, its entry point, its
-modules, its trophy sets, its content ids — but it cannot be *read* until
-that layer is removed.
+**What was done.** The chain was implemented and the result was validated
+against the sibling project: decrypting A Crack in Time reproduces its
+published analysis exactly — the same 106 stamps, the same libraries, the
+same size of the rebuilt ELF.
 
-**What.** Run the NPDRM decryption on the working copy, with the console's
-own key material, and keep the result in the workspace. The method is public
-and RPCS3 implements it; the keys are the console's and never leave the
-machine.
+**Needs.** Nothing more.
 
-**Needs.** A console, its licence file, and the RPCS3 path described in
-[docs/SELF-FORMAT.md](docs/SELF-FORMAT.md).
-
-**Done when.** `tools/payload_state.py` reports *IN THE CLEAR* for the four
-executables of the release.
+**Done when.** The programs are in the clear: `tools/payload_state.py` reports
+*IN THE CLEAR* for the four executables of the release, and the stamps are
+readable.
 
 ## Step 3 — build and qualify a PPU toolchain
 
 **Why.** The toolchain gate asks which compiler produced the retail bytes.
-Step 1 showed that the answer cannot be read; it has to be found by
-experiment.
+The compiler is now named — GCC 4.1.1 as the SDK 400 ships it — so the
+question is precise: which options reproduce the code generation of that
+compiler.
 
-**What.** Build a candidate toolchain — `ps3gcc` is the obvious one, as the
-homebrew scene's PowerPC cross compiler for the PS3 — and qualify it against
-the retail bytes, the way the PS2 projects qualified theirs. The
-qualification is the work, not the build.
+**What.** Build a candidate toolchain — the `ps3gcc` sources are the obvious
+one, as the homebrew scene's PowerPC cross compiler for the PS3 — and
+qualify it against the retail bytes, the way the PS2 projects qualified
+theirs. The qualification is the work, not the build.
 
 **Needs.** The `ps3gcc` sources, a host that can build them, a body of known
 extent to measure against — so step 4 has to be done at least partly first.

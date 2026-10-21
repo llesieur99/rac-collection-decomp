@@ -78,6 +78,22 @@
         "section_headers": 35,
         "section_names": false,
         "symbol_table": false
+      },
+      "decrypted": {
+        "elf_size": 2255976,
+        "elf_sha256": "f2e0e984625ba87292da51e61c1e46f66b23972c5b12ab3a8204032a57426ccd",
+        "text_entropy": 5.78,
+        "state": "in the clear",
+        "compiler_stamps": {
+          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
+          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
+        },
+        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
+        "libraries": [
+          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
+          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
+        ],
+        "note": "the section string table is not covered by any encrypted section: the names of the sections stay encrypted and cannot be recovered from the container"
       }
     },
     {
@@ -136,6 +152,22 @@
         "section_headers": 35,
         "section_names": false,
         "symbol_table": false
+      },
+      "decrypted": {
+        "elf_size": 9764896,
+        "elf_sha256": "7a1debcd263aa71413a4e962c04323622ea23f7ff5d5b9483d875f36aabfc2f8",
+        "text_entropy": 6.26,
+        "state": "in the clear",
+        "compiler_stamps": {
+          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
+          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
+        },
+        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
+        "libraries": [
+          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
+          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
+        ],
+        "note": "the section string table is not covered by any encrypted section: the names of the sections stay encrypted and cannot be recovered from the container"
       }
     },
     {
@@ -196,6 +228,22 @@
         "section_headers": 35,
         "section_names": false,
         "symbol_table": false
+      },
+      "decrypted": {
+        "elf_size": 21070000,
+        "elf_sha256": "3445416c897702a1d38c3daa382bc44b44e94393df0ac3031b1d3652d168392e",
+        "text_entropy": 6.28,
+        "state": "in the clear",
+        "compiler_stamps": {
+          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
+          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
+        },
+        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
+        "libraries": [
+          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
+          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
+        ],
+        "note": "the section string table is not covered by any encrypted section: the names of the sections stay encrypted and cannot be recovered from the container"
       }
     },
     {
@@ -256,6 +304,22 @@
         "section_headers": 35,
         "section_names": false,
         "symbol_table": false
+      },
+      "decrypted": {
+        "elf_size": 13337168,
+        "elf_sha256": "d4b8659817027511a8ac45f3a9ae81c79d35e63975031f75c6fe48a715bf41ee",
+        "text_entropy": 6.27,
+        "state": "in the clear",
+        "compiler_stamps": {
+          "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)": 124,
+          "GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)": 5
+        },
+        "compiler_stamp": "GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)",
+        "libraries": [
+          "Copyright (c) 1992-2003 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHT",
+          "Dinkumware, Ltd. ALL RIGHTS RESERVED."
+        ],
+        "note": "the section string table is not covered by any encrypted section: the names of the sections stay encrypted and cannot be recovered from the container"
       }
     }
   ],

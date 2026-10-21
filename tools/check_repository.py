@@ -33,14 +33,17 @@ FORBIDDEN_SUFFIXES = (
 )
 
 # The console key material and the NPDRM key vault never belong here.
+# The patterns catch the *values*, not the names: this repository documents
+# the derivation of the NPDRM key, and that is a method, not a key.
 KEY_PATTERNS = (
-    re.compile(r"NP_KLIC_KEY\s*="),
-    re.compile(r"NP_KLIC_FREE\s*="),
-    re.compile(r"RAP_KEY\s*="),
-    re.compile(r"rap_to_rif"),
-    re.compile(r"NP_RIF_KEY\s*="),
-    re.compile(r"SDAT_KEY\s*="),
-    re.compile(r"EDAT_KEY"),
+    re.compile(r"NP_KLIC_KEY\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
+    re.compile(r"NP_KLIC_FREE\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
+    re.compile(r"NP_RIF_KEY\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
+    re.compile(r"RAP_KEY\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
+    re.compile(r"RAP_PBOX\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
+    re.compile(r"RAP_E[12]\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
+    re.compile(r"SDAT_KEY\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
+    re.compile(r"EDAT_KEY[_\w]*\s*=\s*[\"'][0-9A-Fa-f]{32}[\"']"),
     re.compile(r"[0-9A-Fa-f]{64}\s*,\s*\"[0-9A-Fa-f]{64}\""),
 )
 

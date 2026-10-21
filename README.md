@@ -29,6 +29,7 @@ The pinned release has been read and measured:
 | Executable kind | retail SELF (`SCE\0`), key revision `0x001C`, local licence |
 | PPU ELF | ELF64, big-endian, `EM_PPC`, 8 program headers, 35 section headers |
 | Symbol table | **none** — the retail executables are stripped |
+| Compiler | **GCC 4.1.1, as the PlayStation 3 SDK 400 ships it** — 124 objects, plus 5 from the SDK 360 |
 | Disc files | 13,149 — 12,429,594,706 bytes |
 | Working copy files | 13,148 — 12,161,159,250 bytes |
 | Identical on both sides | 10 (the metadata); the other 13,138 are encrypted on the disc |
@@ -49,22 +50,25 @@ The exact hashes, the entry points and the segment tables are in
 Three facts shape the whole project:
 
 1. **The retail executables are stripped.** There is no `.symtab` and no
-   conventional section name; the section string table holds the SCE module
-   names. Function boundaries and names have to be recovered by analysis, and
-   every name in this project is a *hypothesis* until the code proves it.
+   readable section name — the string table of the sections is encrypted and
+   lost with the container. Function boundaries and names have to be recovered
+   by analysis, and every name in this project is a *hypothesis* until the
+   code proves it.
 2. **On the disc, the game data is encrypted.** The disc holds 13,138 game
    files encrypted with the disc key; the working copy holds the same files
    in the clear. Ten metadata files are in the clear on both sides. Both
    sides are pinned file by file, so a reader can always tell which one they
    are looking at: [docs/DISC-PROVENANCE.md](docs/DISC-PROVENANCE.md).
-3. **The code is still encrypted.** The NPDRM layer of the executables is
-   there: their layout can be measured, their code cannot be read until the
-   console's key material is used, and that part stays private.
-   [docs/COMPILER.md](docs/COMPILER.md).
+3. **The executables have a second layer, and it has been removed.** The
+   metadata and the sections of a SELF container are encrypted; the removal
+   needed only the constants of the revision of the container, and the
+   result was validated against the sibling project.
+   [docs/NPDRM.md](docs/NPDRM.md).
 
-The compiler itself could not be read out of the executables: they carry no
-stamp and no toolchain string. That is a negative result, and it is recorded
-as one.
+The compiler is named: **GCC 4.1.1 as the PlayStation 3 SDK 400 ships it**,
+for 124 objects, plus 5 objects from the SDK 360. The sibling project's target
+was built with the SDK 270, so the two trees are not interchangeable.
+[docs/COMPILER.md](docs/COMPILER.md).
 
 ## Start here
 
@@ -83,7 +87,8 @@ as one.
 | [docs/SELF-FORMAT.md](docs/SELF-FORMAT.md) | the SELF container, the two variants, and the NPDRM control information |
 | [docs/PPU-EXECUTABLE.md](docs/PPU-EXECUTABLE.md) | the PPU ELF, its segments and its section table |
 | [docs/DISC-PROVENANCE.md](docs/DISC-PROVENANCE.md) | where the working copy comes from, and how it is verified |
-| [docs/COMPILER.md](docs/COMPILER.md) | the compiler: the negative result, the link map, and the way forward |
+| [docs/NPDRM.md](docs/NPDRM.md) | the encryption of the executables, and how it is removed |
+| [docs/COMPILER.md](docs/COMPILER.md) | the compiler: the stamp, the link map, and the way forward |
 | [docs/RELATED-TITLES.md](docs/RELATED-TITLES.md) | the three titles as separate PlayStation Network titles |
 
 ## Layout
@@ -124,6 +129,17 @@ python tools/rebuild_check.py  "path/to/USRDIR/EBOOT.BIN"
 program is readable. `compiler_stamp.py` looks for the identification of the
 compiler and reports the link map. `rebuild_check.py` checks that a rebuilt
 ELF is aligned, without reading the code.
+
+The removal of the encryption of the executables:
+
+```sh
+python tools/self_decrypt.py "path/to/USRDIR/EBOOT.BIN" --keys work/self-keys.json --out work/eboot.elf
+```
+
+The keys are read from a **local** file, which is not committed: they are
+the SCE constants of the revision of the container, published by the RPCS3
+sources, and the repository publishes no key material of any kind. See
+[docs/NPDRM.md](docs/NPDRM.md).
 
 The manifest pins the bytes of a tree, and checks one against it. The two
 manifests of the release are in `config/`:

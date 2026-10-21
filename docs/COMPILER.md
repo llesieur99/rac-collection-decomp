@@ -1,8 +1,7 @@
 # The compiler
 
 The first thing a matching decompilation needs is the compiler that produced
-the retail bytes. This document records what was measured about it, and the
-fact that **it could not be read out of the executables**.
+the retail bytes. This document records what was measured about it.
 
 ## The question
 
@@ -11,38 +10,71 @@ Which compiler built the programs of the release, and with which options?
 ## The measurement
 
 The stamp of a GCC-built object lives in the `.comment` section, once per
-linked object. The tool is [`tools/compiler_stamp.py`](../tools/compiler_stamp.py),
-and it reads a SELF container or a rebuilt PPU ELF.
+linked object. The tool is
+[`tools/compiler_stamp.py`](../tools/compiler_stamp.py), and it reads a SELF
+container or a PPU ELF.
 
-| Executable | ELF size | GCC stamp | Toolchain string |
-|---|---|---|---|
-| `EBOOT.BIN` | 2,255,976 | **none** | **none** |
-| `RC1.ppu.self` | 9,764,896 | **none** | **none** |
-| `RC2.ppu.self` | 21,070,000 | **none** | **none** |
-| `RC3.ppu.self` | 13,337,168 | **none** | **none** |
+| Program | Objects | Stamp |
+|---|---|---|
+| `EBOOT.BIN` | 124 | `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)` |
+| | 5 | `GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)` |
+| `RC1.ppu.self` | 124 | `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)` |
+| | 5 | `GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)` |
+| `RC2.ppu.self` | 124 | `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)` |
+| | 5 | `GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)` |
+| `RC3.ppu.self` | 124 | `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)` |
+| | 5 | `GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)` |
 
-The search is wide: the four programs hold 3,591, 16,001, 34,455 and 21,594
-printable strings of six characters or more, and **not one** of them names a
-compiler, an SDK, a revision or a toolchain. The `GCC`, `gcc` and `GNU`
-sequences that do appear are noise: they sit inside encrypted payloads and
-carry no readable continuation.
+**The same compiler built the four programs of the release**: the collection
+launcher and the three titles come out of the same tree, with the same
+toolchain, the same 129 objects and the same two stamps.
 
-The same result comes out of the standalone PlayStation Network titles, whose
-executables are a different build of the same games (see
-[RELATED-TITLES.md](RELATED-TITLES.md)).
+The two stamps tell the story of the tree: 124 objects come from the **SDK
+400**, and 5 are older, from the **SDK 360**. Those five are the objects that
+did not change since the previous revision of the engine — a library, or a
+module that was not rebuilt.
 
-**This is a negative result, and it is a real one.** The sibling project
-`rac8-act-decomp` pins a target whose ELF carries 106 stamps of
-`GCC: (GNU) 4.1.1 (SDK270, $Rev: 3019 $)`. The programs of this release
-carry none, so the compiler cannot be read; it has to be *found*.
+The libraries are the ones of the SDK: the Dinkumware C++ library.
 
-## What the executables do carry
+## The contrast with the sibling project
 
-The section string table of a retail executable holds the names of the SCE
-modules the program is linked against. That is the link map of the program,
-and it is measurable and publishable.
+The sibling project `rac8-act-decomp` pins a target whose stamps are:
 
-For `RC2.ppu.self` — 28 modules:
+| | Count | Stamp |
+|---|---|---|
+| A Crack in Time | 106 | `GCC: (GNU) 4.1.1 (SDK270, $Rev: 3019 $)` |
+| | 1 | `GCC: (GNU) 4.1.1 (SDK250, $Rev: 2824 $)` |
+| **This release** | 124 | `GCC: (GNU) 4.1.1 (SDK400, $Rev: 3538 $)` |
+| | 5 | `GCC: (GNU) 4.1.1 (SDK360, $Rev: 3455 $)` |
+
+A Crack in Time is a native PlayStation 3 game, built with the SDK 270. The
+release of this project is built with the **SDK 400**, a good deal later. The
+two trees are not interchangeable, and neither are their toolchains.
+
+## The lesson of the first pass
+
+The first pass of this search found **nothing**. The four executables of the
+release carry no stamp, and neither do the executables of the standalone
+titles: a search of every printable string of six characters or more turned
+up no compiler, no SDK and no revision.
+
+That result was **an artefact of the encryption**. The `.comment` section is
+in the payload, and the payload was still encrypted; a search for a string
+inside a ciphertext finds noise. The negative result was correct about the
+file it was run on, and wrong about the program.
+
+The rule to keep: *a negative result is only about what was searched*. When
+the search cannot reach the data, it says nothing about the data. That is why
+`tools/compiler_stamp.py` now exits 1 on a negative result, and why
+`tools/payload_state.py` exists: the two together say *the payload was
+encrypted* rather than *the program has no stamp*.
+
+## The link map
+
+The section string table of a retail executable is encrypted, but the names of
+the modules the program is linked against are not. They lie in the tail of the
+image, just before the string table, and they are what the program was built
+with. For `RC2.ppu.self` — 28 modules:
 
 | Module | Times | What it is |
 |---|---|---|
@@ -83,49 +115,27 @@ is a rough measure of how much of it the program uses.
 `EBOOT.BIN` links 22 modules, `RC1.ppu.self` 26, `RC2.ppu.self` 28,
 `RC3.ppu.self` 28, and the standalone `Tools of Destruction` only 15.
 
-## The two variants of the container
-
-The executables of the release and the executables of the standalone titles
-use two different shapes of the SELF container. Both were measured.
-
-| | The release | The standalone titles |
-|---|---|---|
-| Key revision | `0x001C` | `0x0019` (ToD: `0x001C`) |
-| Header block | `0x980` | `0xA80` |
-| Control information | `0x70` | `0x100` |
-| Offset of the encrypted metadata | `0x410` | `0x4A0` |
-| Trailer after the ELF | none | 48 bytes |
-
-The rebuild rule is the same for both: the payload starts at the size of the
-header block, and the ELF header and the program headers are copied over the
-first bytes of the text segment. The payload is cut to the size the header
-declares, because the older variant carries a short trailer after the ELF.
-
 ## The consequence
 
-Without a stamp, the compiler has to be **found by experiment**: a candidate
-is built, and its output is compared with the retail bytes. That is the
-toolchain gate of [GATES.md](GATES.md), and it is the second step of
-[ROADMAP.md](ROADMAP.md).
+The compiler is known, so the toolchain gate can finally be attempted. The
+profile to qualify is **GCC 4.1.1 for the PowerPC, as the SDK 400 ships
+it** — not the SDK 270 of the sibling project, and not the compiler of the
+PlayStation 2 titles.
 
-There is a second obstacle, and it comes first. The **code and the data of
-the retail programs are still NPDRM-encrypted**: the text segment measures
-7.99 bits per byte, the data segment 8.00, while the section table measures
-1.61 and the module names are readable. The program can therefore be
-*measured* — its layout, its sizes, its entry point, its modules — but it
-cannot be *read* until the NPDRM layer is removed, and that needs the
-console's key material.
+The open-source candidates are the `ps3gcc` sources; the question is which
+of them reproduces the code generation of the SDK 400. That is the work of
+step 3 of the [roadmap](ROADMAP.md), and it needs a body of known extent to
+measure against — which step 4 provides.
 
-The method is public and RPCS3 implements it; the keys are the console's.
-See [SELF-FORMAT.md](SELF-FORMAT.md) and [LEGAL.md](../LEGAL.md).
-
-## The tool
+## The tools
 
 ```sh
 python tools/compiler_stamp.py "path/to/USRDIR/RC2.ppu.self" --modules
 python tools/payload_state.py  "path/to/USRDIR/RC2.ppu.self"
+python tools/self_decrypt.py   "path/to/USRDIR/RC2.ppu.self" --keys work/self-keys.json --out work/rc2.elf
 ```
 
 `compiler_stamp.py` exits 1 when no stamp was found, so that the negative
-result cannot be lost in a script. `payload_state.py` measures the entropy
-of the segments and says whether the payload is in the clear.
+result cannot be lost in a script. `payload_state.py` measures the entropy of
+the segments and says whether the program can be read at all. Run the
+decryption first, or the stamp search will look at a ciphertext.

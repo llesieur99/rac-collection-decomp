@@ -26,6 +26,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from param_sfo import ParamSfo  # noqa: E402
 from ps3disc import Ps3Disc  # noqa: E402
 from self_header import Self  # noqa: E402
+from compiler_stamp import compiler_stamps, library_stamps, module_names  # noqa: E402
+from payload_state import entropy, segments_of  # noqa: E402
 
 EXECUTABLES = (
     ("EBOOT.BIN", "launcher"),
@@ -84,16 +86,32 @@ def measure(root: str) -> dict:
             raw = handle.read()
         container = Self(raw, path)
         elf = container.rebuild_elf()
+        stamps = compiler_stamps(elf)
+        text_entropy = None
+        for ptype, off, vaddr, size in segments_of(elf):
+            if ptype == 1 and vaddr and size:
+                text_entropy = round(entropy(elf[off:off + min(size, 65536)]), 2)
+                break
         executables.append({
             "path": f"PS3_GAME/USRDIR/{name}",
             "role": role,
             "size": len(raw),
             "sha256": hashlib.sha256(raw).hexdigest(),
-            "kind": "retail SELF (NPDRM), payload in the clear",
+            "kind": "retail SELF (NPDRM), code and data still encrypted",
             "key_revision": f"0x{container.key_revision:04X}",
             "licence_type": container.license_type(),
             "header_size": f"0x{container.header_size:X}",
             "elf_size": container.elf_size,
+            "payload": {
+                "text_entropy": text_entropy,
+                "state": "encrypted" if (text_entropy or 0) >= 7.90 else "in the clear",
+                "note": "the NPDRM layer is still there: the header, the program "
+                        "headers, the section table and the module names are in "
+                        "the clear, the code and the data are not",
+            },
+            "compiler_stamp": (stamps.most_common(1)[0][0] if stamps else None),
+            "modules": sorted(module_names(elf)),
+            "libraries": sorted(library_stamps(elf)),
             "ppu_elf": elf_summary(elf),
         })
 

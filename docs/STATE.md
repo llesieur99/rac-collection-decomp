@@ -21,6 +21,10 @@ compiled body.
 | Rebuild the PPU ELF | **done** — verified on all four executables |
 | Prove the provenance of a copy | **done** — `tools/manifest.py` |
 | Read the embedded package | **done** — `tools/pkg.py` |
+| Find the compiler stamp | **done, negative** — no stamp, no toolchain string |
+| Measure the link map | **done** — the SCE modules, per executable |
+| Find the related titles | **done** — `NPUA80644`, `NPUA80645`, `NPUA80965` |
+| Remove the NPDRM layer | **not started** — needs the console's key material |
 | Qualify a PPU compiler | **not started** |
 | Recover the function boundaries | **not started** |
 | Name the functions | **not started** |
@@ -41,8 +45,16 @@ compiled body.
   the clear**: 13,138 files have the same size and a different content, and
   ten metadata files are identical on both sides. The relation is proved in
   [DISC-PROVENANCE.md](DISC-PROVENANCE.md).
+* **The code and the data of the executables are still NPDRM-encrypted**:
+  7.99 bits per byte for the text, 8.00 for the data, 1.61 for the section
+  table, which stays readable. See [COMPILER.md](COMPILER.md).
+* **No compiler stamp**: not one of the 3,591 to 34,455 printable strings of
+  the four programs names a compiler, an SDK or a revision.
 * The disc carries the digital manual of the collection as a retail package,
   `NPUO70220`. It is not an update of the game.
+* The three titles also exist as separate PlayStation Network titles, with
+  their own content ids and their own builds:
+  [RELATED-TITLES.md](RELATED-TITLES.md).
 
 ## What is assumed, and what is not known
 

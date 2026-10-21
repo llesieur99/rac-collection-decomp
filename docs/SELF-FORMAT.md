@@ -8,9 +8,16 @@ and how the PPU ELF is recovered.
 NPDRM-encrypted and reading it needs console key material, which has no place
 in a public repository. The method is public though, and RPCS3 implements it:
 see `rpcs3/Crypto/unself.cpp`, `rpcs3/Crypto/key_vault.cpp` and
-`rpcs3/Crypto/unedat.cpp` in the RPCS3 sources. The working copy used by this
-project already holds the payload in the clear; see
-[DISC-PROVENANCE.md](DISC-PROVENANCE.md).
+`rpcs3/Crypto/unedat.cpp` in the RPCS3 sources.
+
+**What the working copy holds, and what it does not.** The working copy is
+the disc decrypted with the disc key, so the *assets* are in the clear. The
+executables keep their **second layer**: the header of the container, the ELF
+header, the program headers, the section table and the module names are
+readable, but the **code and the data are still NPDRM-encrypted** — the text
+segment measures 7.99 bits per byte and the data segment 8.00, while the
+section table measures 1.61. See [COMPILER.md](COMPILER.md) and
+[RELATED-TITLES.md](RELATED-TITLES.md).
 
 ## The header
 
@@ -121,11 +128,11 @@ that is the check the tooling does before going further.
 
 ## Rebuilding the ELF
 
-The rebuild is mechanical once the payload is in the clear:
+The rebuild is mechanical once the container is read:
 
 1. the payload area starts at `header_size`, that is `0x980`;
-2. the rebuilt ELF is that area, so its size is the container size minus
-   `0x980` — which is exactly the `ELF size` field of the header;
+2. the rebuilt ELF is that area, cut to the size the header declares, so its
+   size is the `ELF size` field of the header;
 3. the ELF header and the program header table are **not** in the payload
    area: they sit at `0x90` and `0xD0` of the container, and they are copied
    over the first bytes of the rebuilt image.
@@ -133,13 +140,17 @@ The rebuild is mechanical once the payload is in the clear:
 In other words:
 
 ```python
-rebuilt = bytearray(container[0x980:])
+rebuilt = bytearray(container[0x980:0x980 + elf_size])
 rebuilt[0:0x200] = container[0x90:0x290]
 ```
 
 The result is a normal ELF64 big-endian file whose `e_phoff` is `0x40` and
 whose `e_shoff` is the tail of the image. Its hash is pinned in
 `config/target.json`.
+
+**The rebuilt image is a container, not a program.** The header, the program
+headers and the section table are in the clear; the segments are not. The
+reader measures that, and says so: `tools/payload_state.py`.
 
 ```sh
 python tools/self_header.py extract "path/to/USRDIR/EBOOT.BIN" --out work/eboot.elf
@@ -152,6 +163,23 @@ python tools/self_header.py info     "path/to/USRDIR/EBOOT.BIN"
 python tools/self_header.py segments "path/to/USRDIR/EBOOT.BIN"
 python tools/self_header.py control  "path/to/USRDIR/EBOOT.BIN"
 ```
+
+## The two variants
+
+The release and the standalone PlayStation Network titles use two different
+shapes of the container. Both were measured.
+
+| | The release | The standalone titles |
+|---|---|---|
+| Key revision | `0x001C` | `0x0019` (Tools of Destruction: `0x001C`) |
+| Header block | `0x980` | `0xA80` |
+| Control information | `0x70` | `0x100` |
+| Offset of the encrypted metadata | `0x410` | `0x4A0` |
+| Trailer after the ELF | none | 48 bytes |
+
+The rebuild rule is the same for both. The payload is cut to the size the
+header declares, because the older variant carries a short trailer after the
+ELF that is not part of the program.
 
 ## The section names
 

@@ -57,9 +57,14 @@ Three facts shape the whole project:
    in the clear. Ten metadata files are in the clear on both sides. Both
    sides are pinned file by file, so a reader can always tell which one they
    are looking at: [docs/DISC-PROVENANCE.md](docs/DISC-PROVENANCE.md).
-3. **The PPU is a big-endian PowerPC.** The compiler is not the Sony compiler
-   of the PS2 projects. Until a PPU compiler and its options are qualified, no
-   byte-exact claim is possible and the gates stay closed.
+3. **The code is still encrypted.** The NPDRM layer of the executables is
+   there: their layout can be measured, their code cannot be read until the
+   console's key material is used, and that part stays private.
+   [docs/COMPILER.md](docs/COMPILER.md).
+
+The compiler itself could not be read out of the executables: they carry no
+stamp and no toolchain string. That is a negative result, and it is recorded
+as one.
 
 ## Start here
 
@@ -75,9 +80,11 @@ Three facts shape the whole project:
 | [docs/ROADMAP.md](docs/ROADMAP.md) | the ordered work, and what each step needs |
 | [docs/DISC-FORMAT.md](docs/DISC-FORMAT.md) | the disc layout and the `PS3_DISC.SFB` descriptor |
 | [docs/PARAM-SFO.md](docs/PARAM-SFO.md) | the metadata file and the measured table |
-| [docs/SELF-FORMAT.md](docs/SELF-FORMAT.md) | the SELF container and the NPDRM control information |
+| [docs/SELF-FORMAT.md](docs/SELF-FORMAT.md) | the SELF container, the two variants, and the NPDRM control information |
 | [docs/PPU-EXECUTABLE.md](docs/PPU-EXECUTABLE.md) | the PPU ELF, its segments and its section table |
 | [docs/DISC-PROVENANCE.md](docs/DISC-PROVENANCE.md) | where the working copy comes from, and how it is verified |
+| [docs/COMPILER.md](docs/COMPILER.md) | the compiler: the negative result, the link map, and the way forward |
+| [docs/RELATED-TITLES.md](docs/RELATED-TITLES.md) | the three titles as separate PlayStation Network titles |
 
 ## Layout
 

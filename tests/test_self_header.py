@@ -106,6 +106,16 @@ class SelfTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(elf).hexdigest(),
                          hashlib.sha256(elf).hexdigest())
 
+    def test_rebuild_cuts_the_trailer_of_the_older_variant(self):
+        # The older variant of the container carries a short trailer after the
+        # ELF; it is not part of the program.
+        raw = bytearray(build_self())
+        raw += b"\xAA" * 48
+        container = Self(bytes(raw), "synthetic")
+        elf = container.rebuild_elf()
+        self.assertEqual(len(elf), container.elf_size)
+        self.assertNotIn(b"\xAA" * 8, elf)
+
     def test_rejects_a_bad_magic(self):
         with self.assertRaises(SelfError):
             Self(b"NOPE" + b"\x00" * 128, "synthetic")

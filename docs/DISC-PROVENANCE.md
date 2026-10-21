@@ -15,6 +15,13 @@ encryption: a PS3 disc stores its game files encrypted with a key that belongs
 to the disc, and the console decrypts them on the fly. A copy taken with a
 tool that knows the disc key holds the plaintext.
 
+**One layer is removed, not two.** The *assets* of the game — the textures,
+the movies, the audio, the trophies, the licence data — are in the clear in
+the working copy. The *executables* keep their second layer, the NPDRM: their
+header, their program headers, their section table and their module names are
+readable, but their code and their data are still encrypted. See
+[COMPILER.md](COMPILER.md).
+
 The evidence, in the order it was measured:
 
 | | |

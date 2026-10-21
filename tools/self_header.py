@@ -230,9 +230,13 @@ class Self:
         table.  The payload area starts at ``header_size`` and the rebuilt ELF
         is that area, with the ELF header and the program headers copied over
         the first bytes of the text segment.
+
+        The payload area is cut to ``elf_size``: on the older variant of the
+        container the file carries a short trailer after the ELF, and that
+        trailer is not part of the program.
         """
         payload_start = self.header_size
-        rebuilt = bytearray(self.data[payload_start:])
+        rebuilt = bytearray(self.data[payload_start:payload_start + self.elf_size])
         src_start = self.elf_header_offset
         src_end = self.program_header_offset + self.program_header_count() * 56
         rebuilt[0:src_end - src_start] = self.data[src_start:src_end]

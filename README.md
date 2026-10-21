@@ -92,6 +92,8 @@ was built with the SDK 270, so the two trees are not interchangeable.
 | [docs/NPDRM.md](docs/NPDRM.md) | the encryption of the executables, and how it is removed |
 | [docs/TOOLCHAIN.md](docs/TOOLCHAIN.md) | the compiler, its build, and the flags that reproduce the bytes |
 | [docs/COMPILER.md](docs/COMPILER.md) | the compiler: the stamp, the link map, and the way forward |
+| [docs/ENGINE.md](docs/ENGINE.md) | the engine: its build stamp, the originals it comes from |
+| [docs/NAMING.md](docs/NAMING.md) | the naming: how a name is proved, and why it is not transferred |
 | [docs/RELATED-TITLES.md](docs/RELATED-TITLES.md) | the three titles as separate PlayStation Network titles |
 
 ## Layout

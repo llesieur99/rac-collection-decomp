@@ -68,6 +68,22 @@ def read_strings(path: str) -> dict[tuple[str, int], list[str]]:
     return out
 
 
+def read_asserts(path: str) -> dict[tuple[str, int], list[str]]:
+    """The assert messages a function carries, keyed by program and function."""
+    out: dict[tuple[str, int], list[str]] = {}
+    with open(path, encoding="utf-8") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            function = row.get("address", "")
+            if not function:
+                continue
+            key = (row.get("program", ""), int(function, 0))
+            message = row.get("message", "")
+            if not message:
+                continue
+            out.setdefault(key, []).append(message)
+    return out
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         try:
@@ -81,6 +97,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                         help="the exported evidence of one program")
     parser.add_argument("--strings", action="append", default=[],
                         help="the strings the code touches, one file per program")
+    parser.add_argument("--asserts", default=None,
+                        help="the assert messages the code carries")
     parser.add_argument("--out", required=True, help="the file to write")
     args = parser.parse_args(argv)
 
@@ -96,6 +114,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     for path in args.strings:
         for key, values in read_strings(path).items():
             strings.setdefault(key, []).extend(values)
+    asserts: dict[tuple[str, int], list[str]] = {}
+    if args.asserts:
+        asserts = read_asserts(args.asserts)
 
     # the addresses of the catalogue, per program, to match the evidence
     by_program: dict[str, list[int]] = {}
@@ -105,6 +126,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     rows = []
     matched = 0
     with_strings = 0
+    with_asserts = 0
     for (program, address), entry in sorted(catalogue.items()):
         found = evidence.get((program, address))
         if found:
@@ -117,12 +139,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         if touched:
             text = " | ".join(part for part in ([text] if text else []) + touched)
             with_strings += 1
+        messages = asserts.get((program, address), [])
+        if messages:
+            with_asserts += 1
         rows.append((program, address, entry["size"], entry["name"],
-                     entry["state"], text, found["calls"],
-                     found["callers"], found["data"]))
+                     entry["state"], text, " | ".join(messages),
+                     found["calls"], found["callers"], found["data"]))
 
     with open(args.out, "w", encoding="utf-8", newline="\n") as out:
-        out.write("program\taddress\tsize\tname\tstate\tstrings\tcalls\tcallers\tdata\n")
+        out.write("program\taddress\tsize\tname\tstate\tstrings\tasserts"
+                  "\tcalls\tcallers\tdata\n")
         for row in rows:
             out.write("\t".join(str(value) for value in row) + "\n")
 
@@ -130,6 +156,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"{total} functions in the catalogue")
     print(f"{matched} of them the analysis also found ({100.0 * matched / max(total, 1):.1f}%)")
     print(f"{with_strings} of them touch a string")
+    print(f"{with_asserts} of them carry an assert")
     print(f"wrote {args.out}")
     return 0
 

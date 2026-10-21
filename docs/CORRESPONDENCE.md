@@ -53,12 +53,12 @@ The tool is [`tools/build_correspondence.py`](../tools/build_correspondence.py).
 
 | Pair | Functions | Matched | Same size | Same bytes | Median identity |
 |---|---|---|---|---|---|
-| `rc1` ↔ `NPUA80643` | 9,824 | **9,795** (99 %) | 9,795 | 56 % | **100 %** |
-| `rc2` ↔ `NPUA80644` | 21,054 | **21,010** (99 %) | 21,010 | 30 % | 94 % |
-| `rc3` ↔ `NPUA80645` | 18,145 | **18,070** (99 %) | 18,070 | 39 % | 95 % |
+| `rc1` ↔ `NPUA80643` | 9,596 | **9,567** (99 %) | 9,567 | 53 % | **100 %** |
+| `rc2` ↔ `NPUA80644` | 20,561 | **20,517** (99 %) | 20,517 | 28 % | 94 % |
+| `rc3` ↔ `NPUA80645` | 17,860 | **17,785** (99 %) | 17,785 | 35 % | 95 % |
 
-The two builds of one game hold **the same number of functions** — 9,824 and
-9,824, 21,054 and 21,054, 18,145 and 18,145 — and the tool matches 99 % of
+The two builds of one game hold **the same number of functions** — 9,596 and
+9,592, 20,561 and 20,560, 17,860 and 17,858 — and the tool matches 99 % of
 them, every matched pair having **exactly the same size**.
 
 The addresses, on the other hand, are not the same: the shift is constant
@@ -70,11 +70,11 @@ pieces of the program elsewhere, and it is why an address is not a name.
 
 | Pair | Matched | Same size | Same bytes | Median identity |
 |---|---|---|---|---|
-| `rc1` ↔ `rc2` | 5,205 of `rc1`'s 9,824 (56 %) | 5,205 | 61 % | **100 %** |
-| `rc2` ↔ `rc3` | 7,634 of `rc2`'s 21,054 (39 %) | 7,634 | 44 % | 96 % |
-| `rc1` ↔ `rc3` | 5,209 of `rc1`'s 9,824 (57 %) | 5,209 | 60 % | **100 %** |
+| `rc1` ↔ `rc2` | 5,504 of `rc1`'s 9,596 (57 %) | 5,504 | 56 % | **100 %** |
+| `rc2` ↔ `rc3` | 7,933 of `rc2`'s 20,561 (38 %) | 7,933 | 42 % | 97 % |
+| `rc1` ↔ `rc3` | 5,508 of `rc1`'s 9,596 (57 %) | 5,508 | 55 % | **100 %** |
 
-**5,151 functions of `rc1` have a counterpart in the three other builds at
+**5,454 functions of `rc1` have a counterpart in the three other builds at
 once**: the standalone title, `rc2` and `rc3`. They are the engine's own code,
 and more than half of those pairs are **literally the same bytes**.
 

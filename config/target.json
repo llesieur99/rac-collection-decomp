@@ -4,6 +4,7 @@
   "region": "USA",
   "title_id": "BCUS98282",
   "content_id": "UP9000-BCUS98282_00-RATCHETCLANK",
+  "content_id_status": "derived from the title, not measured: the real content id is in the encrypted NPDRM metadata",
   "disc": {
     "volume_label": "PS3VOLUME",
     "descriptor": "PS3_DISC.SFB",
@@ -118,5 +119,20 @@
       }
     }
   ],
+  "package": {
+    "path": "PS3_GAME/PKGDIR/PKG00/INSTALL.PKG",
+    "role": "the digital manual the disc carries",
+    "size": 11383008,
+    "sha256": "1543f2d7530bb786aa669657be03b00d16707692e5cf7896908f665dbdddf41b",
+    "content_id": "UP9000-NPUO70220_00-DMANRATCHETC0001",
+    "platform": "PS3",
+    "revision": "0x8000",
+    "encryption": "AES-128-CTR",
+    "entries": 13
+  },
+  "manifests": {
+    "disc": "config/disc-manifest.tsv",
+    "working_copy": "config/working-manifest.tsv"
+  },
   "matching_compiler": null
 }

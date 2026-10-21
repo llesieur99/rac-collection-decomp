@@ -55,6 +55,13 @@ KEY_EXEMPT = {
 
 TEXT_SUFFIXES = (".py", ".md", ".json", ".yml", ".yaml", ".txt", ".cfg", ".toml", "")
 
+# The placeholders that keep the private directories of the workspace in the
+# tree.  They hold nothing.
+PLACEHOLDERS = {
+    "work/lots/.gitkeep",
+    "work/analysis/.gitkeep",
+}
+
 # The pinned release of the target.
 EXPECTED_TITLE_ID = "BCUS98282"
 CONTENT_ID_PREFIX = "UP9000-BCUS98282_00-"
@@ -94,6 +101,8 @@ def tracked_files() -> list[str]:
 def check_tree() -> list[str]:
     problems = []
     for rel in tracked_files():
+        if rel in PLACEHOLDERS:
+            continue
         parts = rel.split("/")
         if any(part in FORBIDDEN_NAMES for part in parts[:-1]):
             problems.append(f"game-derived directory in the tree: {rel}")

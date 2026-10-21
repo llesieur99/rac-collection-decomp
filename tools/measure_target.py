@@ -34,6 +34,9 @@ EXECUTABLES = (
     ("RC3.ppu.self", "Ratchet & Clank: Up Your Arsenal"),
 )
 
+# The digital manual the disc carries, in PS3_GAME/PKGDIR.
+PACKAGE = "PS3_GAME/PKGDIR/PKG00/INSTALL.PKG"
+
 
 def sha256_of(path: str) -> str:
     digester = hashlib.sha256()
@@ -101,6 +104,23 @@ def measure(root: str) -> dict:
     # measurement: it stays flagged until the decryption is done privately.
     derived = f"UP9000-{sfo.title_id}_00-{''.join(ch for ch in title.upper() if ch.isalnum())[:12]:0<12}"
 
+    package = None
+    package_path = os.path.join(root, PACKAGE.replace("/", os.sep))
+    if os.path.exists(package_path):
+        from pkg import Pkg
+        with Pkg(package_path) as pkg:
+            package = {
+                "path": PACKAGE,
+                "role": "the digital manual the disc carries",
+                "size": os.path.getsize(package_path),
+                "sha256": sha256_of(package_path),
+                "content_id": pkg.content_id,
+                "platform": "PS3",
+                "revision": f"0x{pkg.revision:04X}",
+                "encryption": "AES-128-CTR" if pkg.encrypted else "SHA-1 keystream",
+                "entries": len(pkg.entries),
+            }
+
     return {
         "game": "Ratchet & Clank Collection",
         "platform": "PlayStation 3",
@@ -131,6 +151,11 @@ def measure(root: str) -> dict:
             "endianness": "little",
         },
         "executables": executables,
+        "package": package,
+        "manifests": {
+            "disc": "config/disc-manifest.tsv",
+            "working_copy": "config/working-manifest.tsv",
+        },
         "matching_compiler": None,
     }
 

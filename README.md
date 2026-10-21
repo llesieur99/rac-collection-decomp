@@ -29,6 +29,9 @@ The pinned release has been read and measured:
 | Executable kind | retail SELF (`SCE\0`), key revision `0x001C`, local licence |
 | PPU ELF | ELF64, big-endian, `EM_PPC`, 8 program headers, 35 section headers |
 | Symbol table | **none** — the retail executables are stripped |
+| Disc files | 13,149 — 12,429,594,706 bytes |
+| Working copy files | 13,148 — 12,161,159,250 bytes |
+| Identical on both sides | 10 (the metadata); the other 13,138 are encrypted on the disc |
 
 The release carries three titles plus a launcher:
 
@@ -49,10 +52,11 @@ Three facts shape the whole project:
    conventional section name; the section string table holds the SCE module
    names. Function boundaries and names have to be recovered by analysis, and
    every name in this project is a *hypothesis* until the code proves it.
-2. **On the disc, the executables are encrypted.** The disc holds the NPDRM
-   ciphertext; the working copy holds the same programs with the payload in
-   the clear. Both sides are pinned by hash in
-   [docs/DISC-PROVENANCE.md](docs/DISC-PROVENANCE.md).
+2. **On the disc, the game data is encrypted.** The disc holds 13,138 game
+   files encrypted with the disc key; the working copy holds the same files
+   in the clear. Ten metadata files are in the clear on both sides. Both
+   sides are pinned file by file, so a reader can always tell which one they
+   are looking at: [docs/DISC-PROVENANCE.md](docs/DISC-PROVENANCE.md).
 3. **The PPU is a big-endian PowerPC.** The compiler is not the Sony compiler
    of the PS2 projects. Until a PPU compiler and its options are qualified, no
    byte-exact claim is possible and the gates stay closed.
@@ -101,12 +105,20 @@ python tools/ppu_elf.py info     work/eboot.elf
 python tools/ppu_elf.py sections work/eboot.elf
 ```
 
-The manifest pins the bytes of a tree, and checks one against it:
+The manifest pins the bytes of a tree, and checks one against it. The two
+manifests of the release are in `config/`:
 
 ```sh
-python tools/manifest.py build  "path/to/PS3_GAME" --out work/manifest.tsv
-python tools/manifest.py verify "path/to/PS3_GAME" --manifest work/manifest.tsv
-python tools/manifest.py compare "path/to/PS3_GAME" "path/to/another/copy"
+python tools/manifest.py build  "path/to/release" --out work/manifest.tsv
+python tools/manifest.py verify "path/to/release" --manifest config/working-manifest.tsv
+python tools/manifest.py diff   config/disc-manifest.tsv config/working-manifest.tsv
+```
+
+The package reader, for the digital manual the disc carries:
+
+```sh
+python tools/pkg.py inspect "path/to/PS3_GAME/PKGDIR/PKG00/INSTALL.PKG"
+python tools/pkg.py list    "path/to/PS3_GAME/PKGDIR/PKG00/INSTALL.PKG"
 ```
 
 The configuration of the target is regenerated from a local copy:

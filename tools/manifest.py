@@ -7,6 +7,7 @@ it can be published; the files themselves stay in the contributor's workspace.
     python tools/manifest.py build   <root> --out <manifest.tsv>
     python tools/manifest.py verify  <root> --manifest <manifest.tsv>
     python tools/manifest.py compare <root> <other-root>
+    python tools/manifest.py diff    <manifest.tsv> <other-manifest.tsv>
 
 The manifest is a tab separated file: ``sha256``, ``size``, ``relative path``.
 Paths are relative to the scanned root and use forward slashes.
@@ -58,15 +59,26 @@ def build(root: str) -> list[str]:
 
 
 def read_manifest(path: str) -> dict[str, tuple[str, int]]:
-    """Return the manifest as ``{relative path: (sha256, size)}``."""
+    """Return the manifest as ``{relative path: (sha256, size)}``.
+
+    A byte order mark at the head of the file is ignored: the manifest of a
+    disc is written by a PowerShell script, and the mark would otherwise be
+    read as the first character of the first digest.
+    """
     out: dict[str, tuple[str, int]] = {}
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(path, "r", encoding="utf-8-sig") as handle:
         for line in handle:
-            line = line.rstrip("\n")
-            if not line:
+            line = line.rstrip("\r\n")
+            if not line.strip():
                 continue
-            digest, size, relative = line.split("\t", 2)
-            out[relative] = (digest, int(size))
+            parts = line.split("\t")
+            if len(parts) != 3:
+                continue
+            digest, size, relative = parts
+            try:
+                out[relative] = (digest, int(size))
+            except ValueError:
+                continue
     return out
 
 
@@ -106,14 +118,6 @@ def cmd_verify(args: argparse.Namespace) -> int:
     return 1 if bad else 0
 
 
-def tree_digests(root: str) -> dict[str, tuple[str, int]]:
-    """Return ``{relative path: (sha256, size)}`` for a tree."""
-    out: dict[str, tuple[str, int]] = {}
-    for relative, absolute, size in iter_files(root):
-        out[relative] = (digest_of(absolute), size)
-    return out
-
-
 def cmd_compare(args: argparse.Namespace) -> int:
     left = tree_digests(args.left)
     right = tree_digests(args.right)
@@ -129,6 +133,35 @@ def cmd_compare(args: argparse.Namespace) -> int:
         print(f"only in {args.right}: {relative}")
     print(f"{same} identical file(s), "
           f"{len(set(left) & set(right)) - same} differing, "
+          f"{len(set(left) ^ set(right))} unpaired")
+    return 0
+
+
+def tree_digests(root: str) -> dict[str, tuple[str, int]]:
+    """Return ``{relative path: (sha256, size)}`` for a tree."""
+    out: dict[str, tuple[str, int]] = {}
+    for relative, absolute, size in iter_files(root):
+        out[relative] = (digest_of(absolute), size)
+    return out
+
+
+def cmd_diff(args: argparse.Namespace) -> int:
+    """Compare two manifests, without touching any file."""
+    left = read_manifest(args.left)
+    right = read_manifest(args.right)
+    shared = set(left) & set(right)
+    same = 0
+    for relative in sorted(shared):
+        if left[relative] == right[relative]:
+            same += 1
+        else:
+            print(f"differs {relative}")
+    for relative in sorted(set(left) - set(right)):
+        print(f"only in {args.left}: {relative}")
+    for relative in sorted(set(right) - set(left)):
+        print(f"only in {args.right}: {relative}")
+    print(f"{len(left)} file(s) in {args.left}, {len(right)} in {args.right}")
+    print(f"{same} identical, {len(shared) - same} differing, "
           f"{len(set(left) ^ set(right))} unpaired")
     return 0
 
@@ -156,6 +189,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     p_compare.add_argument("left", help="first tree")
     p_compare.add_argument("right", help="second tree")
     p_compare.set_defaults(func=cmd_compare)
+
+    p_diff = sub.add_parser("diff", help="compare two manifests")
+    p_diff.add_argument("left", help="first manifest")
+    p_diff.add_argument("right", help="second manifest")
+    p_diff.set_defaults(func=cmd_diff)
 
     args = parser.parse_args(argv)
     return args.func(args)

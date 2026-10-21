@@ -1,110 +1,136 @@
 # Provenance: the disc, the working copy and the hashes
 
 A matching project is only as good as the bytes it measures. This document
-records where the working copy comes from, how it differs from the disc, and
-how any contributor can check that they are looking at the same thing.
+records where the working copy comes from, how it relates to the disc, and how
+any contributor can check that they are looking at the same thing.
 
-## The two sides
+## The finding
 
-| | The disc | The working copy |
+**The disc holds the game data encrypted; the working copy holds the same
+files in the clear.** The file names are the same, the file sizes are the same,
+and the contents differ.
+
+This is not a modification and not a different revision. It is the PS3 disc
+encryption: a PS3 disc stores its game files encrypted with a key that belongs
+to the disc, and the console decrypts them on the fly. A copy taken with a
+tool that knows the disc key holds the plaintext.
+
+The evidence, in the order it was measured:
+
+| | |
+|---|---|
+| File names | **identical** — 13,148 files on both sides |
+| File sizes | **identical** — not one file differs in size |
+| The 10 metadata files | **byte for byte identical** (see below) |
+| The other 13,138 files | **different content, same size** |
+| The content of the copy | **plaintext**: `BIKi` on the Bink movies, `<?xml …` on the credits, `PS3LICDA` on the licence data, `\0PSF` on the metadata |
+| The content of the disc | **high entropy**: 7.97 to 7.98 bits per byte on the same files, against 3.02 to 7.25 in the clear |
+| The XOR of the two | **no repeating period**, so the cipher is a block or stream cipher and not a simple mask |
+
+A stream cipher preserves the length exactly; that is why every size matches.
+
+## The numbers
+
+| | Disc | Working copy |
 |---|---|---|
-| Where | the optical drive of the machine that holds it | the contributor's workspace |
-| `PS3_DISC.SFB` | 1,536 bytes, SHA-256 `3415751b…` | **identical** |
-| `PS3_GAME/PARAM.SFO` | 1,040 bytes, SHA-256 `95d46880…` | **identical** |
-| `PS3_GAME/USRDIR/EBOOT.BIN` | NPDRM ciphertext | payload in the clear |
-| `PS3_GAME/USRDIR/RC1.ppu.self` | NPDRM ciphertext | payload in the clear |
-| `PS3_GAME/USRDIR/RC2.ppu.self` | NPDRM ciphertext | payload in the clear |
-| `PS3_GAME/USRDIR/RC3.ppu.self` | NPDRM ciphertext | payload in the clear |
-| `PS3_UPDATE/PS3UPDAT.PUP` | 268,435,456 bytes | **absent** |
+| Files | 13,149 | 13,148 |
+| Total size | 12,429,594,706 | 12,161,159,250 |
+| Identical to the other side | 10 | 10 |
+| Different content, same size | 13,138 | 13,138 |
+| Present only on this side | 1 (`PS3_UPDATE/PS3UPDAT.PUP`) | 0 |
 
-The metadata is identical on both sides; the four executables have the same
-size but different bytes, because the disc holds the NPDRM ciphertext and the
-working copy holds the same programs decrypted.
+The ten files that are in the clear on the disc are the ones the console has
+to read before it can decrypt anything else:
 
-The update file is on the disc and not in the working copy. It is worth
-examining on its own: an update can carry a newer build of the launcher.
+```
+PS3_DISC.SFB
+PS3_GAME/ICON0.PNG
+PS3_GAME/PARAM.SFO
+PS3_GAME/PIC1.PNG
+PS3_GAME/PS3LOGO.DAT
+PS3_GAME/PKGDIR/ICON0.PNG
+PS3_GAME/PKGDIR/PARAM.SFO
+PS3_GAME/PKGDIR/PKG00/ICON0.PNG
+PS3_GAME/PKGDIR/PKG00/INSTALL.PKG
+PS3_GAME/PKGDIR/PKG00/PARAM.SFO
+```
 
-## The pinned hashes
+The package is in the clear too: a `.pkg` carries its own encryption layer,
+so the disc does not encrypt it again.
 
-### The disc
+## The two manifests
 
-| File | Size | SHA-256 |
-|---|---|---|
-| `PS3_DISC.SFB` | 1,536 | `3415751b31105c24dc4b77eddc99cafa7cf2bdc6412b4989f91bd4dcdf3402db` |
-| `PS3_GAME/PARAM.SFO` | 1,040 | `95d46880b05a87a614a01d3a07f4222e92aac0ab92405b646a9182cd204bce83` |
-| `PS3_GAME/USRDIR/EBOOT.BIN` | 2,258,408 | `263c79c3819a52eff025d13a3c5d38ea6a2bd497ce21bfabfa7518a4164a3f80` |
-| `PS3_GAME/USRDIR/RC1.ppu.self` | 9,767,328 | `27c4d0a316c261bbce7b6ed3b1159026fe8a017183d83609617ada4a13e595b2` |
-| `PS3_GAME/USRDIR/RC2.ppu.self` | 21,072,432 | `7f9c57c87f96f25efe738017128c5f5d947c93b2d21ec7d6866d583d2575a9b4` |
-| `PS3_GAME/USRDIR/RC3.ppu.self` | 13,339,600 | `868dba6fda115b31b9fe0a4098d3966deda6b0e87e40b690c8281b68e843ab17` |
+Both sides are pinned, file by file, in the repository:
 
-These are the **encrypted** bytes. They are the retail identity of the
-release: a reader who hashes the disc must obtain exactly these values.
+| File | What it is |
+|---|---|
+| [config/disc-manifest.tsv](../config/disc-manifest.tsv) | the retail disc: 13,149 files, the encrypted bytes |
+| [config/working-manifest.tsv](../config/working-manifest.tsv) | the analysis target: 13,148 files, the decrypted bytes |
 
-### The working copy
+Each line is `sha256`, `size`, `relative path`, tab separated.
 
-| File | Size | SHA-256 |
-|---|---|---|
-| `PS3_GAME/USRDIR/EBOOT.BIN` | 2,258,408 | `0f0e1fa0a36a762fb91402566b7466d05329700b072461d82b2b1d6abd6981cd` |
-| `PS3_GAME/USRDIR/RC1.ppu.self` | 9,767,328 | `c084c3bd741477ac0ea77a9b770461373e94c196f9aa609e78a7f1ba778480b1` |
-| `PS3_GAME/USRDIR/RC2.ppu.self` | 21,072,432 | `0913d021cb68a22da78a1d2e72ab1003243dc00ffae556b6d6b5e74d2616e392` |
-| `PS3_GAME/USRDIR/RC3.ppu.self` | 13,339,600 | `697e98331a5a06892272cded3a2d85e0e4679d655f2d8cf0c811ac85dc89b09e` |
-
-And the PPU ELF rebuilt from each of them:
-
-| File | ELF size | SHA-256 of the rebuilt ELF |
-|---|---|---|
-| `EBOOT.BIN` | 2,255,976 | `0f79ef09bb6761cad24daf690c94ce79000d09367a5e82604f6d05342b82d89c` |
-| `RC1.ppu.self` | 9,764,896 | `9be5a74c9834742c2dbff422a091e84699f56e29c423288f9e96f94243fde8e7` |
-| `RC2.ppu.self` | 21,070,000 | `9401f6fb3061d7bb3f02eb3bc9d84d4a885b5e6c021dc20e6563aad924eb62fc` |
-| `RC3.ppu.self` | 13,337,168 | `9c822963e58f2bc1612b039624e95e3e893d0883617bca513ad572318d21e702` |
-
-The machine-readable form of all of this is `config/target.json`, and it is
-regenerated by `tools/measure_target.py`, never typed by hand.
+The disc manifest is the **retail identity** of the release: a reader who
+hashes their own disc must obtain exactly these values, and that is how they
+know they have the same disc. The working manifest is the **analysis
+identity**: a reader who decrypted their disc must obtain exactly these
+values, and that is how they know they are working from the same bytes.
 
 ## Checking a copy
 
-The manifest records the SHA-256 and the size of every file of a tree:
-
 ```sh
-python tools/manifest.py build  "path/to/extracted/release" --out work/manifest.tsv
-python tools/manifest.py verify "path/to/extracted/release" --manifest work/manifest.tsv
-python tools/manifest.py compare "path/to/copy/a" "path/to/copy/b"
+python tools/manifest.py build  "path/to/release" --out work/manifest.tsv
+python tools/manifest.py verify "path/to/release" --manifest config/working-manifest.tsv
+python tools/manifest.py diff   config/disc-manifest.tsv config/working-manifest.tsv
 ```
 
-`compare` reports the files that differ, and by how much, which is how the
-encrypted and the decrypted sides were told apart in the first place.
+`verify` checks a tree against a manifest. `diff` compares two manifests
+without touching a single file, and is how the table above was produced.
 
 ## Reading the disc directly
 
 The optical drive of a machine that holds the disc can be hashed without
 copying anything: read the files over a remote session, hash them there, and
-keep only the manifest. A ready-made script lives in `tools/disc_manifest.ps1`.
+keep only the manifest. A ready-made script lives in
+`tools/disc_manifest.ps1`.
 
 ```powershell
 powershell -File tools/disc_manifest.ps1 -Root E:\ -Out C:\rac-disc-manifest.tsv
 ```
 
-The manifest of a disc is a private receipt: it names the retail files of one
-copy, and it stays in the workspace.
+The script writes plain UTF-8 with Unix line endings and no byte order mark,
+so that the manifest can be read as it is by the tools of the repository.
 
 ## The update file
 
 `PS3_UPDATE/PS3UPDAT.PUP` is on the disc and is not in the working copy. It
-is a container of the system's own update packages. Two things are worth
-checking when the update is read:
+is 268,435,456 bytes and hashes to
+`d03c83dcf22575e220f455eea03a8bbdc33e0c71074b609c719bcb83a7d03042`. It is
+the system's own update container; it is not part of this project and must
+never be published.
 
-* whether it carries a newer build of the collection launcher, which would
-  make the disc's `EBOOT.BIN` older than the newest retail build;
-* whether it carries the PS3 system's own firmware, which is **not** part of
-  this project and must never be published.
+## The keys
+
+Two different keys are involved, and neither belongs here:
+
+* the **disc key** decrypts the game files. It is the key the console knows
+  for this disc, and it is what a disc ripper needs;
+* the **NPDRM key** protects the metadata of the executables. The working
+  copy still carries that layer: the control information of each SELF is
+  readable, but the metadata block is still ciphertext.
+
+The method is public in both cases and RPCS3 implements it. The keys belong
+to the console and to the person who owns it, and the repository publishes
+neither. See [SELF-FORMAT.md](SELF-FORMAT.md) for the NPDRM chain.
 
 ## The rules that follow from this
 
 * The working copy is a **reference**, not a deliverable. It stays in the
   workspace, and the repository keeps only hashes and structure.
 * No disc key, no licence file and no key material is ever published, here or
-  in a pull request. The decryption method is public and RPCS3 implements it;
-  the keys are the console's.
+  in a pull request.
 * A number that is not measured is labelled as derived. The content id in
   `config/target.json` is derived from the title, because the real one is
   encrypted.
+* The pinned hashes of the four executables, on both sides, are in
+  [config/target.json](../config/target.json) and in
+  [SELF-FORMAT.md](SELF-FORMAT.md).

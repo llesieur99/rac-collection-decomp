@@ -45,6 +45,10 @@ GPL-3.0 and all authored by the same contributor:
 `tools/ppu_elf.py` is shared with `rac8-act-decomp` and carries its origin
 here; it is covered by the same GPL-3.0 licence.
 
+`tools/pkg.py` and `tools/aes.py` are shared with `rac8-act-decomp` as well.
+They read a Sony `.pkg` container, which is the format of the digital manual
+the disc carries; they are covered by the same GPL-3.0 licence.
+
 ## The game
 
 Ratchet & Clank Collection is a trademark of Sony Interactive Entertainment and

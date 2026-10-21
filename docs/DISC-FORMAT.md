@@ -83,17 +83,41 @@ python tools/ps3disc.py entries "path/to/PS3_DISC.SFB"
 
 ## The disc is not a folder
 
-Two things about this disc decide the whole workflow:
+Three things about this disc decide the whole workflow:
 
-1. **The executables are encrypted on the disc.** Reading `E:\PS3_GAME\USRDIR\EBOOT.BIN`
-   through the drive gives the NPDRM ciphertext; the first bytes are noise.
-   The working copy holds the same program with the payload in the clear, and
-   its first bytes are the `SCE\0` header.
-2. **The update is not in the working copy.** The disc holds `PS3_UPDATE/PS3UPDAT.PUP`;
-   the extracted game tree does not.
+1. **The game files are encrypted on the disc.** Reading
+   `E:\PS3_GAME\USRDIR\rc3\ps3data\movies\mpeg9.bik` through the drive gives
+   7.98 bits per byte of noise; the working copy holds the same file as a
+   plain Bink video. Only ten metadata files are in the clear on the disc.
+   See [DISC-PROVENANCE.md](DISC-PROVENANCE.md) for the full measurement.
+2. **The executables carry a second layer.** The SELF container of each
+   executable still holds an encrypted NPDRM metadata block, even in the
+   decrypted copy. See [SELF-FORMAT.md](SELF-FORMAT.md).
+3. **The update is not in the working copy.** The disc holds
+   `PS3_UPDATE/PS3UPDAT.PUP`; the extracted game tree does not.
 
-Both differences are pinned by hash in [DISC-PROVENANCE.md](DISC-PROVENANCE.md),
-so a reader can always tell which side they are looking at.
+All three differences are pinned by hash in
+[DISC-PROVENANCE.md](DISC-PROVENANCE.md), so a reader can always tell which
+side they are looking at.
+
+## What else the disc holds
+
+`PS3_GAME/PKGDIR/` carries the **digital manual** of the collection, as a
+retail package:
+
+| File | Size |
+|---|---|
+| `PKGDIR/PARAM.SFO` | 344 |
+| `PKGDIR/PKG00/INSTALL.PKG` | 11,383,008 |
+| `PKGDIR/PKG00/PARAM.SFO` | 308 |
+
+The package is `NPUO70220`, content id
+`UP9000-NPUO70220_00-DMANRATCHETC0001`, category `IP` (installable). It
+holds the manual itself: `USRDIR/EBOOT.BIN` and the `digiman*.sdat` documents.
+It is **not** an update of the game, and it is not part of the decompilation
+target; it is recorded here because it is on the disc, and because its
+content id shows the naming convention the real content id of the release
+follows. The reader is [`tools/pkg.py`](../tools/pkg.py).
 
 ## What this repository does not hold
 

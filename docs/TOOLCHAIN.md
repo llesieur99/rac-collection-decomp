@@ -54,6 +54,45 @@ reproduce the retail bytes exactly.
 workspace, and the repository never ships it, an SDK header or an SDK
 library. What the repository holds is the written result.
 
+### The exact compiler is not published
+
+The public archive of the toolchain sources lists every version Sony
+distributed, with the revision each one reports:
+
+| Version | Stamp | Date |
+|---|---|---|
+| `toolchain-src-2.7.0-GCC411` | `4.1.1 (SDK270, $Rev: 3019 $)` | 2009-04-09 |
+| `toolchain-src-2.8.0-GCC411` | `4.1.1 (SDK280, $Rev: 3316 $)` | 2009-09-08 |
+| `toolchain-src-3.0.0-GCC411` | `4.1.1 (SDK300, $Rev: 3333 $)` | 2009-12-21 |
+| `toolchain-src-3.3.0-GCC411` | `4.1.1 (SDK330, $Rev: 3381 $)` | 2010-05-21 |
+| `toolchain-src-3.4.0-GCC411` | `4.1.1 (SDK340, $Rev: 3394 $)` | 2010-05-24 |
+| `toolchain-src-3.5.0-GCC411` | `4.1.1 (SDK350, $Rev: 3420 $)` | 2010-12-14 |
+| `toolchain-src-3.6.0-GCC411` | `4.1.1 (SDK360, $Rev: 3455 $)` | 2011-04-07 |
+| `toolchain-src-3.7.0-GCC411` | `4.1.1 (SDK370, $Rev: 3509 $)` | 2011-08-23 |
+| **`the retail build`** | **`4.1.1 (SDK400, $Rev: 3538 $)`** | — |
+| `toolchain-src-4.2.0-GCC411` | `4.1.1 (SDK420, $Rev: 3547 $)` | 2012-06-07 |
+
+**The revision `3538` is between `3509` and `3547`, and it was never
+distributed.** The SDK 4.0 is the one version the retail program was built
+with, and its sources are not public. The five objects of the SDK 3.6.0
+(`$Rev: 3455 $`) *are* public, and that build reproduces them.
+
+Two public builds bracket the target, and both are qualified here. The gap
+is not academic: it was measured, on a body of the launcher that compares a
+byte with zero.
+
+| Compiler | The comparison it emits |
+|---|---|
+| the retail build | `cmpwi cr0, r6, 0` — the byte is compared directly, on **CR0** |
+| SDK 2.7.0 and SDK 4.2.0 | `cmpwi 7, r0, 0` — the same comparison, on **CR7** |
+
+The two public compilers behave *identically* here, and neither behaves like
+the retail one. The 64-bit ABI reserves CR7 for the boolean values and CR0
+for the flags of a comparison; the retail code compares on CR0. Getting the
+same bytes out of a body with a comparison therefore needs the compiler the
+retail used — the one that is not public. The bodies that *are* reproduced
+have no comparison, and the two public builds agree on them.
+
 ## The flags
 
 | Flag | Why |
@@ -158,6 +197,36 @@ What is still missing: the bodies are all of the same shape — a frame, a
 call, an epilogue. The gate stays open until the profile holds on bodies
 with arguments, with branches and with arithmetic, and until the
 complete-program gate can be attempted.
+
+### The body that shows the limit
+
+The launcher holds a body of the other shapes at `0x38D20`: an argument (a
+pointer, read twice), an increment, a comparison of a byte with zero, an
+unconditional write and a call.
+
+```
+0x38D2C  80A30078  lwz  r5,120(r3)     the counter
+0x38D30  88C30008  lbz  r6,8(r3)       the byte
+0x38D34  30A50001  addic r5,r5,1      the increment
+0x38D38  2C060000  cmpwi cr0,r6,0     the comparison
+0x38D3C  90A30078  stw  r5,120(r3)     the write
+0x38D40  40820008  bc   0x38D48       the branch
+0x38D44  4BFFFBC5  bl   0x38908        the call
+```
+
+Sixteen source forms were written and compiled to find the one that gives
+this code. Every one of them reproduces the frame, the epilogue and the
+shape; none reproduces the *comparison*, because the two public compilers
+put it on CR7 where the retail code puts it on CR0. The measurement is in
+`work/gate/`: the forms are `v1` to `v16`, and the tool that compiles them
+all is `work/gate/try_many.py`.
+
+That is the shape of the remaining work: the profile is right, the sources
+are recoverable, and the *compiler* that turns them into the retail bytes is
+the one version that was not published. Two ways out: the profile is
+qualified on the bodies that do not compare, and the bodies that compare are
+left for a compiler that can be built from a private SDK 4.0 — or for the
+equivalent source form to be found, which is cheaper to try first.
 
 The toolchain gate of [GATES.md](GATES.md) stays open until then.
 

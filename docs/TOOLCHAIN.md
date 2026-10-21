@@ -353,10 +353,32 @@ unconditional write and a call.
 
 Sixteen source forms were written and compiled to find the one that gives
 this code. Every one of them reproduces the frame, the epilogue and the
-shape; none reproduces the *comparison*, because the two public compilers
-put it on CR7 where the retail code puts it on CR0. The measurement is in
-`work/gate/`: the forms are `v1` to `v16`, and the tool that compiles them
-all is `work/gate/try_many.py`.
+shape; none reproduces the retail code, and the reason is now measured
+rather than guessed.
+
+The retail body compares the byte on **CR0** and writes the counter
+**between the comparison and the branch**. The second one is the
+instructive: it means the source has the write in *both* branches of the
+test, and that the **compiler merges the two writes into one, before the
+branch**. None of the four public compilers merges them: they keep one write
+in each branch. The retail's compiler does, and that behaviour is what the
+SDK 4.0 has.
+
+So the lock has two faces, and they are of a different kind:
+
+* the **register** of the comparison, which the SDK 4.0 hands out first
+  (CR0) where the public ones hand out CR7 — a one line patch away;
+* the **merging of the two writes**, which is a behaviour of the code
+  generator and not an option — the SDK 4.0 has it, the public ones do not,
+  and the difference between the revisions `3455` and `3538` is where it
+  appeared.
+
+The measurement is in `work/gate/`: the forms are `v1` to `v16`, and the
+tool that compiles them all is `work/gate/try_many.py`. The SDK 3.7.0 build
+of the lot `wave1-toolchain` sweeps the sixteen forms under four sets of
+options: **none of them reproduces the retail bytes**, and the seven that
+produce a comparison on CR0 are the seven whose source shape sends the
+comparison to CR0 on its own.
 
 A second body, `0x2B4A4`, shows the other difference: the table of
 contents, measured above. The data that the body reads was read too: the
@@ -368,7 +390,7 @@ what the retail code points at.
 That is the shape of the remaining work: the profile is right, the sources
 are recoverable, and the *compiler* that turns them into the retail bytes is
 the one version that was not published. Two ways out: the profile is
-qualified on the bodies that do not compare and do not touch the globals,
+qualified on the bodies that do not compare and do not merge their writes,
 and the bodies that do are left for a compiler that can be built from a
 private SDK 4.0 — or for the equivalent source form to be found, which is
 cheaper to try first.

@@ -14,9 +14,10 @@ by evidence, and it names a function only when the evidence is there.
 |---|---|
 | `program` | which of the four executables the function belongs to |
 | `address` | the virtual address of the first instruction |
-| `size` | the length of the body, in bytes |
+| `size` | the length of the block the function occupies, in bytes |
+| `instructions` | the number of instructions of the body |
 | `name` | the proposed name, or the placeholder `func_<address>` |
-| `state` | `unbounded`, `bounded`, `named`, `nonmatching` or `matching` |
+| `state` | `unbounded`, `bounded`, `named`, `proposed`, `nonmatching` or `matching` |
 | `evidence` | what proves the boundary and the name |
 
 `config/functions.tsv` holds the machine-readable form, one row per
@@ -50,17 +51,37 @@ walk follows the branches, stops at an indirect jump, and does not leave the
 function: a branch that goes outside is a tail call, and the function ends
 where the branch is.
 
-The tool reports how it ended: `return`, `branch`, `indirect` or `limit`.
+Two bounds keep the walk honest, and both were needed:
+
+* **the entry of the next function.** The walk stops as soon as it lands on
+  the entry of another function: the flow has left the function, and the next
+  one starts there. Without that bound the walk wanders into the code that
+  follows — a branch that skips over a function lands in the middle of the
+  next one — and reports an extent that covers half the program. It was
+  measured: the extents of the catalogue summed to **78 gigabytes** before the
+  bound, and to **6.7 megabytes** after it, for the same 20,939 functions.
+* **the contiguous block.** The walk may reach further than the function —
+  a jump table, or a block of data read as code. The extent of a function is
+  the block of code that starts at its entry and that the walk covered: the
+  `size` column is that block, and `instructions` counts the instructions in
+  it.
+
+The tool reports how the walk ended: `return`, `branch`, `entry`, `indirect`
+or `limit`.
 
 ## The result
 
 | Program | Functions | Of which the end is a return |
 |---|---|---|
-| `EBOOT` — the collection launcher | 1,290 | 1,077 |
-| `RC1` — Ratchet & Clank (2002) | 3,054 | 2,591 |
-| `RC2` — Going Commando | 9,884 | 8,383 |
-| `RC3` — Up Your Arsenal | 6,711 | 5,677 |
-| **Total** | **20,939** | **17,728** |
+| `EBOOT` — the collection launcher | 1,290 | 1,070 |
+| `RC1` — Ratchet & Clank (2002) | 3,054 | 2,569 |
+| `RC2` — Going Commando | 9,884 | 8,192 |
+| `RC3` — Up Your Arsenal | 6,711 | 5,614 |
+| **Total** | **20,939** | **17,445** |
+
+The median function is 216 bytes long, and 99 % of them are under 2,048 bytes.
+One function of `RC3` is bigger than 20 kilobytes: the walk covered 221,300
+bytes of it, and it is the only one of that kind in the release.
 
 The names are not known yet, so every function carries the placeholder of its
 address. The state of every one of them is `bounded`: the extent is known and

@@ -81,17 +81,32 @@ bodies of different shapes, and the complete-program gate can be attempted.
 the prologue of the SDK, and the targets of the calls. The end of a function
 is the return that no path falls through from.
 
-**The result.** 20,939 functions, of which 17,728 end on a return:
+**The result.** 20,939 functions, of which 17,445 end on a return:
 
 | Program | Functions | Ending on a return |
 |---|---|---|
-| `EBOOT` — the collection launcher | 1,290 | 1,077 |
-| `RC1` — Ratchet & Clank (2002) | 3,054 | 2,591 |
-| `RC2` — Going Commando | 9,884 | 8,383 |
-| `RC3` — Up Your Arsenal | 6,711 | 5,677 |
+| `EBOOT` — the collection launcher | 1,290 | 1,070 |
+| `RC1` — Ratchet & Clank (2002) | 3,054 | 2,569 |
+| `RC2` — Going Commando | 9,884 | 8,192 |
+| `RC3` — Up Your Arsenal | 6,711 | 5,614 |
 
 The names are not known yet: every function carries the placeholder of its
 address, and its state is `bounded`. See [CATALOGUE.md](CATALOGUE.md).
+
+**Needs.** Nothing more.
+
+## Step 4b — match the builds to each other *(done)*
+
+**What.** The collection's copy of a game and the standalone PlayStation
+Network title of the same game are two builds of one program; the three
+games of the series share an engine. The relation between them is measured
+on the body of the functions, never on the address.
+
+**The result.** 99 % of the functions of a game are matched with their
+counterpart in the other build, every matched pair having exactly the same
+size; and the engine's own code is matched across the three games, more than
+half of those pairs being literally the same bytes. The table is in
+`config/correspondence.tsv`. See [CORRESPONDENCE.md](CORRESPONDENCE.md).
 
 **Needs.** Nothing more.
 
@@ -139,13 +154,20 @@ the catalogue stops being maintained by hand.
 
 **Needs.** The entry convention, once it is settled by the first wave.
 
-## Step 8 — the shared engine
+## Step 8 — the shared engine *(the relation is measured; the names are not)*
 
 **What.** The three titles share an engine. Once the engine's vocabulary is
 recovered on one title, the other two become much cheaper: the same name, the
 same layout, a different address.
 
-**Needs.** Steps 4 to 6 on one title.
+**What is done.** The relation itself is measured: 1,226 functions of `rc1`
+have a counterpart in the three other builds at once, and more than half of
+those pairs are the same bytes — so a name proved on the engine's code of one
+game is proved on the other games by the same body, at another address. See
+[CORRESPONDENCE.md](CORRESPONDENCE.md).
+
+**What is left.** The vocabulary: the names of the engine's functions, which
+is step 5.
 
 ## Step 9 — the update package
 

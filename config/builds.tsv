@@ -1,0 +1,7 @@
+game	build_a	build_b	functions_a	functions_b	text_a	text_b	matched	share	same_size	identical_median	identical_min	delta_median	delta_blocks	methods
+collection-RC1	collection-RC1	NPUA80643	3054	3054	7583720	7583080	3047	99	3047	95.2	60.0	-62864	77	ops+imm+size=1304;ops+imm+size?=30;ops+size=1637;ops+size?=76
+collection-RC2	collection-RC2	NPUA80644	9884	9884	19691880	19691240	9873	99	9873	93.0	56.2	-84704	227	ops+imm+size=1509;ops+imm+size?=85;ops+size=3471;ops+size?=4808
+collection-RC3	collection-RC3	NPUA80645	6711	6711	12267240	12264552	6691	99	6691	93.7	47.4	-43024	140	ops+imm+size=2021;ops+imm+size?=106;ops+size=4258;ops+size?=305;shape+size=1
+collection-RC1	collection-RC1	collection-RC2	3054	9884	7583720	19691880	1242	40	1242	100.0	25.0	12090584.0	140	ops+imm+size=1018;ops+imm+size?=27;ops+size=177;ops+size?=16;shape+size=4
+collection-RC2	collection-RC2	collection-RC3	9884	6711	19691880	12267240	2182	22	2182	95.7	35.0	-7612208.0	707	ops+imm+size=1078;ops+imm+size?=93;ops+size=885;ops+size?=121;shape+size=3;shape+size?=2
+collection-RC1	collection-RC1	collection-RC3	3054	6711	7583720	12267240	1263	41	1263	100.0	30.8	4487792	166	ops+imm+size=976;ops+imm+size?=32;ops+size=230;ops+size?=16;shape+size=8;shape+size?=1

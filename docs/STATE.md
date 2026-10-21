@@ -26,7 +26,8 @@ compiled body.
 | Measure the link map | **done** — the SCE modules, per executable |
 | Find the related titles | **done** — `NPUA80644`, `NPUA80645`, `NPUA80965` |
 | Validate the rebuild | **done** — against the published hash of the sibling project |
-| Recover the function boundaries | **done** — 20,939 functions, 17,728 ending on a return |
+| Recover the function boundaries | **done** — 20,939 functions, 17,445 ending on a return |
+| Match the builds to each other | **done** — 99 % of the functions, function by function |
 | Qualify a PPU compiler | **provisionally** — 6 bodies byte-exact, 4 runtime functions, 2 toolchains |
 | Name the functions | **not started** |
 | Author the first body | **done** — 6 bodies in `src/text/`, all byte-exact |
@@ -64,8 +65,15 @@ compiled body.
   uses.
 * **The boundaries of the functions are known**: two independent methods — the
   prologue of the SDK and the targets of the calls — agree on 20,939
-  functions, of which 17,728 end on a return that no path falls through
+  functions, of which 17,445 end on a return that no path falls through
   from. The names are not known yet. See [CATALOGUE.md](CATALOGUE.md).
+* **The builds correspond to each other, function by function.** The
+  collection's copy of a game and the standalone PlayStation Network title
+  of the same game hold the same number of functions, and 99 % of them are
+  matched by the body — every matched pair having exactly the same size. The
+  engine's own code is shared by the three games, and more than half of
+  those pairs are literally the same bytes. See
+  [CORRESPONDENCE.md](CORRESPONDENCE.md).
 * **The toolchain is built and provisionally qualified**: two builds of the
   Cell OS Lv-2 toolchain — the SDK 2.7.0 and the SDK 4.2.0 — reproduce the
   same six bodies of the launcher byte for byte, and four functions of the
@@ -94,12 +102,11 @@ compiled body.
 
 * **The content id is derived, not measured.** It is encrypted in the NPDRM
   metadata. `config/target.json` says so.
-* **The compiler is unknown.** No stamp has been recovered from the rebuilt
-  ELF yet. The sibling projects found `SCEI PPC GCC 4.1.1` on A Crack in
-  Time; whether the collection was built with the same compiler is an open
-  question, and it is the first thing to measure.
-* **The engine is shared, but not proven to be identical.** The three titles
-  come from one engine; how much they share is a hypothesis.
+* **The engine is shared, and it is now measured.** The three titles come from
+  one engine: 1,226 functions of `rc1` have a counterpart in the three other
+  builds at once, and more than half of those pairs are the same bytes. What
+  is not measured is the *name* of any of them — that is the naming, and it
+  is not started.
 * **The disc's update file has not been read.** `PS3UPDAT.PUP` is on the disc
   and not in the working copy. It may carry a newer launcher.
 
@@ -107,15 +114,15 @@ compiled body.
 
 In order:
 
-1. **Recover the compiler stamp** of each rebuilt ELF, and identify the
-   compiler that produced it. Without it, the toolchain gate cannot even be
-   attempted.
-2. **Build a PPU toolchain** and qualify it against the stamp, as the sibling
-   projects did for the PS2. The `ps3gcc` sources are the obvious candidate;
-   the qualification is the hard part, not the build.
-3. **Recover the first boundaries** in the launcher, the smallest program of
-   the four, and write them in `config/functions.tsv`.
-4. **Author the first body** and take it through the gates.
+1. **Name the functions.** The compiler is known, the toolchain is
+   provisionally qualified, the boundaries are known, and the builds
+   correspond to each other function by function. What is missing is the
+   vocabulary: the strings the code touches, and the sibling projects' names.
+2. **Hold the toolchain profile on bodies of other shapes** — with arguments,
+   with branches, with arithmetic — so that the profile is not qualified on
+   six bodies of the same shape.
+3. **Read the update container** of the disc, and decide whether it carries a
+   newer launcher than the pinned one.
 
 ## The private workspace
 

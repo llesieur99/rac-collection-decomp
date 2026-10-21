@@ -26,7 +26,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ppu_elf import ElfError, PpuElf  # noqa: E402
-from ppu_funcs import build_catalogue, function_extent  # noqa: E402
+from ppu_funcs import build_catalogue, function_body  # noqa: E402
 
 # The programs of the release, and the name each function gets in the
 # catalogue.
@@ -59,22 +59,27 @@ def main() -> int:
         with open(path, "rb") as handle:
             elf = PpuElf(handle.read(), path)
         catalogue = build_catalogue(elf)
+        # The walk of a function stops when it lands on the entry of the next
+        # one, so the entries of the program are needed before the walk.
+        entries = {address for address, _kind, _evidence in catalogue}
         kept = 0
         for address, kind, evidence in catalogue:
             if evidence != "both":
                 continue
-            end, why = function_extent(elf, address)
+            end, why, body = function_body(elf, address, entries=entries)
             if end <= address:
                 continue
-            rows.append((program, address, end - address, f"func_{address:08X}",
-                         STATE_BOUNDED, f"prologue+call;end:{why}"))
+            rows.append((program, address, end - address, len(body),
+                         f"func_{address:08X}", STATE_BOUNDED,
+                         f"prologue+call;end:{why}"))
             kept += 1
         print(f"{program:6s} {kept:6d} functions ({role})")
 
     with open(args.out, "w", encoding="utf-8", newline="\n") as out:
-        out.write("program\taddress\tsize\tname\tstate\tevidence\n")
-        for program, address, size, name, state, evidence in rows:
-            out.write(f"{program}\t0x{address:08X}\t{size}\t{name}\t{state}\t{evidence}\n")
+        out.write("program\taddress\tsize\tinstructions\tname\tstate\tevidence\n")
+        for program, address, size, instructions, name, state, evidence in rows:
+            out.write(f"{program}\t0x{address:08X}\t{size}\t{instructions}"
+                      f"\t{name}\t{state}\t{evidence}\n")
     print(f"wrote {args.out}: {len(rows)} functions")
     return 0
 

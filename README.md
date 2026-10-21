@@ -30,8 +30,9 @@ The pinned release has been read and measured:
 | PPU ELF | ELF64, big-endian, `EM_PPC`, 8 program headers, 35 section headers |
 | Symbol table | **none** — the retail executables are stripped |
 | Compiler | **GCC 4.1.1, as the PlayStation 3 SDK 400 ships it** — 124 objects, plus 5 from the SDK 360 |
-| Functions bounded | 20,939 — 17,728 of them ending on a return |
+| Functions bounded | 20,939 — 17,445 of them ending on a return |
 | Matching bodies | 6 — byte-exact, with two different toolchain builds |
+| Correspondence between the builds | 99 % of the functions matched, function by function, across the builds and across the games |
 | Disc files | 13,149 — 12,429,594,706 bytes |
 | Working copy files | 13,148 — 12,161,159,250 bytes |
 | Identical on both sides | 10 (the metadata); the other 13,138 are encrypted on the disc |
@@ -93,7 +94,8 @@ was built with the SDK 270, so the two trees are not interchangeable.
 | [docs/TOOLCHAIN.md](docs/TOOLCHAIN.md) | the compiler, its build, and the flags that reproduce the bytes |
 | [docs/COMPILER.md](docs/COMPILER.md) | the compiler: the stamp, the link map, and the way forward |
 | [docs/ENGINE.md](docs/ENGINE.md) | the engine: its build stamp, the originals it comes from |
-| [docs/NAMING.md](docs/NAMING.md) | the naming: how a name is proved, and why it is not transferred |
+| [docs/NAMING.md](docs/NAMING.md) | the naming: how a name is proved, and how it travels |
+| [docs/CORRESPONDENCE.md](docs/CORRESPONDENCE.md) | the correspondence between the builds, function by function |
 | [docs/RELATED-TITLES.md](docs/RELATED-TITLES.md) | the three titles as separate PlayStation Network titles |
 
 ## Layout
@@ -139,12 +141,26 @@ python tools/build_catalogue.py --work work/decrypted --out config/functions.tsv
 python tools/ppu_disasm.py work/eboot.elf --start 0x10200 --count 11
 ```
 
+The correspondence between two builds, function by function, and the name
+that travels on it:
+
+```sh
+python tools/build_correspondence.py \
+    --build collection-RC2=work/decrypted/RC2.elf \
+    --build NPUA80644=work/decrypted-standalone/gc.elf \
+    --pair collection-RC2:NPUA80644 \
+    --out config/correspondence.tsv --builds-out config/builds.tsv
+python tools/propose_name.py --program collection-RC2 --address 0x00123456
+```
+
 `payload_state.py` measures the entropy of the segments and says whether the
 program is readable. `compiler_stamp.py` looks for the identification of the
 compiler and reports the link map. `rebuild_check.py` checks that a rebuilt
 ELF is aligned, without reading the code. `ppu_funcs.py` recovers the
 boundaries, `ppu_disasm.py` prints the code so that a boundary can be
-checked by reading it.
+checked by reading it. `build_correspondence.py` matches the functions of two
+builds on the body, not on the address, and `propose_name.py` carries a name
+over the match it found.
 
 The removal of the encryption of the executables:
 

@@ -105,12 +105,30 @@ def _text_range(elf: PpuElf) -> tuple[int, int]:
     return best.vaddr, best.filesz
 
 
-def _words(elf: PpuElf) -> Iterator[int]:
-    """Yield the instruction words of the code segment, with their addresses."""
+def text_code(elf: PpuElf) -> tuple[int, bytes]:
+    """The code of the program, read once and kept on the executable.
+
+    The boundaries are found by walking the code over and over: reading the
+    segment again at every step costs more than the walk itself, so the
+    bytes are read once and reused.
+    """
+    cached = getattr(elf, "_ppu_code", None)
+    if cached is not None:
+        return cached
     vaddr, size = _text_range(elf)
     data = elf.read_vaddr(vaddr, size)
+    try:
+        elf._ppu_code = (vaddr, data)
+    except AttributeError:  # pragma: no cover
+        pass
+    return vaddr, data
+
+
+def _words(elf: PpuElf) -> Iterator[tuple[int, int]]:
+    """Yield the instruction words of the code segment, with their addresses."""
+    base, data = text_code(elf)
     for offset in range(0, len(data) - 3, 4):
-        yield vaddr + offset, struct.unpack_from(">I", data, offset)[0]
+        yield base + offset, struct.unpack_from(">I", data, offset)[0]
 
 
 def prologue_candidates(elf: PpuElf) -> list[Candidate]:
@@ -124,18 +142,24 @@ def prologue_candidates(elf: PpuElf) -> list[Candidate]:
       saved).
     """
     out = []
-    words = list(_words(elf))
-    for index, (address, word) in enumerate(words):
-        if word & 0xFFFF0000 != STDU_R1:
+    base, data = text_code(elf)
+    count = len(data) // 4
+
+    def word(index: int) -> int:
+        return struct.unpack_from(">I", data, index * 4)[0]
+
+    for index in range(count):
+        current = word(index)
+        if current & 0xFFFF0000 != STDU_R1:
             continue
-        offset = word & 0xFFFF
+        offset = current & 0xFFFF
         if not 0x8000 <= offset:
             # The offset is signed: a prologue moves the stack *down*.
             continue
-        following = words[index + 1][1] if index + 1 < len(words) else 0
-        preceding = words[index - 1][1] if index > 0 else 0
+        following = word(index + 1) if index + 1 < count else 0
+        preceding = word(index - 1) if index > 0 else 0
         if following & MFLR_MASK == MFLR_VALUE or preceding & MFLR_MASK == MFLR_VALUE:
-            out.append(Candidate(address, "prologue"))
+            out.append(Candidate(base + index * 4, "prologue"))
     return out
 
 
@@ -189,7 +213,8 @@ def cmd_catalogue(elf: PpuElf, args: argparse.Namespace) -> int:
     return _write(rows, args)
 
 
-def function_extent(elf: PpuElf, start: int, limit: int = 200000) -> tuple[int | None, str]:
+def function_body(elf: PpuElf, start: int, limit: int = 200000,
+                  entries: set[int] | None = None) -> tuple[int, str, list[int]]:
     """Walk the control flow from a candidate and find where the function ends.
 
     The function ends at the return that no path falls through from.  The walk
@@ -197,13 +222,21 @@ def function_extent(elf: PpuElf, start: int, limit: int = 200000) -> tuple[int |
     function: a branch that goes outside is a tail call, and the function ends
     where the branch is.
 
-    Returns the address just after the last instruction of the function, and
-    the evidence: ``return`` when a ``blr`` was reached, ``branch`` when the
-    function leaves by a branch, ``limit`` when the walk gave up.
+    When the set of the known function entries is given, the walk also stops
+    as soon as it lands on one of them: the flow has left the function, and
+    the next function starts there.  Without that bound the walk wanders into
+    the code that follows — a branch that skips over a function lands in the
+    middle of the next one — and reports an extent that covers half the
+    program.
+
+    Returns the address just after the last instruction of the function, the
+    evidence (``return`` when a ``blr`` was reached, ``branch`` when the
+    function leaves by a branch, ``entry`` when the flow reached the next
+    function, ``indirect`` at an indirect jump, ``limit`` when the walk gave
+    up), and the addresses of the instructions of the body, sorted.
     """
-    vaddr, size = _text_range(elf)
-    data = elf.read_vaddr(vaddr, size)
-    base = vaddr
+    base, data = text_code(elf)
+    size = len(data)
 
     def word_at(address: int) -> int | None:
         offset = address - base
@@ -212,6 +245,7 @@ def function_extent(elf: PpuElf, start: int, limit: int = 200000) -> tuple[int |
         return struct.unpack_from(">I", data, offset)[0]
 
     visited: set[int] = set()
+    body: list[int] = []
     pending = [start]
     last = start
     evidence = "limit"
@@ -222,10 +256,15 @@ def function_extent(elf: PpuElf, start: int, limit: int = 200000) -> tuple[int |
         while True:
             if address in visited:
                 break
+            if entries is not None and address != start and address in entries:
+                # The flow reached the next function: this one ends before it.
+                evidence = "entry"
+                break
             word = word_at(address)
             if word is None:
                 break
             visited.add(address)
+            body.append(address)
             steps += 1
             if steps > limit:
                 evidence = "limit"
@@ -267,15 +306,33 @@ def function_extent(elf: PpuElf, start: int, limit: int = 200000) -> tuple[int |
                 break
             address += 4
 
-    return last + 4, evidence
+    body.sort()
+    # The extent of a function is the block of code that starts at it: the
+    # walk may reach further (a jump table, a block of data read as code),
+    # but the function itself is the contiguous run of instructions that
+    # starts at its entry and that the walk covered.
+    end = start
+    while end in visited:
+        end += 4
+    run = list(range(start, end, 4))
+    return end, evidence, run
+
+
+def function_extent(elf: PpuElf, start: int, limit: int = 200000,
+                    entries: set[int] | None = None) -> tuple[int | None, str]:
+    """The address just after the last instruction of the function, and why."""
+    end, why, _body = function_body(elf, start, limit, entries)
+    return end, why
 
 
 def cmd_bounds(elf: PpuElf, args: argparse.Namespace) -> int:
     rows = []
-    for address, kind, evidence in build_catalogue(elf):
+    catalogue = build_catalogue(elf)
+    entries = {address for address, _kind, _evidence in catalogue}
+    for address, kind, evidence in catalogue:
         if getattr(args, "confirmed", False) and evidence != "both":
             continue
-        end, why = function_extent(elf, address)
+        end, why = function_extent(elf, address, entries=entries)
         rows.append((address, end, kind, f"{evidence};{why}"))
     text = "address\tend\tkind\tevidence\n" + "".join(
         f"0x{address:08X}\t0x{end:08X}\t{kind}\t{evidence}\n"

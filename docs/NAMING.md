@@ -96,6 +96,41 @@ method, not the vocabulary.
 The next names come from the evidence: a function that touches a string is
 named after what the string says, written, and measured.
 
+## How a name travels
+
+The section above says a name cannot be transferred by address. That is true,
+and it is not the end of the story: the *function* travels, and the
+correspondence between the builds is measured.
+
+The measurement is in [CORRESPONDENCE.md](CORRESPONDENCE.md): 99 % of the
+functions of a game are matched with the function that plays the same role in
+the other build of that game, every matched pair having exactly the same
+size. Between the three games of the series, the engine's own code is matched
+as well, and **more than half of those pairs are literally the same bytes**.
+
+That gives three levels of travel:
+
+| The counterpart | What travels | What the name is worth there |
+|---|---|---|
+| the other build of the same game | the address, the code, the subject | a **proposal**, to be proved by the body gate on that build |
+| the other game, **same bytes** | the body itself | the **proof**: the body gate reproduces the same bytes at the other address |
+| the other game, different bytes | the subject, the role | a **proposal**, to be proved on that game |
+
+The second line is the one that changes the economics of the naming: for the
+engine's own code, a name proved once is proved three times, and the work of
+the second and the third proof is the address.
+
+`tools/propose_name.py` carries a name over, and records the proposal in the
+catalogue with the state `proposed` and the evidence that says where it comes
+from:
+
+```sh
+python tools/propose_name.py --program collection-RC1 --address 0x000128B8 --name rt_udp_send --write
+```
+
+A proposal is still a hypothesis. Only the body gate makes a name a fact —
+but a hypothesis with a measured counterpart is a much cheaper hypothesis.
+
 ## What a name is worth
 
 A name is worth what it saves. The engine's vocabulary is large and shared

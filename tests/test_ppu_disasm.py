@@ -25,8 +25,21 @@ class DisasmTest(unittest.TestCase):
         self.assertEqual(decode(0xF8010080, 0x1000), "stw r0,128(r1)")
         # mflr r0
         self.assertEqual(decode(0x7C0802A6, 0x1000), "mflr r0")
-        # mflr r1
-        self.assertEqual(decode(0x7C0803A6, 0x1000), "mflr r1")
+        # mtlr r0
+        self.assertEqual(decode(0x7C0803A6, 0x1000), "mtlr r0")
+        # mtlr r5
+        self.assertEqual(decode(0x7CA903A6, 0x1000), "mtlr r5")
+
+    def test_the_doubleword_load_of_the_sdk(self):
+        # ld r0, 0x80(r1) — the link register is restored from the frame
+        self.assertEqual(decode(0xE8010080, 0x1000), "ld r0,128(r1)")
+        # ld r2, 0x28(r1) — the TOC is restored from the frame
+        self.assertEqual(decode(0xE8410028, 0x1000), "ld r2,40(r1)")
+
+    def test_the_branch_to_the_link_register(self):
+        self.assertEqual(decode(0x4E800020, 0x1000), "blr")
+        self.assertEqual(decode(0x4E9E0421, 0x1000), "bnelr")
+        self.assertEqual(decode(0x4E800420, 0x1000), "bctr")
 
     def test_the_loads_and_the_stores(self):
         # lwz r0, -0x7FC0(r2)
@@ -49,7 +62,7 @@ class DisasmTest(unittest.TestCase):
         self.assertEqual(decode(0x2F800000, 0x147C0), "cmpwi cr0,r0,0")
 
     def test_an_unknown_word_is_shown_as_it_is(self):
-        self.assertEqual(decode(0xE8010080, 0x1000), ".long 0xE8010080")
+        self.assertEqual(decode(0x08000000, 0x1000), ".long 0x08000000")
 
     def test_the_signed_value(self):
         self.assertEqual(signed(0xFF91, 16), -111)

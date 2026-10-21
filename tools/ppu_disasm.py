@@ -80,7 +80,18 @@ def decode(word: int, address: int) -> str:
         return f"{link}{absolute} 0x{target:08X}"
 
     if opcode == 19:
-        return f"bcx 0x{word:08X}"
+        # the branches to the link or the count register
+        bo = (word >> 21) & 0x1F
+        bi = (word >> 16) & 0x1F
+        if bo == 0x14 and bi == 0:
+            return "blr"
+        if bo == 0x14 and bi == 30:
+            return "bnelr"
+        if bo == 0x14:
+            return f"bcr{bi}"
+        if bo == 0x10 and bi == 0:
+            return "bctr"
+        return f"bcx bo=0x{bo:02X} bi={bi}"
 
     if opcode == 16:
         displacement = signed(word & 0xFFFC, 16)
@@ -103,6 +114,8 @@ def decode(word: int, address: int) -> str:
         return f"lhz {reg(rD)},{simm}({reg(rA)})"
     if opcode == 42:
         return f"sth {reg(rS)},{simm}({reg(rA)})"
+    if opcode == 7:
+        return f"mulli {reg(rD)},{reg(rA)},{simm}"
     if opcode == 14:
         if rA == 0:
             return f"li {reg(rD)},{simm}"
@@ -124,13 +137,52 @@ def decode(word: int, address: int) -> str:
 
     if opcode == 31:
         # the move of the link register, and the specials of the SDK
-        if word & 0xFF1FFCFF == 0x7C0800A6:
-            # the PPU places the destination of the link-register moves in
-            # the bits 8-12, with an offset of two
-            return f"mflr r{((word >> 8) & 0x1F) - 2}"
-        if word & 0xFF1FFCFF == 0x7C0003A6:
-            return f"mtlr {reg(rS)}"
-        return f"op31 xo=0x{(word >> 1) & 0x3FF:03X} {reg(rD)},{reg(rA)},{reg(rB)}"
+        xo = (word >> 1) & 0x3FF
+        if xo == 339:
+            return f"mflr {reg(rD)}"
+        if xo == 467:
+            return f"mtlr {reg(rD)}"
+        if xo == 19:
+            return f"mfcr {reg(rD)}"
+        if xo == 26:
+            return f"cmpw {reg(rA)},{reg(rB)}"
+        if xo == 0:
+            return f"cmpw {reg(rA)},{reg(rB)}"
+        if xo == 536:
+            return f"mfspr {reg(rD)},{word & 0x3FF}"
+        if xo == 24:
+            return f"slw {reg(rA)},{reg(rS)},{reg(rB)}"
+        if xo == 792:
+            return f"srawi {reg(rA)},{reg(rS)},{signed(word & 0xFFFF, 16)}"
+        if xo == 824:
+            return f"fmr {reg(rD)},{reg(rB)}"
+        if xo == 28:
+            return f"and {reg(rA)},{reg(rS)},{reg(rB)}"
+        if xo == 60:
+            return f"andc {reg(rA)},{reg(rS)},{reg(rB)}"
+        if xo == 104:
+            return f"neg {reg(rA)},{reg(rS)}"
+        if xo == 235:
+            return f"mullw {reg(rD)},{reg(rA)},{reg(rB)}"
+        if xo == 75:
+            return f"mulhw {reg(rD)},{reg(rA)},{reg(rB)}"
+        if xo == 491:
+            return f"divw {reg(rD)},{reg(rA)},{reg(rB)}"
+        if xo == 459:
+            return f"divwu {reg(rD)},{reg(rA)},{reg(rB)}"
+        if xo == 266:
+            return f"add {reg(rD)},{reg(rA)},{reg(rB)}"
+        if xo == 10:
+            return f"addc {reg(rD)},{reg(rA)},{reg(rB)}"
+        if xo == 40:
+            return f"subf {reg(rD)},{reg(rA)},{reg(rB)}"
+        if xo == 8:
+            return f"subfc {reg(rD)},{reg(rA)},{reg(rB)}"
+        return f"op31 xo=0x{xo:03X} {reg(rD)},{reg(rA)},{reg(rB)}"
+
+    if opcode == 58:
+        # the 64-bit load of the PowerPC
+        return f"ld {reg(rD)},{simm}({reg(rA)})"
 
     return f".long 0x{word:08X}"
 

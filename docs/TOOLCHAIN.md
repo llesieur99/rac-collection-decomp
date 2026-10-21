@@ -84,12 +84,25 @@ byte with zero.
 | Compiler | The comparison it emits |
 |---|---|
 | the retail build | `cmpwi r6, 0` on **CR0** — the byte is compared directly |
-| SDK 2.7.0, 3.6.0 and 4.2.0 | the same comparison, on **CR7** |
+| SDK 2.7.0, 3.6.0, 3.7.0 and 4.2.0 | the same comparison, on **CR7** |
 
 The four public compilers this machine holds behave **identically** here: 320
 compilations of the sixteen source forms, under five sets of options, and
 **264 comparisons on CR7, none on CR0**. Eighteen other options were tried
 and none changes it.
+
+**But the compiler is not the whole story, and the first reading was wrong.**
+The same sixteen forms, compiled with the SDK 2.7.0 and with the SDK 3.7.0
+that was built here, give the comparison on **CR0 for seven of them and on
+CR7 for nine**. The choice between the two registers depends on the **form
+of the source**, not on the version of the compiler: a comparison whose
+result is only read by a branch goes to CR0, and one whose *value* is needed
+goes to CR7.
+
+So the sentence to keep is narrower than it first looked: the public
+compilers cannot produce the retail's code on the forms tried, and the reason
+is not one thing but two — the register the allocator hands out first, and
+the shape of the source that decides which register a comparison lands on.
 
 ### Where the register is chosen
 
@@ -103,22 +116,24 @@ cr7, cr6, cr1, cr0, cr4, cr3, cr2
 **cr7 comes first**, and the register allocator follows the list: a
 comparison is a pseudo-register of the class `CR_REGS`, and the first one
 the allocator hands out is the one the comparison lands on. The retail
-compiler had a different order.
+compiler had a different order — the retail code spreads its comparisons over
+CR0, CR1, CR3, CR4, CR5 and CR6, in an order the public list does not give.
 
-### The retail has two code generators
+### Two kinds of code, two kinds of comparison
 
-The census of the four retail programs changes the reading of the project:
-the program **mixes CR0 and CR7, and the mixture is by blocks of
-addresses** — 821 functions in a row on CR0, then 144 on CR7, in the
-launcher. The CR7 blocks are the **libraries of the SDK**, linked at the end
-of the text segment; the CR0 blocks are the code of the game.
+The census of the four retail programs shows the program **mixing CR0 and
+CR7, and the mixture is by blocks of addresses** — 821 functions in a row on
+CR0, then 144 on CR7, in the launcher. The CR7 blocks are the **libraries
+of the SDK**, linked at the end of the text segment; the CR0 blocks are the
+code of the game.
 
-So the retail program is not the work of one compiler: the code of the game
-comes from the revision `3538`, and the SDK's own libraries come from the
-public toolchain — and the four functions of the runtime that this project
-already reproduces byte for byte (`docs/TOOLCHAIN.md`, below) are exactly
-those libraries ✓. The mixture is the explanation of why the public
-compilers reproduce them and not the game.
+That is *consistent with* two code generators, and the source-form
+dependence above is a warning against taking it for proof. What is solid is
+the other half: the four functions of the SDK's runtime that this project
+reproduces byte for byte (below) are exactly those libraries, and the
+**SDK 3.7.0 reproduces five of them, against four for the SDK 2.7.0** — the
+libraries were built with a compiler of the neighbourhood of the revision
+`3455`, the one the five objects of the release carry.
 
 ### The revision that is not public
 
@@ -138,13 +153,27 @@ path, and it is outside the repository.
 
 The order of the allocation is a list in a header file, and moving `cr0` in
 front of `cr7` is a **one line change** to the compiler of the SDK 4.2.0.
-A patched build is the cheapest way to the retail's code: it is a tool, it
-stays in the workspace, and the test is immediate — the body at `0x38D20` must
-come out with the comparison on CR0, with `addic`, and with the registers
-`r5` and `r6`.
+A patched build is one way to the retail's code: it is a tool, it stays in
+the workspace, and the test is immediate — the body at `0x38D20` must come
+out with the comparison on CR0, with `addic`, and with the registers `r5` and
+`r6`.
 
 The bodies that *are* reproduced have no comparison, and the two public
 builds agree on them.
+
+### The three toolchains
+
+| Build | Stamp | Note |
+|---|---|---|
+| SDK 2.7.0 | `GCC 4.1.1 (SDK270, $Rev: 3019 $)` | the build of the sibling project |
+| SDK 3.6.0 | `GCC 4.1.1 (SDK360, $Rev: 3455 $)` | already built on this machine |
+| SDK 3.7.0 | `GCC 4.1.1 (SDK370, $Rev: 3509 $)` | built here, 17 min 25 s |
+| SDK 4.2.0 | `GCC 4.1.1 (SDK420, $Rev: 3547 $)` | built here, the closest to the target |
+
+At `-O1` the 2.7.0 and the 3.7.0 produce **the same code, bit for bit**,
+on the sixteen forms: the version in between brings nothing to a body of
+this shape. They differ at `-O2`, in the layout of the code and not in the
+register of the condition.
 
 ### The second difference: the table of contents
 

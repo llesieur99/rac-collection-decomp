@@ -181,6 +181,39 @@ The rebuild rule is the same for both. The payload is cut to the size the
 header declares, because the older variant carries a short trailer after the
 ELF that is not part of the program.
 
+## The validation of the rebuild
+
+The reader is checked against an independent reference: the sibling project
+`rac8-act-decomp` pins the container of A Crack in Time, and the copy on this
+machine is **byte for byte the same file**:
+
+| | Hash |
+|---|---|
+| The container, as published by the sibling | `e69f2b5a053454ef90144d31c3cbb5b6ccfc5399745e9bbb73fca1680b25c81a` |
+| The container on this machine | `e69f2b5a053454ef90144d31c3cbb5b6ccfc5399745e9bbb73fca1680b25c81a` |
+
+The rebuild gives exactly the size the sibling publishes, 14,515,416 bytes,
+and the structure agrees in every particular: the entry point, the eight
+program headers, the thirty sections, the segment offsets.
+
+The **bytes** differ, and they have to: the sibling's hash is the hash of an
+ELF rebuilt from a *decrypted* container, and this one is rebuilt from the
+encrypted container. The difference is exactly the encrypted payload, the
+text and the data; the headers, the program headers and the section header
+table are in the clear in both and are identical.
+
+`tools/rebuild_check.py` checks the alignment of a rebuild, without reading
+the code: the size of the image, the end of the section header table, the
+placement of every allocated section inside a segment, and the readability of
+the module names.
+
+```sh
+python tools/rebuild_check.py "path/to/USRDIR/EBOOT.BIN"
+```
+
+All ten executables this project has measured — the four of the release, the
+four standalone titles and A Crack in Time — are consistent.
+
 ## The section names
 
 The section header table is present and has 35 entries, but the string table

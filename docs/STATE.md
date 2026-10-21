@@ -24,6 +24,7 @@ compiled body.
 | Find the compiler stamp | **done, negative** — no stamp, no toolchain string |
 | Measure the link map | **done** — the SCE modules, per executable |
 | Find the related titles | **done** — `NPUA80644`, `NPUA80645`, `NPUA80965` |
+| Validate the rebuild | **done** — against the published hash of the sibling project |
 | Remove the NPDRM layer | **not started** — needs the console's key material |
 | Qualify a PPU compiler | **not started** |
 | Recover the function boundaries | **not started** |
@@ -55,6 +56,18 @@ compiled body.
 * The three titles also exist as separate PlayStation Network titles, with
   their own content ids and their own builds:
   [RELATED-TITLES.md](RELATED-TITLES.md).
+* **The rebuild is validated against an independent reference.** The container
+  of A Crack in Time on this machine is byte for byte the file the sibling
+  project `rac8-act-decomp` publishes (`e69f2b5a…`), and the rebuild gives
+  exactly the size it publishes, 14,515,416 bytes, with the same entry point,
+  the same eight program headers and the same thirty sections. The bytes
+  differ only in the encrypted payload: the sibling's hash is the hash of a
+  rebuild from a *decrypted* container. See
+  [SELF-FORMAT.md](SELF-FORMAT.md).
+* **The ELF string table is encrypted too.** The section names are not
+  readable while the NPDRM layer is there; the SCE module names, which lie
+  just before the section header table, are. See
+  [PPU-EXECUTABLE.md](PPU-EXECUTABLE.md).
 
 ## What is assumed, and what is not known
 

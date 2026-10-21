@@ -112,6 +112,19 @@ python tools/ppu_elf.py info     work/eboot.elf
 python tools/ppu_elf.py sections work/eboot.elf
 ```
 
+The state of the payload, the compiler and the alignment of a rebuild:
+
+```sh
+python tools/payload_state.py  "path/to/USRDIR/EBOOT.BIN"
+python tools/compiler_stamp.py "path/to/USRDIR/EBOOT.BIN" --modules
+python tools/rebuild_check.py  "path/to/USRDIR/EBOOT.BIN"
+```
+
+`payload_state.py` measures the entropy of the segments and says whether the
+program is readable. `compiler_stamp.py` looks for the identification of the
+compiler and reports the link map. `rebuild_check.py` checks that a rebuilt
+ELF is aligned, without reading the code.
+
 The manifest pins the bytes of a tree, and checks one against it. The two
 manifests of the release are in `config/`:
 

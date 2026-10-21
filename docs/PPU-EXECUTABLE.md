@@ -55,21 +55,27 @@ Two things are worth noting:
 
 ## The section table
 
-35 entries of 64 bytes, at the tail of the image.
+35 entries of 64 bytes, at the tail of the image, and the table ends exactly
+at the size of the ELF.
 
-The string table they point at does **not** hold conventional section names.
-It holds the SCE module names: `p410001libc`, `p410001libstdc++`,
-`p410001liblv2`, `p410001libnet_stub`, `p410001libnetctl_stub`,
-`p410001libfs_stub`, `p410001libspurs_stub` and so on.
+**The string table it points at is encrypted.** The section names are part of
+the encrypted metadata headers, so they are not readable while the NPDRM layer
+is there. What *is* readable is the list of the SCE modules the program is
+linked against, which lies in the tail of the image, just before the section
+header table: `p410001libc`, `p410001libstdc++`, `p410001liblv2`,
+`p410001libnet_stub`, `p410001libnetctl_stub`, `p410001libfs_stub`,
+`p410001libspurs_stub` and so on. `tools/compiler_stamp.py --modules` reads
+them.
 
 So the retail build is stripped in the strongest sense:
 
 * there is **no symbol table** — no `.symtab`, no `.dynsym` with names;
-* there is **no conventional section name** — the name of a section says which
+* there is **no readable section name** — the name of a section says which
   module it came from, not what it holds.
 
-Every function name in this project is therefore a *hypothesis* until the code
-proves it, and every section boundary is provisional until the bytes say so.
+Every function name in this project is therefore a *hypothesis* until the
+code, its callers or a string it references proves it, and every section
+boundary is provisional until the bytes say so.
 
 ## Reading it
 

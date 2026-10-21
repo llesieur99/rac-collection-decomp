@@ -29,12 +29,12 @@ def build_self() -> bytes:
     struct.pack_into(">I", elf_header, 20, 1)        # e_version
     struct.pack_into(">Q", elf_header, 24, 0x202450)  # e_entry
     struct.pack_into(">Q", elf_header, 32, 0x40)     # e_phoff
-    struct.pack_into(">Q", elf_header, 40, 0x200)    # e_shoff
+    struct.pack_into(">Q", elf_header, 40, 0)        # e_shoff
     struct.pack_into(">H", elf_header, 52, 64)       # e_ehsize
     struct.pack_into(">H", elf_header, 54, 56)       # e_phentsize
     struct.pack_into(">H", elf_header, 56, 1)        # e_phnum
     struct.pack_into(">H", elf_header, 58, 64)       # e_shentsize
-    struct.pack_into(">H", elf_header, 60, 1)        # e_shnum
+    struct.pack_into(">H", elf_header, 60, 0)        # e_shnum
     struct.pack_into(">H", elf_header, 62, 0)        # e_shstrndx
 
     program_header = bytearray(56)
@@ -47,7 +47,7 @@ def build_self() -> bytes:
     struct.pack_into(">Q", program_header, 40, 0x40)      # p_memsz
     struct.pack_into(">Q", program_header, 48, 0x10000)   # p_align
 
-    payload = bytes(0x40)
+    payload = b"p410001libc\x00" + bytes(0x40 - 12)
     elf_size = 0x40 + len(payload)
 
     data = bytearray(0x980 + elf_size)

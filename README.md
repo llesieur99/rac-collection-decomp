@@ -30,7 +30,7 @@ The pinned release has been read and measured:
 | PPU ELF | ELF64, big-endian, `EM_PPC`, 8 program headers, 35 section headers |
 | Symbol table | **none** — the retail executables are stripped |
 | Compiler | **GCC 4.1.1, as the PlayStation 3 SDK 400 ships it** — 124 objects, plus 5 from the SDK 360 |
-| Functions bounded | 53,456 — 47,215 of them ending on a return, and 3 candidates still to confirm |
+| Functions bounded | 53,456 — 49,714 of them ending on a return, and 3 candidates still to confirm |
 | Functions with a string | 3,029 — the subject of the function, measured |
 | Functions with a call graph | 35,703 — the role of the function, measured |
 | Functions with an assert | 246 — the source file and the line, measured |

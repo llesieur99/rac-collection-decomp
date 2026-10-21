@@ -52,6 +52,66 @@ a match; it is a coincidence, and it does not survive the next function.
 Only `matching` functions live in `src/`. A `nonmatching` attempt that is
 worth keeping lives in `nonmatching/`, indexed by function.
 
+## The evidence the code carries
+
+The naming evidence of a function is what the analysis of the code finds:
+
+| Evidence | What it gives |
+|---|---|
+| the strings it touches | the *subject* of the function: a name, a format string, a file name, a message |
+| the functions it calls | its *role*: a getter, a setter, a parser, a dispatcher |
+| the functions that call it | its *role* seen from the other side |
+| the data it reads and writes | the *state* it works on |
+
+The evidence is measured, and it is published: it is research metadata, and it
+carries no game bytes.
+
+### The strings
+
+The strings of the program are in the data, and the code points at them. The
+tool that reads the references is
+[`tools/strings_xref.py`](../tools/strings_xref.py), and what it measures is
+worth stating, because the addressing of the PPU is not the addressing of a
+classic 32-bit PowerPC:
+
+* **the address of a string is built in two instructions** — `lis r3, hi` and
+  `addi r3, r3, lo`, or `addic`, or a load with an immediate offset — and the
+  two halves are often more than a dozen instructions apart, because the
+  compiler reuses the registers. The tool therefore follows the value of the
+  registers, not a window of instructions: a register keeps its value until
+  an instruction writes it.
+* **a string of C is terminated by a NUL**, and that is what tells it from a
+  sequence of bytes that only looks like text. The sections that are
+  allocated but **not** executable hold the data; the code is excluded.
+* **the game keeps some of its messages in a table of pointers**, and the
+  code points at the table. The tool follows one level of pointer.
+* **the owner of a reference is the function whose control flow reaches
+  it**, not the function whose extent covers it: a function whose blocks are
+  scattered — a jump table, a cold block the compiler moved — owns the
+  instructions of those blocks too.
+
+The result is in [config/evidence.tsv](../config/evidence.tsv): **1,518
+functions** of the release touch a string, out of 20,939.
+
+| Program | Functions with a string |
+|---|---|
+| `EBOOT` — the collection launcher | 181 |
+| `RC1` — Ratchet & Clank (2002) | 146 |
+| `RC2` — Going Commando | 477 |
+| `RC3` — Up Your Arsenal | 714 |
+
+The strings are the engine's and the game's own: `CS_INIT`, `map level 0`,
+`sky texs`, `rc2/ps3data/level%d/audiowad/speech[%d].xvag`, `WARNING, CAN
+ONLY HAVE 20 CONNECTORS IN ONE ELECTROLYZER PUZZLE`.
+
+**What is not reached.** The engine's *assert* messages carry the source file
+and the line — `j:/Ratchet/Source/PS3/cell/samples/common/gcmutil/old/
+texture.cpp:91 p != NULL` — and they are the best naming evidence there is.
+They are in the data, in a table of the SDK, and the table is not reached by
+the addresses the tool reads: the table is filled by the module's start-up,
+and the game refers to the assertions by their number. Recovering them is
+the next piece of work.
+
 ## Writing a claim down
 
 Every claim records:

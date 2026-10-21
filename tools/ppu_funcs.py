@@ -214,7 +214,8 @@ def cmd_catalogue(elf: PpuElf, args: argparse.Namespace) -> int:
 
 
 def function_body(elf: PpuElf, start: int, limit: int = 200000,
-                  entries: set[int] | None = None) -> tuple[int, str, list[int]]:
+                  entries: set[int] | None = None,
+                  full: bool = False) -> tuple[int, str, list[int]]:
     """Walk the control flow from a candidate and find where the function ends.
 
     The function ends at the return that no path falls through from.  The walk
@@ -234,6 +235,11 @@ def function_body(elf: PpuElf, start: int, limit: int = 200000,
     function leaves by a branch, ``entry`` when the flow reached the next
     function, ``indirect`` at an indirect jump, ``limit`` when the walk gave
     up), and the addresses of the instructions of the body, sorted.
+
+    With ``full``, the body is every instruction the walk reached, and not
+    only the contiguous block that starts at the entry: a function whose
+    blocks are scattered — a jump table, a cold block the compiler moved —
+    owns the instructions of those blocks too.
     """
     base, data = text_code(elf)
     size = len(data)
@@ -315,6 +321,8 @@ def function_body(elf: PpuElf, start: int, limit: int = 200000,
     while end in visited:
         end += 4
     run = list(range(start, end, 4))
+    if full:
+        return end, evidence, body
     return end, evidence, run
 
 

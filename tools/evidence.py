@@ -39,19 +39,32 @@ def read_catalogue(path: str) -> dict[tuple[str, int], dict]:
     return out
 
 
-def read_ghidra(path: str) -> dict[int, dict]:
-    """The exported evidence, keyed by address."""
-    out: dict[int, dict] = {}
+def read_ghidra(path: str, program: str) -> dict[tuple[str, int], dict]:
+    """The exported evidence, keyed by program and address."""
+    out: dict[tuple[str, int], dict] = {}
     with open(path, encoding="utf-8") as handle:
         for row in csv.DictReader(handle, delimiter="\t"):
             address = int(row["address"], 16)
-            out[address] = {
+            out[(program, address)] = {
                 "size": int(row["size"]),
                 "strings": row.get("strings", ""),
                 "calls": row.get("calls", ""),
                 "callers": row.get("callers", ""),
                 "data": row.get("data", ""),
             }
+    return out
+
+
+def read_strings(path: str) -> dict[tuple[str, int], list[str]]:
+    """The strings the code touches, keyed by program and function."""
+    out: dict[tuple[str, int], list[str]] = {}
+    with open(path, encoding="utf-8") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            function = row.get("function", "")
+            if not function:
+                continue
+            key = (row.get("program", ""), int(function, 0))
+            out.setdefault(key, []).append(row.get("string", ""))
     return out
 
 
@@ -63,12 +76,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             pass
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--catalogue", required=True, help="config/functions.tsv")
-    parser.add_argument("--ghidra", required=True, help="the exported evidence")
+    parser.add_argument("--ghidra", action="append", default=[],
+                        metavar="PROGRAM=PATH",
+                        help="the exported evidence of one program")
+    parser.add_argument("--strings", action="append", default=[],
+                        help="the strings the code touches, one file per program")
     parser.add_argument("--out", required=True, help="the file to write")
     args = parser.parse_args(argv)
 
     catalogue = read_catalogue(args.catalogue)
-    evidence = read_ghidra(args.ghidra)
+    evidence: dict[tuple[str, int], dict] = {}
+    for item in args.ghidra:
+        program, _, path = item.partition("=")
+        if not path:
+            parser.error(f"--ghidra wants PROGRAM=PATH, got {item!r}")
+        for key, value in read_ghidra(path, program).items():
+            evidence.setdefault(key, value)
+    strings: dict[tuple[str, int], list[str]] = {}
+    for path in args.strings:
+        for key, values in read_strings(path).items():
+            strings.setdefault(key, []).extend(values)
 
     # the addresses of the catalogue, per program, to match the evidence
     by_program: dict[str, list[int]] = {}
@@ -79,16 +106,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     matched = 0
     with_strings = 0
     for (program, address), entry in sorted(catalogue.items()):
-        found = evidence.get(address)
+        found = evidence.get((program, address))
         if found:
             matched += 1
-            if found["strings"]:
-                with_strings += 1
         else:
             found = {"size": entry["size"], "strings": "", "calls": "",
                      "callers": "", "data": ""}
+        touched = strings.get((program, address), [])
+        text = found["strings"]
+        if touched:
+            text = " | ".join(part for part in ([text] if text else []) + touched)
+            with_strings += 1
         rows.append((program, address, entry["size"], entry["name"],
-                     entry["state"], found["strings"], found["calls"],
+                     entry["state"], text, found["calls"],
                      found["callers"], found["data"]))
 
     with open(args.out, "w", encoding="utf-8", newline="\n") as out:

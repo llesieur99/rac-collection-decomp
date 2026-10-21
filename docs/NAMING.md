@@ -86,6 +86,7 @@ the bytes.
 | | Count |
 |---|---|
 | functions bounded | 20,939 |
+| functions that touch a string | 1,518 — the subject of the function, measured |
 | functions with a proved name | 6 — and those six carry the placeholder of their address, because nothing yet says what they do |
 | functions with a proposed name | 0 |
 
@@ -94,7 +95,9 @@ simplest: a frame, a call, an epilogue. They prove the toolchain and the
 method, not the vocabulary.
 
 The next names come from the evidence: a function that touches a string is
-named after what the string says, written, and measured.
+named after what the string says, written, and measured. The evidence is in
+[config/evidence.tsv](../config/evidence.tsv), and the method is in
+[EVIDENCE.md](EVIDENCE.md).
 
 ## How a name travels
 

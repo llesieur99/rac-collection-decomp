@@ -31,6 +31,7 @@ The pinned release has been read and measured:
 | Symbol table | **none** — the retail executables are stripped |
 | Compiler | **GCC 4.1.1, as the PlayStation 3 SDK 400 ships it** — 124 objects, plus 5 from the SDK 360 |
 | Functions bounded | 20,939 — 17,445 of them ending on a return |
+| Functions with a string | 1,518 — the subject of the function, measured |
 | Matching bodies | 6 — byte-exact, with two different toolchain builds |
 | Correspondence between the builds | 99 % of the functions matched, function by function, across the builds and across the games |
 | Disc files | 13,149 — 12,429,594,706 bytes |
@@ -139,6 +140,16 @@ python tools/ppu_funcs.py catalogue work/eboot.elf --confirmed
 python tools/ppu_funcs.py bounds   work/eboot.elf --confirmed
 python tools/build_catalogue.py --work work/decrypted --out config/functions.tsv
 python tools/ppu_disasm.py work/eboot.elf --start 0x10200 --count 11
+```
+
+The strings the code touches, and the evidence they carry:
+
+```sh
+python tools/strings_xref.py work/decrypted/RC2.elf \
+    --catalogue config/functions.tsv --program RC2 --out work/strings-RC2.tsv
+python tools/evidence.py --catalogue config/functions.tsv \
+    --ghidra RC2=work/ghidra-project/rc2-evidence.tsv \
+    --strings work/strings-RC2.tsv --out config/evidence.tsv
 ```
 
 The correspondence between two builds, function by function, and the name

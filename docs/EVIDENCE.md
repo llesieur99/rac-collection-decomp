@@ -112,6 +112,26 @@ The strings are the engine's and the game's own: `CS_INIT`, `map level 0`,
 `sky texs`, `rc2/ps3data/level%d/audiowad/speech[%d].xvag`, `WARNING, CAN
 ONLY HAVE 20 CONNECTORS IN ONE ELECTROLYZER PUZZLE`.
 
+### The call graph
+
+The role of a function is also read from the code: the functions it calls
+and the functions that call it. The tool is
+[`tools/callgraph.py`](../tools/callgraph.py), and the graph is in
+[config/evidence.tsv](../config/evidence.tsv): **35,703** functions of the
+release have a call graph, **27,856** of them are called.
+
+The owner of a call is the function whose **control flow** reaches it, not
+the function whose extent covers it: the same rule as the strings.
+
+### The condition of an assert
+
+A retail assert is not one call but **three**: the first carries the file
+and the line, the second the condition, the third the free text. The tool
+that reads them is [`tools/assert_cond.py`](../tools/assert_cond.py), and it
+is what turns an assert into a name: the condition of an assert of the lobby
+names the class, the member and the method — `LobbyNet::RoomMgr::
+RefreshPlayerList() Error (MEDIUS: %d)` is a name and an address at once.
+
 **What is not reached.** The engine's *assert* messages carry the source file
 and the line — `j:/Ratchet/Source/PS3/cell/samples/common/gcmutil/old/
 texture.cpp:91 p != NULL` — and they are the best naming evidence there is.

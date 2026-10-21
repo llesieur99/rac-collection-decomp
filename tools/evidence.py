@@ -68,6 +68,19 @@ def read_strings(path: str) -> dict[tuple[str, int], list[str]]:
     return out
 
 
+def read_calls(path: str) -> dict[tuple[str, int], dict]:
+    """The call graph of a program, keyed by program and address."""
+    out: dict[tuple[str, int], dict] = {}
+    with open(path, encoding="utf-8") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            address = int(row["address"], 0)
+            out[(row.get("program", ""), address)] = {
+                "calls": row.get("calls", ""),
+                "callers": row.get("callers", ""),
+            }
+    return out
+
+
 def read_asserts(path: str) -> dict[tuple[str, int], list[str]]:
     """The assert messages a function carries, keyed by program and function."""
     out: dict[tuple[str, int], list[str]] = {}
@@ -99,6 +112,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                         help="the strings the code touches, one file per program")
     parser.add_argument("--asserts", default=None,
                         help="the assert messages the code carries")
+    parser.add_argument("--calls", action="append", default=[],
+                        metavar="PROGRAM=PATH",
+                        help="the call graph of a program")
     parser.add_argument("--out", required=True, help="the file to write")
     args = parser.parse_args(argv)
 
@@ -117,6 +133,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     asserts: dict[tuple[str, int], list[str]] = {}
     if args.asserts:
         asserts = read_asserts(args.asserts)
+    calls: dict[tuple[str, int], dict] = {}
+    for item in args.calls:
+        program, _, path = item.partition("=")
+        if not path:
+            parser.error(f"--calls wants PROGRAM=PATH, got {item!r}")
+        for key, value in read_calls(path).items():
+            calls.setdefault((program, key[1]), value)
 
     # the addresses of the catalogue, per program, to match the evidence
     by_program: dict[str, list[int]] = {}
@@ -142,9 +165,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         messages = asserts.get((program, address), [])
         if messages:
             with_asserts += 1
+        graph = calls.get((program, address))
         rows.append((program, address, entry["size"], entry["name"],
                      entry["state"], text, " | ".join(messages),
-                     found["calls"], found["callers"], found["data"]))
+                     (graph or found)["calls"], (graph or found)["callers"],
+                     found["data"]))
 
     with open(args.out, "w", encoding="utf-8", newline="\n") as out:
         out.write("program\taddress\tsize\tname\tstate\tstrings\tasserts"

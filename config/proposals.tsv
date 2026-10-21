@@ -1,38 +1,268 @@
-program	address	name	ps2_source	ps2_name	evidence	keys	state
-EBOOT	0x00048BC0			FUN_L00_001f58e0	Control | Text	profile	matched
-EBOOT	0x0007ADBC			FUN_L05_00266710	%s: 	profile	matched
-RC1	0x00035848			FUN_L00_002da660	cleaned up moby:%d (oclass:%d)\n	graph,profile,string	matched
-RC1	0x000716B0	do_space_transition	gameplay/state/do_space_transition	FUN_00231ff0	unloaded sound bank %#010x\n	profile,string	proposed
-RC1	0x00085CA8			FUN_L00_001f58e0	%.02f | %d = %d | ----	profile,string	matched
-RC1	0x000F3370	copy_text_to_shared_buffer	ui/text/copy_text_to_shared_buffer	FUN_001ff658	(Message too long)	profile,string	proposed
-RC1	0x001076C8			FUN_L00_00244110	internal level sound mismatch\n	profile,string	matched
-RC1	0x00169B10			FUN_L00_00276bd0	Transition to level %d\n	profile,string	matched
-RC1	0x0016E650	fun_0021a328	assembly/textbin/fun_0021a328	FUN_0021a328	(null) | default	profile	proposed
-RC1	0x00179E40	draw_prompt_box	ui/menus/draw_prompt_box	FUN_00221b50	(error)	profile	proposed
-RC1	0x001971B8	draw_ties_2	rendering/draw_ties_2	FUN_00235990	tie draw | tie texs	profile,string	proposed
-RC1	0x0019C300	set_scrolling_status_message	ui/text/set_scrolling_status_message	FUN_00237e90	                  %s	profile,string	proposed
-RC1	0x001A5F08			FUN_L00_00241940	D1_CHCR=%X\nD1_TADR=%X	profile	matched
-RC1	0x001A6098			FUN_L04_002923b8	\n\nInvalid anim detected on pLD->anims[%d]->anim in walk_in | sizeof(w_2legData) = %d bytes \n	profile,string	matched
-RC1	0x001DC530			FUN_L07_0030ed30	Illegal Hero Detect path for moby 1059 instance #%d.\n	profile,string	matched
-RC1	0x001DD718			FUN_L07_0030f5f0	Initialization failed for moby 1059 instance #%d. Deleting.\	profile,string	matched
-RC1	0x00216D30			FUN_L07_0031d2e0	ERRORS, killing moby %d \n	profile,string	matched
-RC1	0x003BDFD0			FUN_L08_00305270	Deserter	profile,string	matched
-RC1	0x00426530			FUN_L14_002eaf88	*Error: Moby 610 (wind-control) with no cuboid index (wind p	profile,string	matched
-RC1	0x004F8310			FUN_L14_002fc0f0	Enemy Fighter (moby908) with no flyPath. UID: %d - RAR\n	profile,string	matched
-RC1	0x00520F00	fun_00216c48	ui/menus/fun_00216c48	FUN_00216c48	%d%s%03d	profile,string	proposed
-RC2	0x00096C60	memcard_get_data_size	storage/memory_card/memcard_get_data_size	FUN_0020ac88	ERROR: could not init memcard lib\n	profile	proposed
-RC2	0x0037D0E0			FUN_L05_00266320	 %d/3 | %s: 	profile	matched
-RC2	0x0038DA98			FUN_L05_00266710	%d:%02d:%02d | %s:   | %s:  0:00:00	profile,string	matched
-RC2	0x0056AF50			FUN_L05_00262f50	%s + %s + %d Flips	profile,string	matched
-RC2	0x00A30DD8	fun_002239e0	ui/menus/fun_002239e0	FUN_002239e0	%02d:%02d	string	proposed
-RC2	0x00B5F544			FUN_L00_00244110	internal level sound mismatch\n	profile,string	matched
-RC2	0x00BD2998	fun_0021a328	assembly/textbin/fun_0021a328	FUN_0021a328	(null) | default	profile	proposed
-RC2	0x00BE79F8	draw_prompt_box	ui/menus/draw_prompt_box	FUN_00221b50	(error)	profile	proposed
-RC2	0x00C1B8D4			FUN_L00_00241940	D1_CHCR=%X\nD1_TADR=%X	profile	matched
-RC2	0x010A5AB8	fun_00216c48	ui/menus/fun_00216c48	FUN_00216c48	%d%s%03d	profile,string	proposed
-RC3	0x00093BA0			FUN_L00_00208b60	333?	profile	matched
-RC3	0x001E492C			FUN_L00_00244110	internal level sound mismatch\n	profile,string	matched
-RC3	0x001F2504	memcard_get_data_size	storage/memory_card/memcard_get_data_size	FUN_0020ac88	ERROR: could not init memcard lib\n	profile	proposed
-RC3	0x002AFB0C			FUN_L00_00241940	D1_CHCR=%X\nD1_TADR=%X	profile	matched
-RC3	0x00317BE8			FUN_L05_00266710	%s: %d	profile	matched
-RC3	0x008B7440	fun_00216c48	ui/menus/fun_00216c48	FUN_00216c48	%d%s%03d	profile	proposed
+program	address	name	strength	origin	origin_detail	evidence	state
+EBOOT	0x00048BC0		verified	ps2		Control | Text	matched
+EBOOT	0x0007ADBC		verified	ps2		%s: 	matched
+RC1	0x00035848		verified	ps2		cleaned up moby:%d (oclass:%d)\n	matched
+RC1	0x000716B0	do_space_transition	verified	ps2	gameplay/state/do_space_transition	unloaded sound bank %#010x\n	proposed
+RC1	0x00085CA8		verified	ps2		%.02f | %d = %d | ----	matched
+RC1	0x000F3370	copy_text_to_shared_buffer	verified	ps2	ui/text/copy_text_to_shared_buffer	(Message too long)	proposed
+RC1	0x001076C8		verified	ps2		internal level sound mismatch\n	matched
+RC1	0x00169B10		verified	ps2		Transition to level %d\n	matched
+RC1	0x0016E650	fun_0021a328	verified	ps2	assembly/textbin/fun_0021a328	(null) | default	proposed
+RC1	0x00179E40	draw_prompt_box	verified	ps2	ui/menus/draw_prompt_box	(error)	proposed
+RC1	0x001971B8	draw_ties_2	verified	ps2	rendering/draw_ties_2	tie draw | tie texs	proposed
+RC1	0x0019C300	set_scrolling_status_message	verified	ps2	ui/text/set_scrolling_status_message	                  %s	proposed
+RC1	0x001A5F08		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
+RC1	0x001A6098		verified	ps2		\n\nInvalid anim detected on pLD->anims[%d]->anim in walk_in | sizeof(w_2legData) = %d bytes \n	matched
+RC1	0x001DC530		verified	ps2		Illegal Hero Detect path for moby 1059 instance #%d.\n	matched
+RC1	0x001DD718		verified	ps2		Initialization failed for moby 1059 instance #%d. Deleting.\	matched
+RC1	0x00216D30		verified	ps2		ERRORS, killing moby %d \n	matched
+RC1	0x003BDFD0		verified	ps2		Deserter	matched
+RC1	0x00426530		verified	ps2		*Error: Moby 610 (wind-control) with no cuboid index (wind p	matched
+RC1	0x004F8310		verified	ps2		Enemy Fighter (moby908) with no flyPath. UID: %d - RAR\n	matched
+RC1	0x00520F00	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
+RC2	0x00096C60	memcard_get_data_size	verified	ps2	storage/memory_card/memcard_get_data_size	ERROR: could not init memcard lib\n	proposed
+RC2	0x0037D0E0		verified	ps2		 %d/3 | %s: 	matched
+RC2	0x0038DA98		verified	ps2		%d:%02d:%02d | %s:   | %s:  0:00:00	matched
+RC2	0x0056AF50		verified	ps2		%s + %s + %d Flips	matched
+RC2	0x00A30DD8	fun_002239e0	verified	ps2	ui/menus/fun_002239e0	%02d:%02d	proposed
+RC2	0x00B5F544		verified	ps2		internal level sound mismatch\n	matched
+RC2	0x00BD2998	fun_0021a328	verified	ps2	assembly/textbin/fun_0021a328	(null) | default	proposed
+RC2	0x00BE79F8	draw_prompt_box	verified	ps2	ui/menus/draw_prompt_box	(error)	proposed
+RC2	0x00C1B8D4		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
+RC2	0x010A5AB8	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
+RC3	0x00093BA0		verified	ps2		333?	matched
+RC3	0x001BC2BC	hud_print_moby_debug_info	medium	assert		hud mobys | hud moby pvars | hud moby pvar list	proposed
+RC3	0x001E492C		verified	ps2		internal level sound mismatch\n	matched
+RC3	0x001F2504	memcard_get_data_size	verified	ps2	storage/memory_card/memcard_get_data_size	ERROR: could not init memcard lib\n	proposed
+RC3	0x002AFB0C		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
+RC3	0x00317BE8		verified	ps2		%s: %d	matched
+RC3	0x008B7440	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
+RC3	0x008C44D4	lobby_net_clan_get_message_list	medium	assert			proposed
+RC3	0x008C48BC	lobby_net_clan_get_member_list	medium	assert			proposed
+RC3	0x008C9974	lobby_net_clan_refresh_member_and_sent_invite_lists	medium	assert			proposed
+RC3	0x008C9F38	lobby_net_ignore_get_ignore_list	medium	assert			proposed
+RC3	0x008CA4B8	lobby_net_buddy_get_buddy_list	medium	assert			proposed
+RC3	0x008CA790	lobby_gui_screen_player_info_update	medium	assert			proposed
+RC3	0x008CF5F0	lobby_net_room_get_player_list	medium	assert			proposed
+RC3	0x008D07A8	lobby_net_room_create_player_list_items	weak	assert		PIC1.PNG	proposed
+RC3	0x008D08D8	lobby_net_object_list_get_entry	strong	assert		LobbyNet::ObjectList::GetEntry() - Bad entry number!	proposed
+RC3	0x008D0E40	lobby_gui_screen_room_get_room_screen	medium	assert			proposed
+RC3	0x008D0EDC	lobby_net_room_get_room_and_player_lists	medium	assert			proposed
+RC3	0x008D1740		undecided	assert			undecided
+RC3	0x008D1BC8	lobby_net_room_update_player_list	medium	assert		Room Player List Refresh	proposed
+RC3	0x008D2740	lobby_gui_screen_room_update	medium	assert			proposed
+RC3	0x008D48A8	lobby_net_account_account_registration_callback	strong	assert		(Callback) Callback_AccountRegistration -- pResponse(%p) | STATUS ERROR:[%s][%d]Account Create Failed	proposed
+RC3	0x008D5350	lobby_net_account_logout_callback	strong	assert		LobbyNet::AccountMgr::LogoutCallback() error: %s	proposed
+RC3	0x008D5DE4	lobby_net_account_anonymous_login_request	strong	assert		LobbyNet::AccountMgr::AnonymousLoginRequest() | Calling MediusAnonymousLogin()	proposed
+RC3	0x008D6194	lobby_net_account_login_request	strong	assert		LobbyNet::AccountMgr::LoginRequest() | Calling MediusAccountLogin()	proposed
+RC3	0x008D6588	lobby_net_account_logout_request	strong	assert		LobbyNet::AccountMgr::LogoutRequest() | Calling MediusAccountLogout()	proposed
+RC3	0x008D6A10	lobby_net_account_create	strong	assert		Suspect nested call to LobbyNet::AccountMgr::Create()!	proposed
+RC3	0x008D6DC0	lobby_net_account_change_password	strong	assert			proposed
+RC3	0x008D728C	lobby_net_account_login_np_ticket	strong	assert		Suspect nested call to LobbyNet::AccountMgr::LoginNPTicket()! | Calling MediusTicketLogin()	proposed
+RC3	0x008D78F8	lobby_net_account_delete	strong	assert		Suspect nested call to LobbyNet::AccountMgr::Delete()!	proposed
+RC3	0x008D7C90	lobby_net_buddy_buddy_mgr_ctor	strong	assert		LobbyNet::BuddyMgr() - Wrong class size (did you use GetRequiredMemory()?)	proposed
+RC3	0x008D7F20	lobby_net_buddy_sort_buddy_list	medium	assert		No sort operator!	proposed
+RC3	0x008D8604	lobby_net_buddy_set_buddy_list_memory_footprint	strong	assert		Must call SetBuddyListMemoryFootprint() first!	proposed
+RC3	0x008D86D4	lobby_net_buddy_get_buddy_entry	medium	assert			proposed
+RC3	0x008D895C		undecided	assert			undecided
+RC3	0x008D8C60	lobby_net_clan_clan_mgr_ctor	strong	assert		LobbyNet::ClanMgr() - Wrong class size	proposed
+RC3	0x008D8F28	lobby_net_clan_message_list_mgr_ctor	medium	assert		LobbyNet::ClanMgr()	proposed
+RC3	0x008D91F0	lobby_net_clan_sent_invite_list_mgr_ctor	medium	assert			proposed
+RC3	0x008D94B8	lobby_net_clan_invite_list_mgr_ctor	medium	assert			proposed
+RC3	0x008D9780	lobby_net_clan_ladder_list_mgr_ctor	medium	assert			proposed
+RC3	0x008D9A48	lobby_net_clan_challenge_list_mgr_ctor	medium	assert			proposed
+RC3	0x008D9D10	lobby_net_clan_challenge_history_list_mgr_ctor	medium	assert			proposed
+RC3	0x008DA6BC	lobby_net_clan_refresh_message_list	strong	assert		RefreshMessageList - SceNpClansRequestHandle() error 0x%x | clanID is %d	proposed
+RC3	0x008DC250	lobby_net_clan_refresh_challenge_list	strong	assert		RefreshChallengeList() - sceNpClansCreateRequest() error 0x%x	proposed
+RC3	0x008DCDE4	lobby_net_clan_confirm_clan_challenge	strong	assert		Suspect nested call to LobbyNet::ClanMgr::ConfirmClanChallenge()! | MediusConfirmClanTeamChallenge()	proposed
+RC3	0x008DD1E4	lobby_net_clan_invite_player	strong	assert		InvitePlayer (by Account ID) - SceNpClansRequestHandle() error 0x%x | Clan Invitation	proposed
+RC3	0x008DD504	lobby_net_clan_revoke_invite	strong	assert		RevokeInvite() - SceNpClansRequestHandle() error 0x%x	proposed
+RC3	0x008DD908	lobby_net_clan_remove_player	strong	assert		RemovePlayer() - SceNpClansRequestHandle() error 0x%x	proposed
+RC3	0x008DDD2C	lobby_net_clan_update_clan_stats	strong	assert		Must be clan leader to update its stats! | Must be in a clan to update its stats!	proposed
+RC3	0x008DE87C	lobby_net_clan_get_clan_by_name	strong	assert		Suspect nested call to LobbyNet::ClanMgr::GetClanByName()!	proposed
+RC3	0x008DEEA0	lobby_net_clan_refresh_challenge_history_list	strong	assert		LobbyNet::ClanMgr::RefreshChallengeHistoryList() Error (MEDIUS: %d)	proposed
+RC3	0x008DF1E8	lobby_net_clan_refresh_ladder_list	medium	assert		LobbyNet::ClanMgr::Update() - Clan Ladder List Refresh Timed Out	proposed
+RC3	0x008DFDD0	lobby_net_clan_refresh_invite_list	strong	assert		RefreshInviteList - SceNpClansRequestHandle() error 0x%x	proposed
+RC3	0x008E099C	lobby_net_clan_refresh_sent_invite_list	strong	assert		RefreshSentInviteList - SceNpClansRequestHandle() error 0x%x	proposed
+RC3	0x008E1548	lobby_net_clan_update_clan_member_list	strong	assert		UpdateClanMemberList - sceNpClansCreateRequest() error 0x%x | Must set clan ID before retrieving member list!	proposed
+RC3	0x008E21FC	lobby_net_clan_update	strong	assert		LobbyNet::ClanMgr::Update() - Clan Member List Refresh Timed Out | LobbyNet::ClanMgr::Update() - Clan ChallengeHistory List Refresh Timed Out	proposed
+RC3	0x008E26AC	lobby_net_clan_set_member_list_memory_footprint	strong	assert		Must call SetMemberListMemoryFootprint() first!	proposed
+RC3	0x008E277C	lobby_net_clan_set_message_list_memory_footprint	strong	assert		Must call SetMessageListMemoryFootprint() first!	proposed
+RC3	0x008E284C	lobby_net_clan_set_sent_invite_list_memory_footprint	strong	assert		Must call SetSentInviteListMemoryFootprint() first!	proposed
+RC3	0x008E291C	lobby_net_clan_set_invite_list_memory_footprint	strong	assert		Must call SetInviteListMemoryFootprint() first!	proposed
+RC3	0x008E29EC	lobby_net_clan_set_challenge_list_memory_footprint	strong	assert		Must call SetChallengeListMemoryFootprint() first!	proposed
+RC3	0x008E2ABC	lobby_net_clan_set_challenge_history_list_memory_footprint	strong	assert		Must call SetChallengeHistoryListMemoryFootprint() first!	proposed
+RC3	0x008E2C04	lobby_net_clan_sort_ladder_list	medium	assert		wierd... | No sort operator!	proposed
+RC3	0x008E3A58	lobby_net_game_refresh_player_list	strong	assert		LobbyNet::GameMgr::RefreshPlayerList() | MediusGetGamePlayers() Failed!	proposed
+RC3	0x008E3ED8	lobby_net_game_join_game	strong	assert		Suspect nested call to LobbyNet::GameMgr::JoinGame()!	proposed
+RC3	0x008E48C4	lobby_net_game_refresh_game_info	strong	assert		LobbyNet::GameMgr::RefreshGameInfo() | MediusGetGameInfo() Failed	proposed
+RC3	0x008E5414	lobby_net_game_get_game_settings	medium	assert			proposed
+RC3	0x008E59A0	lobby_net_game_acquire_game_info	strong	assert		MediusGetGameInfo()	proposed
+RC3	0x008E5E68	lobby_net_game_acquire_game_players	strong	assert		MediusGetGamePlayers()	proposed
+RC3	0x008E69C8	lobby_net_game_refresh_game_players_callback	strong	assert		LobbyNet::GameMgr::RefreshGamePlayersCallback()	proposed
+RC3	0x008E6F6C	lobby_net_gamelist_game_list_mgr_ctor	strong	assert		PoolAllocator::GetRequiredMemory lied!	proposed
+RC3	0x008E71B0	lobby_net_gamelist_refresh_game_list	strong	assert		forced refresh, time = %d | refresh error (MEDIUS: %d)	proposed
+RC3	0x008E7498	lobby_net_gamelist_set_server_filter	strong	assert		Suspect nested call to LobbyNet::GameListMgr::SetServerFilter()! | MediusSetGameListFilter()	proposed
+RC3	0x008E7790	lobby_net_gamelist_clear_server_filter	strong	assert		Suspect nested call to LobbyNet::GameListMgr::ClearServerFilter()!	proposed
+RC3	0x008E7A9C	lobby_net_gamelist_set_filter_callback	strong	assert		SetFilterCallback() error %s	proposed
+RC3	0x008E7B6C	lobby_net_gamelist_clear_filter_callback	strong	assert		+++ ClearFilterCallback error %s	proposed
+RC3	0x008E7C34	lobby_net_gamelist_get_game_list_callback	strong	assert		LobbyNet::GameListMgr::GetGameListCallback() error: %s	proposed
+RC3	0x008E86EC	lobby_net_ignore_ignore_list_mgr_ctor	strong	assert		LobbyNet::IgnoreListMgr::IgnoreListMgr() - Wrong class size	proposed
+RC3	0x008E892C	lobby_net_ignore_sort_ignore_list	medium	assert		No sort operator!	proposed
+RC3	0x008E8FE4	lobby_net_ignore_set_ignore_list_memory_footprint	strong	assert		Must call SetIgnoreListMemoryFootprint() first!	proposed
+RC3	0x008E90E0	lobby_net_ignore_remove_from_ignore_list	strong	assert		Suspect nested call to LobbyNet::IgnoreListMgr::RemoveFromIgnoreList()! | MediusRemoveFromIgnoreList()	proposed
+RC3	0x008E94A8	lobby_net_ladder_ladder_mgr_ctor	strong	assert		LobbyNet::LadderMgr() - Wrong class size	proposed
+RC3	0x008E9BCC	lobby_net_ladder_get_ladder_stats	medium	assert		ERROR: GetLadderStats() Player not found	proposed
+RC3	0x008ED1B0	lobby_net_location_location_list_mgr_ctor	strong	assert			proposed
+RC3	0x008ED3E8	lobby_net_location_refresh_location_list	strong	assert		Already have pending refresh!	proposed
+RC3	0x008EE05C	lobby_net_main_alloc_location_list	strong	assert		LobbyNet::AllocLocationList() - Need more memory!	proposed
+RC3	0x008EE1CC	lobby_net_main_alloc_game_list	strong	assert		LobbyNet::AllocGameList() - Need more memory!	proposed
+RC3	0x008EE33C	lobby_net_main_alloc_announcement_list	strong	assert		LobbyNet::AllocAnnouncementList() - Need more memory!	proposed
+RC3	0x008EE48C	lobby_net_main_alloc_buddy_list	strong	assert		LobbyNet::AllocBuddyList() - Need more memory!	proposed
+RC3	0x008EE5C4	lobby_net_main_alloc_ignore_list	strong	assert		LobbyNet::AllocIgnoreList() - Need more memory!	proposed
+RC3	0x008EE6FC	lobby_net_main_alloc_clan_member_list	strong	assert		LobbyNet::AllocClanMemberList() - Need more memory!	proposed
+RC3	0x008EE834	lobby_net_main_alloc_clan_message_list	strong	assert		LobbyNet::AllocClanMessageList() - Need more memory!	proposed
+RC3	0x008EE96C	lobby_net_main_alloc_clan_sent_invite_list	strong	assert		LobbyNet::AllocClanSentInviteList() - Need more memory!	proposed
+RC3	0x008EEAA4	lobby_net_main_alloc_clan_invite_list	strong	assert		LobbyNet::AllocClanInviteList() - Need more memory!	proposed
+RC3	0x008EEBDC	lobby_net_main_alloc_clan_ladder_list	strong	assert		LobbyNet::AllocClanLadderList() - Need more memory!	proposed
+RC3	0x008EED14	lobby_net_main_alloc_clan_challenge_list	strong	assert		LobbyNet::AllocClanChallengeList() - Need more memory!	proposed
+RC3	0x008EEE4C	lobby_net_main_alloc_clan_challenge_history_list	strong	assert		LobbyNet::AllocClanChallengeHistoryList() - Need more memory!	proposed
+RC3	0x008EEF84	lobby_net_main_alloc_ladder_list	strong	assert		LobbyNet::AllocLadderList() - Need more memory!	proposed
+RC3	0x008EF0BC	lobby_net_main_alloc_room_player_list	strong	assert		Room Player list already initialized! | LobbyNet::AllocRoomPlayerList() - Need more memory!	proposed
+RC3	0x008EF1F4	lobby_net_main_alloc_room_list	medium	assert		Room list already initialized! | LobbyNet::AllocGameList() - Need more memory!	proposed
+RC3	0x008EF32C	lobby_net_main_set_memory_footprint	medium	assert		Must call SetAnnouncementListMemoryFootprint() first! | Must call SetMemberListMemoryFootprint() first!	proposed
+RC3	0x008EFB6C	lobby_net_main_update	strong	assert		Medius Update Error! | DME Update Error! | MGCL Update Error!	proposed
+RC3	0x008EFEC4	lobby_net_main_lobby_net_ctor	strong	assert		LobbyNet::LobbyNet() - Need more memory!	proposed
+RC3	0x008F096C	lobby_net_main_get_instance	strong	assert		Old instance not destroyed properly, use ReleaseMemory()!	proposed
+RC3	0x008F0D6C	lobby_net_player_get_player_info	strong	assert		Suspect nested call to LobbyNet::PlayerMgr::GetPlayerInfo()! | MediusGetPlayerInfo()	proposed
+RC3	0x008F14A8	lobby_net_player_find_player	strong	assert		Call FindPlayer(accountname)! | MediusFindPlayer()	proposed
+RC3	0x008F18A8	lobby_net_player_find_player_by_id	strong	assert		MediusFindPlayer()	proposed
+RC3	0x008F2138	lobby_net_room_send_chat_message	strong	assert		Must be in a chat room to send a room chat message! | MediusSendGenericChatMessage()	proposed
+RC3	0x008F23B8	lobby_net_room_player_list_mgr_ctor	medium	assert		LobbyNet::RoomMgr() - Wrong class size	proposed
+RC3	0x008F2680	lobby_net_room_room_list_mgr_ctor	medium	assert		LobbyNet::RoomMgr() - Wrong class size	proposed
+RC3	0x008F28C0	lobby_net_room_create_room	strong	assert		+++ MediusCreateChannel() field1: %i  field2: %i  field3: %i  field4: %i	proposed
+RC3	0x008F2D30	lobby_net_room_join_room	strong	assert		MediusJoinChannel()	proposed
+RC3	0x008F30F4	lobby_net_room_get_room_info	strong	assert		--- Calling RoomMgr::GetRoomInfo() --- | MediusGetChannelInfo()	proposed
+RC3	0x008F3350	lobby_net_room_get_room_entry	medium	assert		%02X	proposed
+RC3	0x008F37D0	lobby_net_room_get_room_name	medium	assert		ERROR::THIS SERVER HAS OLD ROOM NAME DATA!! TELL HUCK FINN TO RESET THEM!!	proposed
+RC3	0x008F4348	lobby_net_room_clear_room_filter_masks	strong	assert		Suspect nested call to LobbyNet::RoomMgr::ClearRoomFilterMasks()! | MediusSetRoomFilterChannel()	proposed
+RC3	0x008F4648	lobby_net_room_refresh_room_list	strong	assert		LobbyNet::RoomMgr::RefreshRoomList() Error (MEDIUS: %d) | Refreshing Room Room List	proposed
+RC3	0x008F48E0	lobby_net_room_set_room_filter_masks	strong	assert		Suspect nested call to LobbyNet::RoomMgr::SetRoomFilterMasks()!	proposed
+RC3	0x008F4C34	lobby_net_room_get_room_player_list	medium	assert			proposed
+RC3	0x008F525C	lobby_net_room_refresh_player_list	strong	assert		LobbyNet::RoomMgr::RefreshPlayerList() Error (MEDIUS: %d) | Refreshing Room Player List	proposed
+RC3	0x008F5794	lobby_net_room_get_room_entry_by_name	medium	assert			proposed
+RC3	0x008F5BF0	lobby_net_room_refresh_player_list_callback	strong	assert		LobbyNet::RoomMgr::RefreshPlayerListCallback() error: %s	proposed
+RC3	0x008F6AA0	lobby_net_room_refresh_room_list_callback	strong	assert		RefreshRoomListCallback() pResponse->LobbyName: %s   StatusCode: %i	proposed
+RC3	0x008F7B64	lobby_net_session_connect_mas	strong	assert		*** MediusConnectMAS() *** | Suspect nested calls to LobbyNet::MediusConnectMAS()!	proposed
+RC3	0x008F8160	lobby_net_session_begin_session	strong	assert		SessionMgr::BeginSession NetGetHostByName() error %d | ratchetps3.ps3.online.scea.com	proposed
+RC3	0x008F8828	lobby_net_session_end_session	strong	assert		nwMGCL_Shutdown()	proposed
+RC3	0x008F8D04	lobby_net_session_connect_mls	strong	assert		*** MediusConnectMLS() ***	proposed
+RC3	0x008FD120	lobby_net_util_util_mgr_ctor	strong	assert		LobbyNet::UtilMgr() - Wrong class size (did you use GetAnnouncementListRequiredMemory()?)	proposed
+RC3	0x008FD3C8	lobby_net_util_refresh_announcement_list	strong	assert		LobbyNet::UtilMgr::RefreshAnnouncementList() Error (MEDIUS: %d) | Refreshing Announcement List	proposed
+RC3	0x008FD888	lobby_net_util_server_text_filter	strong	assert		Suspect nested calls to LobbyNet::UtilMgr::ServerTextFilter()!	proposed
+RC3	0x008FDC98	lobby_net_util_mark_message_read	strong	assert		Suspect nested call to LobbyNet::UtilMgr::MarkMessageRead()! | MediusSetMessageAsRead()	proposed
+RC3	0x008FDF94	lobby_net_util_get_medius_time	strong	assert		Time%d | Suspect nested call to LobbyNet::GetMediusTime()!	proposed
+RC3	0x008FE6BC	lobby_net_util_get_world_security_level	strong	assert		Suspect nested call to LobbyNet::UtilMgr::GetWorldSecurityLevel()! | MediusGetWorldSecurityLevel()	proposed
+RC3	0x008FE99C	lobby_net_util_upload_file	strong	assert		MediusFileCreate()	proposed
+RC3	0x008FF138	lobby_net_util_download_file	strong	assert		MediusFileDownload()	proposed
+RC3	0x008FF558	lobby_net_util_get_member_and_ignore_lists	medium	assert			proposed
+RC3	0x008FFCC4	lobby_net_util_refresh_announcement_list_callback	strong	assert		UtilMgr::RefreshAnnouncementListCallback() error %s	proposed
+RC3	0x00900D34	lobby_shared_pool_alloc_destroy_pool	strong	assert		PoolAllocator::DestroyPool() - Pool not empty!	proposed
+RC3	0x009047EC	lobby_gui_game_filters_set_filter_field_value	strong	assert		Filter field overflow on field %d (value = %d)!	proposed
+RC3	0x00904B94	lobby_gui_game_filters_set_filter_mask	strong	assert		Bad filter mask for field %d | No value to set for field #%d	proposed
+RC3	0x00904DFC	lobby_gui_game_filters_set_filter_value	strong	assert		Bad filter mask for field %d | No value to set for field #%d	proposed
+RC3	0x00905064	lobby_gui_game_filters_clear_filter_field	strong	assert		Bad filter mask for field %d | No value to set for field #%d	proposed
+RC3	0x0090548C	lobby_gui_game_filters_check_filter_mask	strong	assert		Bad filter mask for field %d	proposed
+RC3	0x00905DF4	lobby_gui_item_create_graphics	strong	assert		%s() not defined for this objectType (%d). | CreateGraphics	proposed
+RC3	0x00905E74	lobby_gui_item_destroy_graphics	strong	assert		DestroyGraphics	proposed
+RC3	0x00906350	lobby_gui_item_push_layer	strong	assert		You are out of widget layers.	proposed
+RC3	0x00906480	lobby_gui_item_pop_layer	strong	assert		You are trying to free more layers than you have.	proposed
+RC3	0x0090654C	lobby_gui_item_get_next_widget_id	strong	assert		You need to call PushLayer before you call GetNextWidgetID.	proposed
+RC3	0x009078F8	lobby_gui_item_image_gfx_check_screen_image_index	medium	assert		Invalid screen image index, see ScreenImageTypes enum	proposed
+RC3	0x00907CB8	lobby_gui_manager_create_screen	strong	assert		Tried to create unknown screen type. | Out of memory creating screen.	proposed
+RC3	0x00908848	lobby_gui_manager_get_instance	strong	assert		Old instance not destroyed properly, use ReleaseMemory()!	proposed
+RC3	0x00908B1C	lobby_gui_manager_release_instance	strong	assert		No instance exists	proposed
+RC3	0x00908CEC	lobby_gui_manager_change_screen	medium	assert		There really should be a screen here.	proposed
+RC3	0x009122A8		undecided	assert			undecided
+RC3	0x00914C80	lobby_gui_clan_message_list_update	medium	assert		Clan message count %d | Clan Message List Refresh | Announcement List Updated	proposed
+RC3	0x0091672C	lobby_gui_ignore_list_update	medium	assert		Ignore List Refresh	proposed
+RC3	0x00916BE8	lobby_gui_screen_bad_buddies_update	medium	assert			proposed
+RC3	0x009191D4	lobby_gui_buddy_list_update	medium	assert		Buddy List Updating	proposed
+RC3	0x00919728	lobby_gui_screen_buddies_update	medium	assert			proposed
+RC3	0x0091B9D8	lobby_gui_screen_clan_challenges_update_ready_list	medium	assert		Clan Challenges Ready List Refresh | p_entry->Status == ClanChallengeAccepted	proposed
+RC3	0x0091C208	lobby_gui_screen_clan_challenges_update_received_list	medium	assert		Clan Challenges Received List Refresh | p_entry->Status == ClanChallengeRequest	proposed
+RC3	0x0091C8F4	lobby_gui_screen_clan_challenges_update_sent_list	medium	assert		Clan Challenges Sent List Refresh | p_entry->Status == ClanChallengeRequest	proposed
+RC3	0x0091DD68	lobby_net_clan_get_message_list_entries	medium	assert			proposed
+RC3	0x0091ED08	lobby_net_clan_get_invite_list	medium	assert			proposed
+RC3	0x00920B60	lobby_net_buddy_get_buddy_list_for_room	medium	assert			proposed
+RC3	0x00921DD0	lobby_net_clan_get_member_list_entries	medium	assert			proposed
+RC3	0x00923D38		undecided	assert			undecided
+RC3	0x0092449C	lobby_net_buddy_find_buddy	medium	assert		--- p_buddy_list is NULL!	proposed
+RC3	0x00924970	lobby_net_clan_get_sent_invite_list	medium	assert			proposed
+RC3	0x0092B634	lobby_gui_screen_create_check_clan_challenge_mode	strong	assert		Clan challenge id needs to be set for clan challenge mode of create game screen	proposed
+RC3	0x0092E9A4		undecided	assert			undecided
+RC3	0x0092ECA8	lobby_gui_screen_find_game_update	strong	assert		Must use LobbyGUIScreenFindGame::SetScreenMode() first!	proposed
+RC3	0x0092F974	lobby_gui_screen_find_game_set_screen_mode	medium	assert		GetFlag | SetScreenMode	proposed
+RC3	0x0092FA7C	lobby_net_object_list_get_entry_game	medium	assert		LobbyNet::ObjectList::GetEntry() - Bad entry number!	proposed
+RC3	0x009301C8	lobby_gui_screen_find_game_get_game_info_screen	medium	assert			proposed
+RC3	0x00931BE4	lobby_net_object_list_get_entry_debug	medium	assert		Bad entry number! | %08X	proposed
+RC3	0x0093518C	lobby_net_clan_get_member_list_count	medium	assert			proposed
+RC3	0x009356A8	lobby_net_buddy_get_buddy_list_count	medium	assert			proposed
+RC3	0x00945158	lobby_net_room_get_room_list_entries	medium	assert		No list! | No entries\n | \t%08X %08X\n	proposed
+RC3	0x00945AB8		undecided	assert			undecided
+RC3	0x009460F0	lobby_gui_buddy_list_refresh	medium	assert		Buddy List Updating	proposed
+RC3	0x00950498	lobby_net_ignore_get_ignore_list_count	medium	assert			proposed
+RC3	0x0095204C		undecided	assert			undecided
+RC3	0x00956488	lobby_gui_ladder_list_update	medium	assert		SetSpacing | GetVisibleLines	proposed
+RC3	0x00957280	lobby_gui_clan_ladder_list_update	medium	assert		Clan Ladder List Updating	proposed
+RC3	0x00959488	lobby_net_util_get_announcement_list	medium	assert		{TIP}	proposed
+RC3	0x0095AE84	lobby_net_location_get_location_list	medium	assert		Region List Refresh	proposed
+RC3	0x0095B228	lobby_gui_list_item_get_entry	medium	assert		ActiveLineChanged	proposed
+RC3	0x0097F304	light_setup_set_wait_state	medium	assert		TfragWait | Assertion failed at %s(%d): %s\n	proposed
+RC3	0x00991BF4	im_seq_mem_set_memory_pointer	strong	assert		Tried to set memory pointer to an invalid address [%s, line %d]	proposed
+RC3	0x00991C64	im_seq_mem_set_memory_pointer_checked	strong	assert		Tried to set memory pointer to an invalid address [%s, line %d]	proposed
+RC3	0x00A7D0E0		undecided	assert			undecided
+RC3	0x00A8616C	lobby_gui_item_set_scale	strong	assert		SetScale | %s() not defined for this objectType (%d).	proposed
+RC3	0x00A861F0	lobby_gui_item_set_edit_scale	strong	assert		SetEditScale	proposed
+RC3	0x00A86274	lobby_gui_item_set_font	strong	assert		SetFont	proposed
+RC3	0x00A862F8	lobby_gui_item_set_auto_scale	strong	assert		SetAutoScale	proposed
+RC3	0x00A8637C	lobby_gui_item_set_alignment_flags	strong	assert		SetAlignmentFlags	proposed
+RC3	0x00A86400	lobby_gui_item_set_control_flags	strong	assert		SetControlFlags	proposed
+RC3	0x00A86484	lobby_gui_item_set_color	strong	assert		SetColor	proposed
+RC3	0x00A86508	lobby_gui_item_set_alignment_left_right	strong	assert		SetAlignmentLeftRight	proposed
+RC3	0x00A86588	lobby_gui_item_get_bounding_rectangle	strong	assert		GetBoundingRectangle	proposed
+RC3	0x00A8660C	lobby_gui_item_set_spacing	strong	assert		SetSpacing	proposed
+RC3	0x00A8668C	lobby_gui_item_set_flag	strong	assert		SetFlag	proposed
+RC3	0x00A86710	lobby_gui_item_get_flag	strong	assert		GetFlag	proposed
+RC3	0x00A86794	lobby_gui_item_clear_lines	strong	assert		ClearLines	proposed
+RC3	0x00A86814	lobby_gui_item_set_lines	strong	assert		SetLines	proposed
+RC3	0x00A86898	lobby_gui_item_set_visible_lines	strong	assert		SetVisibleLines	proposed
+RC3	0x00A86918	lobby_gui_item_get_visible_lines	strong	assert		GetVisibleLines	proposed
+RC3	0x00A8699C	lobby_gui_item_get_line_count	strong	assert		GetLineCount	proposed
+RC3	0x00A86A20	lobby_gui_item_is_in_select_mode	strong	assert		IsInSelectMode	proposed
+RC3	0x00A86AA4	lobby_gui_item_set_select_mode	strong	assert		SetSelectMode	proposed
+RC3	0x00A86B24	lobby_gui_item_set_always_select	strong	assert		SetAlwaysSelect	proposed
+RC3	0x00A86BA4	lobby_gui_item_set_active_line	strong	assert		SetActiveLine	proposed
+RC3	0x00A86C24	lobby_gui_item_get_active_line	strong	assert		GetActiveLine	proposed
+RC3	0x00A86CA8	lobby_gui_item_set_list_spacing	strong	assert		SetListSpacing	proposed
+RC3	0x00A86D2C	lobby_gui_item_set_text_scale	strong	assert		SetTextScale	proposed
+RC3	0x00A86DB0	lobby_gui_item_get_active_line_text	strong	assert		GetActiveLineText	proposed
+RC3	0x00A86E34	lobby_gui_item_get_active_line_position	strong	assert		GetActiveLinePosition	proposed
+RC3	0x00A86EB8	lobby_gui_item_get_active_line_size	strong	assert		GetActiveLineSize	proposed
+RC3	0x00A86F3C	lobby_gui_item_active_line_changed	strong	assert		ActiveLineChanged	proposed
+RC3	0x00A86FC0	lobby_gui_item_set_value	strong	assert		SetValue	proposed
+RC3	0x00A87040	lobby_gui_item_get_value	strong	assert		GetValue	proposed
+RC3	0x00A870C4	lobby_gui_item_value_changed	strong	assert		ValueChanged	proposed
+RC3	0x00A87148	lobby_gui_item_clear_text	strong	assert		ClearText	proposed
+RC3	0x00A871C8	lobby_gui_item_set_text	strong	assert		SetText	proposed
+RC3	0x00A87248	lobby_gui_item_set_text_keep_whitespace	strong	assert		SetTextKeepWhitespace	proposed
+RC3	0x00A872C8	lobby_gui_item_set_text_ptr	strong	assert		SetTextPtr	proposed
+RC3	0x00A87348	lobby_gui_item_get_text	strong	assert		GetText	proposed
+RC3	0x00A873CC	lobby_gui_item_set_valid_char	strong	assert		SetValidChar	proposed
+RC3	0x00A8744C	lobby_gui_item_set_invalid_char	strong	assert		SetInvalidChar	proposed
+RC3	0x00A874CC	lobby_gui_item_set_valid_string	strong	assert		SetValidString	proposed
+RC3	0x00A8754C	lobby_gui_item_set_invalid_string	strong	assert		SetInvalidString	proposed
+RC3	0x00A875CC	lobby_gui_item_set_scroll	strong	assert		SetScroll	proposed
+RC3	0x00A87650	lobby_gui_item_set_texture	strong	assert		SetTexture	proposed
+RC3	0x00A876D4	lobby_gui_item_get_texture	strong	assert		GetTexture	proposed
+RC3	0x00A87758	lobby_gui_item_set_truncate_width	strong	assert		SetTruncateWidth	proposed

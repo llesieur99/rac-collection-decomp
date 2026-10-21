@@ -86,10 +86,11 @@ the bytes.
 | | Count |
 |---|---|
 | functions bounded | 50,877 |
-| functions that touch a string | 2,679 - the subject of the function, measured |
-| functions that carry an assert | 246 - the source file and the line, measured |
-| functions with a proved name | 6 - and those six carry the placeholder of their address, because nothing yet says what they do |
-| functions with a proposed name | 14 - from the PlayStation 2 decompilation, with the shared message as the proof |
+| functions that touch a string | 2,679 — the subject of the function, measured |
+| functions that carry an assert | 246 — the source file and the line, measured |
+| functions with a call graph | 35,703 — the role of the function, measured |
+| functions with a proved name | 6 — and those six carry the placeholder of their address, because nothing yet says what they do |
+| functions with a proposed name | **236** — 156 of them strong, 65 medium, 1 weak |
 
 The six proved bodies are the first ones, and they are deliberately the
 simplest: a frame, a call, an epilogue. They prove the toolchain and the
@@ -137,14 +138,13 @@ but a hypothesis with a measured counterpart is a much cheaper hypothesis.
 
 ## The first proposals
 
-The PlayStation 2 decompilation of the sibling project knows the name of 773
-functions of the original games, with the source file they come from. The
-message a function prints is the proof that the PlayStation 2 function and
-the PlayStation 3 one are the same function: a pair of functions picked at
-random shares a message 0,18 % of the time.
+Two sources of proposals, both measured, both hypotheses until the body gate
+proves them.
 
-The table is in [config/proposals.tsv](../config/proposals.tsv), and it holds
-**37 verified pairs, 14 of them with a name**:
+**The PlayStation 2 decompilation.** The message a function prints is the
+proof that the PlayStation 2 function and the PlayStation 3 one are the same
+function: a pair of functions picked at random shares a message 0,18 % of the
+time.
 
 | Program | Address | Proposed name | The message that proves it |
 |---|---|---|---|
@@ -161,8 +161,34 @@ Two of them land on **the same function in two different games** —
 `draw_prompt_box` in `RC1` and in `RC2` — which is the control the method
 needs: the key is not a coincidence of one program.
 
-These are proposals, not names: the body gate still has to reproduce the
-retail bytes before a name is a fact.
+**The assert messages of the lobby.** `RC3` carries the code of the
+multiplayer, and 682 live assertions in 47 source files. An assertion names
+the class, the member and often the method itself:
+
+| Program | Address | Proposed name | The assert that names it |
+|---|---|---|---|
+| `RC3` | `0x00A8616C` | `lobby_gui_item_set_scale` | `"%s() not defined for this objectType (%d)."` with `"SetScale"` |
+| `RC3` | `0x008EE05C` | `lobby_net_main_alloc_location_list` | `"LobbyNet::AllocLocationList() - Need more memory!"` |
+| `RC3` | `0x008D6194` | `lobby_net_account_login_request` | `"LobbyNet::AccountMgr::LoginRequest()"` |
+| `RC3` | `0x008D8C60` | `lobby_net_clan_clan_mgr_ctor` | `"LobbyNet::ClanMgr() - Wrong class size"` |
+| `RC3` | `0x008E21FC` | `lobby_net_clan_update` | `"LobbyNet::ClanMgr::Update() - … Refresh Timed Out"` |
+| `RC3` | `0x008F525C` | `lobby_net_room_refresh_player_list` | `"LobbyNet::RoomMgr::RefreshPlayerList() Error (MEDIUS: %d)"` |
+| `RC3` | `0x00905DF4` | `lobby_gui_item_create_graphics` | `"CreateGraphics"` |
+| `RC3` | `0x00906350` | `lobby_gui_item_push_layer` | `"You are out of widget layers."` |
+| `RC3` | `0x00900D34` | `lobby_shared_pool_alloc_destroy_pool` | `"PoolAllocator::DestroyPool() - Pool not empty!"` |
+
+**222 of the 230 functions of the lot** carry a name, and the eight that do
+not are published as such: six of them have nothing but a header file, one is
+indistinguishable from its neighbour, and one is *contradicted* by its own
+code — it is engine code, and the assert that names it belongs to another
+file. The read of the disassembly corrected one proposal in the process.
+
+Every proposal is checked: the literal it rests on is searched in the
+measured code of the function and of its callers, and a proposal whose
+literal is nowhere near the function is a proposal that contradicts the
+code. None does.
+
+The table is in [config/proposals.tsv](../config/proposals.tsv).
 
 ## What a name is worth
 

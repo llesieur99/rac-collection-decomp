@@ -45,6 +45,7 @@ a match; it is a coincidence, and it does not survive the next function.
 |---|---|
 | `unbounded` | nothing is known about where it starts or ends |
 | `candidate` | one method sees the address and the others do not: it may be a function, and it is not counted as one |
+| `rejected` | the address was measured, one by one, and it is **not** a function |
 | `bounded` | the extent is known, and the evidence is recorded |
 | `named` | the extent and the name are both backed by evidence |
 | `nonmatching` | authored, but the bytes do not match |
@@ -58,6 +59,26 @@ boundary methods do not agree on.  A candidate is published — the address
 is worth knowing — but it is not a function, and the extent that the walk
 covers from it is **provisional**: it is the block the walk reaches, not a
 claim about the size of a function.
+
+The `rejected` state is the decision that a candidate is **not** a function.
+The decision is measured one address at a time, and the table of it is
+[config/candidates.tsv](../config/candidates.tsv): the rule that decided it,
+the evidence, and the confidence.  The rules are seven:
+
+| Rule | What it says | Decision |
+|---|---|---|
+| `R1` | the address is inside the body of another line of the catalogue | rejected |
+| `R2` | a counterpart confirmed in another build | confirmed |
+| `R3` | a call is emitted by the code, inside the extent of a confirmed function | confirmed |
+| `R4` | a call and the prologue of the SDK, less than eight instructions apart | confirmed |
+| `R5` | the walk ends on a return | confirmed |
+| `R6` | the prologue of the SDK, no call, at the head of a region of code | confirmed |
+| `R7` | the call is a word of a table, decoded as a call | rejected |
+
+The price of the rule is measured on the addresses that are **not**
+functions: the middle of a confirmed body, and the gaps between the
+functions.  Fifty-three confirmations and twenty rejections were read by
+hand: **no false positive**, the upper bound of the rate being 5,9 %.
 
 ## The evidence the code carries
 
@@ -97,8 +118,8 @@ classic 32-bit PowerPC:
   scattered — a jump table, a cold block the compiler moved — owns the
   instructions of those blocks too.
 
-The result is in [config/evidence.tsv](../config/evidence.tsv): **3,020
-functions** of the release touch a string, out of the 51,463 functions of the
+The result is in [config/evidence.tsv](../config/evidence.tsv): **3,029
+functions** of the release touch a string, out of the 53,456 functions of the
 catalogue.
 
 Two details of the reading, both measured:

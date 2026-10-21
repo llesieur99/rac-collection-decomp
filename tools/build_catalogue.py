@@ -24,6 +24,7 @@ candidate, and it is not a claim about the size of a function.
 from __future__ import annotations
 
 import argparse
+import csv
 import os
 import sys
 
@@ -47,8 +48,27 @@ PROGRAMS = (
 # The states a function can be in.
 STATE_BOUNDED = "bounded"
 STATE_CANDIDATE = "candidate"
+STATE_REJECTED = "rejected"
 STATE_NAMED = "named"
 STATE_MATCHING = "matching"
+
+
+def read_decisions(path: str) -> dict[tuple[str, int], dict]:
+    """The decision of the lot on the candidates, keyed by program and address.
+
+    The table is published in config/candidates.tsv: an address the
+    catalogue sees with one signal was measured, one by one, and the table
+    says what it is.  The catalogue applies the decision: a confirmed
+    candidate is a function, a rejected one is not.
+    """
+    out: dict[tuple[str, int], dict] = {}
+    if not os.path.exists(path):
+        return out
+    with open(path, encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            key = (row["program"], int(row["address"], 0))
+            out[key] = row
+    return out
 
 
 def main() -> int:
@@ -58,7 +78,11 @@ def main() -> int:
     parser.add_argument("--out", required=True, help="file to write")
     parser.add_argument("--narrow", action="store_true",
                         help="use the two narrow methods only (the old catalogue)")
+    parser.add_argument("--decisions", default=None,
+                        help="the table of the decisions on the candidates")
     args = parser.parse_args()
+
+    decisions = read_decisions(args.decisions) if args.decisions else {}
 
     rows = []
     for program, filename, role in PROGRAMS:
@@ -84,16 +108,27 @@ def main() -> int:
 
         kept = 0
         candidates = 0
+        rejected = 0
         for address in sorted(evidence):
             if args.narrow and address not in confirmed:
                 continue
             end, why, body = function_body(elf, address, entries=entries)
             if end <= address:
                 continue
+            decision = decisions.get((program, address))
             if address in confirmed:
                 state = STATE_BOUNDED
                 note = ""
                 kept += 1
+            elif decision is not None and decision.get("decision") == "confirmed":
+                # the lot measured this address, one by one
+                state = STATE_BOUNDED
+                note = f";decided:{decision.get('rule', '')}"
+                kept += 1
+            elif decision is not None and decision.get("decision") == "rejected":
+                state = STATE_REJECTED
+                note = f";rejected:{decision.get('rule', '')}"
+                rejected += 1
             else:
                 state = STATE_CANDIDATE
                 note = ";provisional"
@@ -101,7 +136,8 @@ def main() -> int:
             rows.append((program, address, end - address, len(body),
                          f"func_{address:08X}", state,
                          f"{'+'.join(evidence[address])};end:{why}{note}"))
-        print(f"{program:6s} {kept:6d} functions, {candidates:6d} candidates ({role})")
+        print(f"{program:6s} {kept:6d} functions, {candidates:6d} candidates, "
+              f"{rejected:6d} rejected ({role})")
 
     with open(args.out, "w", encoding="utf-8", newline="\n") as out:
         out.write("program\taddress\tsize\tinstructions\tname\tstate\tevidence\n")

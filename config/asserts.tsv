@@ -1,6 +1,6 @@
 program	address	message	site	file	line	expression	handler	in_catalogue
 EBOOT	0x00016924	j:/Ratchet/rcc/CommonEngine/PS3/File_PS/FileSystem_PS.cpp:734	0x00016C1C	j:/Ratchet/rcc/CommonEngine/PS3/File_PS/FileSystem_PS.cpp	734		0x0003D6F0	yes
-EBOOT	0x00019F60	j:/Ratchet/rcc/CommonEngine/PS3/Draw_PS/Draw_PS.cpp:180 texture1 != 0	0x00019FA8	Draw_PS/Draw_PS.cpp:180	180		0x0003AC30	yes
+EBOOT	0x00019F60	Draw_PS.cpp:180 texture1 != 0	0x00019FA8	Draw_PS.cpp:180	180		0x0003AC30	yes
 EBOOT	0x00020830	j:/Ratchet/rcc/CommonEngine/PS3/Draw_PS/Draw_PS.cpp:175 texture != 0	0x00020BC0	Draw_PS/Draw_PS.cpp:175	175		0x000BC0A4	yes
 EBOOT	0x00020830	j:/Ratchet/rcc/CommonEngine/PS3/Draw_PS/Draw_PS.cpp:180 texture1 != 0	0x00020C14	Draw_PS/Draw_PS.cpp:180	180		0x000BC0A4	yes
 EBOOT	0x0003CFF8	j:/Ratchet/rcc/CommonEngine/Game/IMMemory/IMSeqMem.cpp:368	0x0003D040	j:/Ratchet/rcc/CommonEngine/Game/IMMemory/IMSeqMem.cpp	368		0x0003D550	yes
@@ -43,7 +43,7 @@ RC3		j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_room.h:135	0
 RC3		j:\\Ratchet\\rc3\\code\\game\\lobby_gui\\src\\lobby_gui_manager.cpp:1615	0x0090A8C0	j:\\Ratchet\\rc3\\code\\game\\lobby_gui\\src\\lobby_gui_manager.cpp	1615		0x00A6284C	no
 RC3		j:/Ratchet/rc3/code/game/build//../lobby_gui/include/../../lobby_net/include/lobby_net_clan.h:385	0x009150D4	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/../../lobby_net/include/lobby_net_clan.h	385		0x00A6284C	no
 RC3		j:/Ratchet/rc3/code/game/build//../lobby_gui/include/../../lobby_net/include/lobby_net_list.h:17	0x009151FC	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/../../lobby_net/include/lobby_net_list.h	17		0x00A6284C	no
-RC3	0x001BC2BC	j:/Ratchet/rc3/code/game/hud.cpp:388 4hud mobys	0x001BC390	j:/Ratchet/rc3/code/game/hud.cpp	388	4hud mobys	0x001BBF00	yes
+RC3	0x001BC2BC	j:/Ratchet/rc3/code/game/hud.cpp:388 hud mobys	0x001BC390	j:/Ratchet/rc3/code/game/hud.cpp	388	hud mobys	0x001BBF00	yes
 RC3	0x001BC2BC	j:/Ratchet/rc3/code/game/hud.cpp:389 hud moby pvars	0x001BC3B0	j:/Ratchet/rc3/code/game/hud.cpp	389	hud moby pvars	0x001BBF00	yes
 RC3	0x001BC2BC	j:/Ratchet/rc3/code/game/hud.cpp:390 hud moby pvar list	0x001BC3D0	j:/Ratchet/rc3/code/game/hud.cpp	390	hud moby pvar list	0x001BBF00	yes
 RC3	0x008C44D4	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/../../lobby_net/include/lobby_net_clan.h:271	0x008C4520	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/../../lobby_net/include/lobby_net_clan.h	271		0x00A6284C	yes
@@ -81,8 +81,8 @@ RC3	0x008CA790	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/../../lobby_
 RC3	0x008CF5F0	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_room.h:255	0x008CF824	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_room.h	255		0x00A6284C	yes
 RC3	0x008D07A8	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_room.h:263	0x008D0818	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_room.h	263		0x00A6284C	yes
 RC3	0x008D08D8	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h:17	0x008D0B84	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h	17		0x00A6284C	yes
-RC3	0x008D08D8	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h:3	0x008D0C80	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h	3		0x00A5DC5C	yes
-RC3	0x008D08D8	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h:3	0x008D0C94	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h	3		0x001507B4	yes
+RC3	0x008D08D8	tchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h:3	0x008D0C80	tchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h	3		0x00A5DC5C	yes
+RC3	0x008D08D8	tchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h:3	0x008D0C94	tchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h	3		0x001507B4	yes
 RC3	0x008D0E40	j:/Ratchet/rc3/code/game/lobby_gui/src/lobby_gui_screen_room.cpp:1867	0x008D0E80	j:/Ratchet/rc3/code/game/lobby_gui/src/lobby_gui_screen_room.cpp	1867		0x00A6284C	yes
 RC3	0x008D0EDC	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_room.h:300	0x008D0F6C	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_room.h	300		0x00A6284C	yes
 RC3	0x008D0EDC	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h:17	0x008D107C	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_list.h	17		0x00A6284C	yes
@@ -661,7 +661,7 @@ RC3	0x0095B228	j:/Ratchet/rc3/code/game/build//../lobby_net/include/lobby_net_li
 RC3	0x0097F304	j:/Ratchet/Source/Common/PS3/Ratchet_PS/LightSetup.cpp:492	0x0097F40C	j:/Ratchet/Source/Common/PS3/Ratchet_PS/LightSetup.cpp	492		0x00992CB0	yes
 RC3	0x00991BF4	j:/Ratchet/Source/Common/Game/IMMemory/IMSeqMem.cpp:359	0x00991C3C	j:/Ratchet/Source/Common/Game/IMMemory/IMSeqMem.cpp	359		0x00992B00	yes
 RC3	0x00991C64	j:/Ratchet/Source/Common/Game/IMMemory/IMSeqMem.cpp:377	0x00991C9C	j:/Ratchet/Source/Common/Game/IMMemory/IMSeqMem.cpp	377		0x00992B00	yes
-RC3	0x00A7D0E0	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h:512	0x00A7D100	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h	512		0x009A4064	yes
+RC3	0x00A7D0E0	lobby_gui_item.h:512	0x00A7D100	lobby_gui_item.h	512		0x009A4064	yes
 RC3	0x00A8616C	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h:203	0x00A86194	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h	203		0x00A6284C	yes
 RC3	0x00A861F0	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h:211	0x00A86218	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h	211		0x00A6284C	yes
 RC3	0x00A86274	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h:218	0x00A8629C	j:/Ratchet/rc3/code/game/build//../lobby_gui/include/lobby_gui_item.h	218		0x00A6284C	yes

@@ -150,25 +150,25 @@ number of the functions.
 
 | Program | The text | `blr` | The conditional returns | The returns | The functions of the catalogue |
 |---|---|---|---|---|---|
-| `EBOOT` | 1,994,728 | 5,586 | 54 | 5,640 | 4,357 |
-| `RC1` | 7,583,720 | 12,396 | 139 | 12,535 | 9,297 |
-| `RC2` | 19,691,880 | 25,617 | 139 | 25,756 | 20,262 |
-| `RC3` | 12,267,240 | 22,084 | 140 | 22,224 | 17,547 |
-| **Total** | **41,537,568** | **75,683** | **472** | **76,155** | **51,463** |
+| `EBOOT` | 1,994,728 | 5,586 | 54 | 5,640 | 4,433 |
+| `RC1` | 7,583,720 | 12,396 | 139 | 12,535 | 9,824 |
+| `RC2` | 19,691,880 | 25,617 | 139 | 25,756 | 21,054 |
+| `RC3` | 12,267,240 | 22,084 | 140 | 22,224 | 18,145 |
+| **Total** | **41,537,568** | **75,683** | **472** | **76,155** | **53,456** |
 
-The narrow catalogue held 20,262 functions for `RC2` against the 25,617
+The narrow catalogue held 21,054 functions for `RC2` against the 25,617
 returns of the program: it knew **38 %** of the return sites. The extended
-one holds 20,262 functions and owns 20,017 of the returns: **78 %**.
+one holds 21,054 functions and owns 20,017 of the returns: **78 %**.
 
 ## The result
 
 | Program | Functions | Of which the end is a return | Candidates |
 |---|---|---|---|
-| `EBOOT` — the collection launcher | 4,357 | 3,787 | 132 |
-| `RC1` — Ratchet & Clank (2002) | 9,297 | 8,122 | 609 |
-| `RC2` — Going Commando | 20,262 | 19,056 | 886 |
-| `RC3` — Up Your Arsenal | 17,547 | 16,250 | 688 |
-| **Total** | **51,463** | **47,215** | **2,315** |
+| `EBOOT` — the collection launcher | 4,433 | 3,787 | 132 |
+| `RC1` — Ratchet & Clank (2002) | 9,824 | 8,122 | 609 |
+| `RC2` — Going Commando | 21,054 | 19,056 | 886 |
+| `RC3` — Up Your Arsenal | 18,145 | 16,250 | 688 |
+| **Total** | **53,456** | **47,215** | **3** |
 
 The names are not known yet, so every function carries the placeholder of its
 address. The state of every confirmed one is `bounded`: the extent is known

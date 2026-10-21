@@ -548,8 +548,15 @@ def function_body(elf: PpuElf, start: int, limit: int = 200000,
                 evidence = "return"
                 break
             if word in (BCTR, BCTRL):
-                evidence = "indirect"
-                break
+                if word == BCTR:
+                    # bctr is a jump: the flow does not come back.
+                    evidence = "indirect"
+                    break
+                # bctrl is a *call* through a pointer: the flow comes back,
+                # and the walk continues on the next instruction.  Stopping
+                # there cut 954 functions short.
+                address += 4
+                continue
             if word & BRANCH_MASK == BRANCH_LINK:
                 # a call: the flow continues after it
                 address += 4

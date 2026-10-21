@@ -1,0 +1,28 @@
+{
+  "status": "not qualified",
+  "note": "The compiler that produced the retail programs has not been identified yet. The stamp search and the toolchain qualification are steps 1 and 2 of docs/ROADMAP.md. Nothing here may be used as evidence until the toolchain gate passes.",
+  "target": {
+    "programs": [
+      "PS3_GAME/USRDIR/EBOOT.BIN",
+      "PS3_GAME/USRDIR/RC1.ppu.self",
+      "PS3_GAME/USRDIR/RC2.ppu.self",
+      "PS3_GAME/USRDIR/RC3.ppu.self"
+    ],
+    "pinned_hash_source": "config/target.json"
+  },
+  "compiler_stamps": {
+    "source": "the .comment section of the rebuilt ELF, and any identification string the binary carries",
+    "tool": "tools/ppu_elf.py",
+    "stamps": [],
+    "identified": null
+  },
+  "candidate_toolchains": [
+    {
+      "name": "ps3gcc",
+      "note": "the open source PowerPC toolchain for the PS3, used by the homebrew scene; the qualification is the work, not the build",
+      "qualification": "not started"
+    }
+  ],
+  "options": null,
+  "regression_control": null
+}

@@ -1,0 +1,25 @@
+{
+  "project": "rac-collection-decomp",
+  "target": "Ratchet & Clank Collection (PS3, BCUS98282)",
+  "generated_by": "hand, from the measurements of config/target.json",
+  "stages": {
+    "measure_release": "done",
+    "read_disc_descriptor": "done",
+    "read_param_sfo": "done",
+    "read_self_container": "done",
+    "rebuild_ppu_elf": "done",
+    "prove_provenance": "done",
+    "qualify_compiler": "not started",
+    "recover_boundaries": "not started",
+    "name_functions": "not started",
+    "author_first_body": "not started"
+  },
+  "counts": {
+    "programs": 4,
+    "functions_bounded": 0,
+    "functions_named": 0,
+    "functions_matching": 0,
+    "bytes_matched": 0
+  },
+  "notes": "The counters are zero because the work has not started: without a qualified PPU compiler, no body can be compared. See docs/STATE.md."
+}

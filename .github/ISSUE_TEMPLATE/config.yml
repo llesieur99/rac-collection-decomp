@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: The method and the evidence standard
+    url: https://github.com/llesieur99/rac-collection-decomp/blob/master/docs/METHOD.md
+    about: Read the method before opening an issue.
+  - name: The state of the project
+    url: https://github.com/llesieur99/rac-collection-decomp/blob/master/docs/STATE.md
+    about: See what is already measured, and what is still open.

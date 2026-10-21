@@ -1,0 +1,11 @@
+# Normalize the line endings of the text files, so that the diffs stay
+# readable and the scripts run the same everywhere.
+* text=auto eol=lf
+
+# PowerShell expects CRLF on Windows.
+*.ps1 text eol=crlf
+
+# Binaries.
+*.png binary
+*.jpg binary
+*.pdf binary

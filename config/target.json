@@ -1,0 +1,122 @@
+{
+  "game": "Ratchet & Clank Collection",
+  "platform": "PlayStation 3",
+  "region": "USA",
+  "title_id": "BCUS98282",
+  "content_id": "UP9000-BCUS98282_00-RATCHETCLANK",
+  "disc": {
+    "volume_label": "PS3VOLUME",
+    "descriptor": "PS3_DISC.SFB",
+    "descriptor_size": 1536,
+    "descriptor_sha256": "3415751b31105c24dc4b77eddc99cafa7cf2bdc6412b4989f91bd4dcdf3402db",
+    "disc_title_id": "BCUS-98282"
+  },
+  "param_sfo": {
+    "path": "PS3_GAME/PARAM.SFO",
+    "size": 1040,
+    "sha256": "95d46880b05a87a614a01d3a07f4222e92aac0ab92405b646a9182cd204bce83",
+    "title": "Ratchet & Clank Collection",
+    "title_id": "BCUS98282",
+    "version": "02.00",
+    "app_version": "01.00",
+    "ps3_system_version": "04.2100",
+    "category": "DG",
+    "bootable": 1,
+    "endianness": "little"
+  },
+  "executables": [
+    {
+      "path": "PS3_GAME/USRDIR/EBOOT.BIN",
+      "role": "launcher",
+      "size": 2258408,
+      "sha256": "0f0e1fa0a36a762fb91402566b7466d05329700b072461d82b2b1d6abd6981cd",
+      "kind": "retail SELF (NPDRM), payload in the clear",
+      "key_revision": "0x001C",
+      "licence_type": 2,
+      "header_size": "0x980",
+      "elf_size": 2255976,
+      "ppu_elf": {
+        "size": 2255976,
+        "sha256": "0f79ef09bb6761cad24daf690c94ce79000d09367a5e82604f6d05342b82d89c",
+        "class": "ELF64",
+        "endianness": "big",
+        "machine": "EM_PPC (102), PPU target",
+        "entry": "0x202450",
+        "program_headers": 8,
+        "section_headers": 35,
+        "section_names": false,
+        "symbol_table": false
+      }
+    },
+    {
+      "path": "PS3_GAME/USRDIR/RC1.ppu.self",
+      "role": "Ratchet & Clank: Tools of Destruction",
+      "size": 9767328,
+      "sha256": "c084c3bd741477ac0ea77a9b770461373e94c196f9aa609e78a7f1ba778480b1",
+      "kind": "retail SELF (NPDRM), payload in the clear",
+      "key_revision": "0x001C",
+      "licence_type": 2,
+      "header_size": "0x980",
+      "elf_size": 9764896,
+      "ppu_elf": {
+        "size": 9764896,
+        "sha256": "9be5a74c9834742c2dbff422a091e84699f56e29c423288f9e96f94243fde8e7",
+        "class": "ELF64",
+        "endianness": "big",
+        "machine": "EM_PPC (102), PPU target",
+        "entry": "0x753798",
+        "program_headers": 8,
+        "section_headers": 35,
+        "section_names": false,
+        "symbol_table": false
+      }
+    },
+    {
+      "path": "PS3_GAME/USRDIR/RC2.ppu.self",
+      "role": "Ratchet & Clank: Going Commando",
+      "size": 21072432,
+      "sha256": "0913d021cb68a22da78a1d2e72ab1003243dc00ffae556b6d6b5e74d2616e392",
+      "kind": "retail SELF (NPDRM), payload in the clear",
+      "key_revision": "0x001C",
+      "licence_type": 2,
+      "header_size": "0x980",
+      "elf_size": 21070000,
+      "ppu_elf": {
+        "size": 21070000,
+        "sha256": "9401f6fb3061d7bb3f02eb3bc9d84d4a885b5e6c021dc20e6563aad924eb62fc",
+        "class": "ELF64",
+        "endianness": "big",
+        "machine": "EM_PPC (102), PPU target",
+        "entry": "0x12E38A8",
+        "program_headers": 8,
+        "section_headers": 35,
+        "section_names": false,
+        "symbol_table": false
+      }
+    },
+    {
+      "path": "PS3_GAME/USRDIR/RC3.ppu.self",
+      "role": "Ratchet & Clank: Up Your Arsenal",
+      "size": 13339600,
+      "sha256": "697e98331a5a06892272cded3a2d85e0e4679d655f2d8cf0c811ac85dc89b09e",
+      "kind": "retail SELF (NPDRM), payload in the clear",
+      "key_revision": "0x001C",
+      "licence_type": 2,
+      "header_size": "0x980",
+      "elf_size": 13337168,
+      "ppu_elf": {
+        "size": 13337168,
+        "sha256": "9c822963e58f2bc1612b039624e95e3e893d0883617bca513ad572318d21e702",
+        "class": "ELF64",
+        "endianness": "big",
+        "machine": "EM_PPC (102), PPU target",
+        "entry": "0xBD3DA0",
+        "program_headers": 8,
+        "section_headers": 35,
+        "section_names": false,
+        "symbol_table": false
+      }
+    }
+  ],
+  "matching_compiler": null
+}

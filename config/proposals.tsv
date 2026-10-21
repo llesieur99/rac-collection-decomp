@@ -2,41 +2,104 @@ program	address	name	strength	origin	origin_detail	evidence	state
 EBOOT	0x00048BC0		verified	ps2		Control | Text	matched
 EBOOT	0x0007ADBC		verified	ps2		%s: 	matched
 RC1	0x00035848		verified	ps2		cleaned up moby:%d (oclass:%d)\n	matched
+RC1	0x00035848	nanotech_ball	ambiguous	vocabulary	rac1: src/overlays/shared/gameplay/entities/nanotech_ball.c	cleaned up moby:%d (oclass:%d)\n	proposed
 RC1	0x000716B0	do_space_transition	verified	ps2	gameplay/state/do_space_transition	unloaded sound bank %#010x\n	proposed
+RC1	0x000716B0	do_space_transition	ambiguous	vocabulary	rac1: gameplay/state/do_space_transition	unloaded sound bank %#010x\n	proposed
 RC1	0x00085CA8		verified	ps2		%.02f | %d = %d | ----	matched
 RC1	0x000F3370	copy_text_to_shared_buffer	verified	ps2	ui/text/copy_text_to_shared_buffer	(Message too long)	proposed
+RC1	0x000F3370	copy_text_to_shared_buffer	ambiguous	vocabulary	rac1: ui/text/copy_text_to_shared_buffer	(Message too long)	proposed
 RC1	0x001076C8		verified	ps2		internal level sound mismatch\n	matched
+RC1	0x001076C8	load_level_gameplay	ambiguous	vocabulary	rac1: src/overlays/shared/world/loaders/load_level_gameplay.c	internal level sound mismatch\n	proposed
+RC1	0x0010B290	MapUnavailableReport	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	No Map Available	proposed
+RC1	0x0010FAEC	SaveOutOfDateReport	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Out of date save!\n	proposed
+RC1	0x00110D70	UpdateMoby_4070	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	hey, shouldn't be in init!\n	proposed
+RC1	0x00126290	BoltsSpawnNegativeCount	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	 Scale: 5	proposed
+RC1	0x00148A94	OnTertiaryVoiceStarted	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	named on RC2 at 0x00BA9170 (correspondence of the builds)	proposed
+RC1	0x00164400	PathDrawInvalidIndex	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	tried to draw path -1 \n	proposed
 RC1	0x00169B10		verified	ps2		Transition to level %d\n	matched
 RC1	0x0016E650	fun_0021a328	verified	ps2	assembly/textbin/fun_0021a328	(null) | default	proposed
+RC1	0x0016E650	fun_0021a328	ambiguous	vocabulary	rac1: assembly/textbin/fun_0021a328	(null) | default	proposed
 RC1	0x00179E40	draw_prompt_box	verified	ps2	ui/menus/draw_prompt_box	(error)	proposed
+RC1	0x00179E40	draw_prompt_box	ambiguous	vocabulary	rac1: ui/menus/draw_prompt_box	(error)	proposed
 RC1	0x001971B8	draw_ties_2	verified	ps2	rendering/draw_ties_2	tie draw | tie texs	proposed
+RC1	0x001971B8	draw_ties_2	ambiguous	vocabulary	rac1: rendering/draw_ties_2	tie draw | tie texs	proposed
 RC1	0x0019C300	set_scrolling_status_message	verified	ps2	ui/text/set_scrolling_status_message	                  %s	proposed
+RC1	0x0019C300	set_scrolling_status_message	ambiguous	vocabulary	rac1: ui/text/set_scrolling_status_message	                  %s	proposed
 RC1	0x001A5F08		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
+RC1	0x001A5F08	OnDmacBusError	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	D1_CHCR=%X\nD1_TADR=%X | DMAC(15) - Bus Error\n | Why doesn't this work?	proposed
 RC1	0x001A6098		verified	ps2		\n\nInvalid anim detected on pLD->anims[%d]->anim in walk_in | sizeof(w_2legData) = %d bytes \n	matched
 RC1	0x001DC530		verified	ps2		Illegal Hero Detect path for moby 1059 instance #%d.\n	matched
+RC1	0x001DC530	taxi_platform	ambiguous	vocabulary	rac1: src/overlays/l07/gameplay/entities/taxi_platform.c	Illegal Hero Detect path for moby 1059 instance #%d.\n	proposed
 RC1	0x001DD718		verified	ps2		Initialization failed for moby 1059 instance #%d. Deleting.\	matched
+RC1	0x001DD718	taxi_platform	ambiguous	vocabulary	rac1: src/overlays/l07/gameplay/entities/taxi_platform.c	Initialization failed for moby 1059 instance #%d. Deleting.\n	proposed
+RC1	0x001E1DB8	UpdateMoby_1067	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	\tMoby Maya Index %d deleted.\n | moby class 1067 REQUIRES a link to dataProcessor class 1073!!\n	proposed
 RC1	0x00216D30		verified	ps2		ERRORS, killing moby %d \n	matched
 RC1	0x003BDFD0		verified	ps2		Deserter	matched
+RC1	0x003BDFD0	batalia_deserter	ambiguous	vocabulary	rac1: src/overlays/l08/gameplay/entities/batalia_deserter.c	Deserter	proposed
 RC1	0x00426530		verified	ps2		*Error: Moby 610 (wind-control) with no cuboid index (wind p	matched
+RC1	0x00426530	jet	ambiguous	vocabulary	rac1: src/overlays/l14/gameplay/entities/jet.c	*Error: Moby 610 (wind-control) with no cuboid index (wind pushing hero area). UID: %d - RAR\n	proposed
 RC1	0x004F8310		verified	ps2		Enemy Fighter (moby908) with no flyPath. UID: %d - RAR\n	matched
+RC1	0x004F8310	jet	ambiguous	vocabulary	rac1: src/overlays/l14/gameplay/entities/jet.c	Enemy Fighter (moby908) with no flyPath. UID: %d - RAR\n	proposed
 RC1	0x00520F00	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
+RC1	0x00520F00	fun_00216c48	ambiguous	vocabulary	rac1: ui/menus/fun_00216c48	%d%s%03d	proposed
 RC2	0x00096C60	memcard_get_data_size	verified	ps2	storage/memory_card/memcard_get_data_size	ERROR: could not init memcard lib\n	proposed
+RC2	0x000A3D60	UpdateMoby_794	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	M794 %d trigger %d = NO MOBY! (-1)\n | M794 %d trigger %d = moby %d (oClass %d)\n	proposed
+RC2	0x0018A51C	UpdateMoby_2198	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	WARNING - No Connector mobys in pad group. Pad UID: %d\n | WARNING - No Decoy mobys in pad group. Pad UID: %d\n | WARNING - No Spark mobys in pad group. Pad UID: %d\n | WARNING, CAN ONLY HAVE 20 CONNECTORS IN ONE ELECTROLYZER PUZZLE. Pad UID: %d\n | WARNING, CAN ONLY HAVE 20 DECOYS IN ONE ELECTROLYZER PUZZLE. Pad UID: %d\n | WARNING, CAN ONLY HAVE 20 SPARKS IN ONE ELECTROLYZER PUZZLE. Pad UID: %d\n	proposed
+RC2	0x00371128	UpdateMoby_2225	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	gjp: sound up played \n	proposed
 RC2	0x0037D0E0		verified	ps2		 %d/3 | %s: 	matched
 RC2	0x0038DA98		verified	ps2		%d:%02d:%02d | %s:   | %s:  0:00:00	matched
+RC2	0x003CF908	UpdateMoby_4564	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Back Alpha | Back End R | Back Start G | Back Start R | Front Alpha | Tail Alpha | Tail End B | Tail End G | Tail End R | Tail Start B | Tail Start G | Tail Start R	proposed
+RC2	0x0053FDB8	BoltsSpawnNegativeCount	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	ERROR: tried to spawn a negative number of bolts.\n	proposed
 RC2	0x0056AF50		verified	ps2		%s + %s + %d Flips	matched
+RC2	0x005FE468	UpdateMoby_4447	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Glow rotator moby UID: %d is in group mode.\n	proposed
+RC2	0x00654260	UpdateMoby_4580	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Blue | Distortion - 0:No | Green | Number of Clouds | Number of Lines | Number of Molten Rocks | Number of Moon Rocks | Number of Silvers | Shake Camera - 0:No | Shell -  0:No	proposed
+RC2	0x00683FB0	RobotDeathAnnounce	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	the robot is going to die\n	proposed
+RC2	0x00720A14	UpdateMoby_3343	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Switching to pre attack.\n	proposed
+RC2	0x007A33B0	UpdateMoby_2716	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	gjp: increasing the chance of skill point.\n | gjp: slots played %d times.  	proposed
+RC2	0x007F3BF0	UpdateMoby_4070	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	hey, shouldn't be in init!\n	proposed
+RC2	0x00836F14	UpdateMoby_3007	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	out of synch %f \n	proposed
+RC2	0x00872E98	UpdateMoby_4694	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	M4694 %d trigger %d = NO MOBY! (-1)\n | M4694 %d trigger %d = moby %d (oClass %d)\n	proposed
+RC2	0x0088FC90	Moby4869EffectMobyMissing	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	M4869 %d trigger %d = NO MOBY! (-1)\n | M4869 %d trigger %d = moby %d (oClass %d)\n	proposed
 RC2	0x00A30DD8	fun_002239e0	verified	ps2	ui/menus/fun_002239e0	%02d:%02d	proposed
+RC2	0x00A30DD8	fun_002239e0	ambiguous	vocabulary	rac1: ui/menus/fun_002239e0	%02d:%02d	proposed
+RC2	0x00A768B0	UpdateMoby_4887	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Gravity | Hhigh Spwn Timer | Low Spwn Timer | Texture 1 | Texture 2	proposed
+RC2	0x00B5AA00	FixupMobyClassHeader	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	moby %d is in an old format\n	proposed
 RC2	0x00B5F544		verified	ps2		internal level sound mismatch\n	matched
+RC2	0x00B5F544	load_level_gameplay	ambiguous	vocabulary	rac1: src/overlays/shared/world/loaders/load_level_gameplay.c	internal level sound mismatch\n	proposed
+RC2	0x00BA7F80	UpdateDialogVoiceManager	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	load stopped\n | load stopped callback\n | wating to stop\n	proposed
+RC2	0x00BA8934	StopFileLoad	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	music_StopLoad\n	proposed
+RC2	0x00BA9170	OnTertiaryVoiceStarted	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	wtf - music handle got lost\n	proposed
+RC2	0x00BC8690	PathSetWtoDistNullPath	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Error in Path_setWtoDist! NULL path!\n	proposed
 RC2	0x00BD2998	fun_0021a328	verified	ps2	assembly/textbin/fun_0021a328	(null) | default	proposed
+RC2	0x00BD2998	fun_0021a328	ambiguous	vocabulary	rac1: assembly/textbin/fun_0021a328	(null) | default	proposed
 RC2	0x00BE79F8	draw_prompt_box	verified	ps2	ui/menus/draw_prompt_box	(error)	proposed
+RC2	0x00BE79F8	draw_prompt_box	ambiguous	vocabulary	rac1: ui/menus/draw_prompt_box	(error)	proposed
 RC2	0x00C1B8D4		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
+RC2	0x00C1B8D4	OnDmacBusError	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	D1_CHCR=%X\nD1_TADR=%X | DMAC(15) - Bus Error\n | Why doesn't this work?	proposed
+RC2	0x00D37648	UpdateMoby_2168	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Moby Deleted\n\n	proposed
+RC2	0x00E81430	UpdateMoby_3114	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	chunk we want:%d\n | didn't get golden bolt, warping to gliderpad \n | got glider, glider pad and gold bolt exist\n | wrench upgraded\n	proposed
+RC2	0x00ECD4D0	TrooperAnimSwitchReport	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Trooper %d switching to anim %d.\n	proposed
+RC2	0x00F3BBB8	UpdateMoby_3640	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	Warning: LevelChunkCutsceneTrigger %d has no Cutscene moby\n | Warning: LevelChunkCutsceneTrigger %d has no Segment\n | Warning: LevelChunkCutsceneTrigger %d has no chunkId\n	proposed
+RC2	0x00F51CD0	UpdateMoby_3726	ambiguous	vocabulary	rac2: docs/moby-dispatch.tsv	GLOBAL_RC2FLAG_L6_ROBOTS_FACTORY_CUTSCN_1       --  FLAG SET\n	proposed
+RC2	0x00F68400	MobyReplacementPathMissing	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	moby %d wanted replacement at time %d but had no replacement path and no jump path!\n	proposed
+RC2	0x00F69C78	MobyShouldNotBeShooting	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Moby %d should not be shooting!\n	proposed
 RC2	0x010A5AB8	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
+RC2	0x010A5AB8	fun_00216c48	ambiguous	vocabulary	rac1: ui/menus/fun_00216c48	%d%s%03d	proposed
 RC3	0x00093BA0		verified	ps2		333?	matched
+RC3	0x00093BA0	hero_idle_sequence	ambiguous	vocabulary	rac1: src/overlays/shared/gameplay/hero/hero_idle_sequence.c	333?	proposed
 RC3	0x001BC2BC	hud_print_moby_debug_info	medium	assert		hud mobys | hud moby pvars | hud moby pvar list	proposed
 RC3	0x001E492C		verified	ps2		internal level sound mismatch\n	matched
+RC3	0x001E492C	load_level_gameplay	ambiguous	vocabulary	rac1: src/overlays/shared/world/loaders/load_level_gameplay.c	internal level sound mismatch\n	proposed
 RC3	0x001F2504	memcard_get_data_size	verified	ps2	storage/memory_card/memcard_get_data_size	ERROR: could not init memcard lib\n	proposed
+RC3	0x00246148	UpdateDialogVoiceManager	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	load stopped\n | load stopped callback\n | wating to stop\n	proposed
+RC3	0x00246B6C	StopFileLoad	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	music_StopLoad\n	proposed
+RC3	0x0024746C	OnTertiaryVoiceStarted	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	wtf - music handle got lost\n	proposed
+RC3	0x0026DD58	PathSetWtoDistNullPath	ambiguous	vocabulary	rac2: docs/assert-message-names.tsv	Error in Path_setWtoDist! NULL path!\n	proposed
 RC3	0x002AFB0C		verified	ps2		D1_CHCR=%X\nD1_TADR=%X	matched
+RC3	0x002AFB0C	OnDmacBusError	ambiguous	vocabulary	rac2: symbol_addrs/usa/symbol_addrs.txt	D1_CHCR=%X\nD1_TADR=%X | DMAC(15) - Bus Error\n | Why doesn't this work?	proposed
 RC3	0x00317BE8		verified	ps2		%s: %d	matched
 RC3	0x008B7440	fun_00216c48	verified	ps2	ui/menus/fun_00216c48	%d%s%03d	proposed
+RC3	0x008B7440	fun_00216c48	ambiguous	vocabulary	rac1: ui/menus/fun_00216c48	named on RC2 at 0x010A5AB8 (correspondence of the builds)	proposed
 RC3	0x008C44D4	lobby_net_clan_get_message_list	medium	assert			proposed
 RC3	0x008C48BC	lobby_net_clan_get_member_list	medium	assert			proposed
 RC3	0x008C9974	lobby_net_clan_refresh_member_and_sent_invite_lists	medium	assert			proposed

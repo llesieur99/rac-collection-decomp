@@ -75,6 +75,21 @@ def read_names(path: str, program: str) -> list[dict]:
     return rows
 
 
+def read_vocab(path: str) -> list[dict]:
+    """The names a lot of vocabulary read from the sibling projects.
+
+    The table has a header: program, address, name, source_project,
+    source_path, ps2_function, name_kind, name_ambiguity, evidence_strings,
+    evidence_assert, evidence_other_games, keys, confidence, state,
+    in_catalogue.
+    """
+    rows = []
+    with open(path, encoding="utf-8") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            rows.append(row)
+    return rows
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         try:
@@ -86,6 +101,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                         help="a table of the pairs of the PlayStation 2 match")
     parser.add_argument("--name", action="append", default=[],
                         help="a table of the names of a lot")
+    parser.add_argument("--vocab", action="append", default=[],
+                        help="a table of the names read from the sibling "
+                             "projects")
     parser.add_argument("--name-program", default="",
                         help="the program the names belong to")
     parser.add_argument("--out", required=True, help="the table to write")
@@ -118,6 +136,24 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "origin_detail": "",
                 "evidence": literals,
                 "state": "proposed" if row["name"] else "undecided",
+            })
+
+    for path in args.vocab:
+        for row in read_vocab(path):
+            name = row.get("name", "")
+            ambiguity = row.get("name_ambiguity", "")
+            detail = row.get("source_path", "")
+            project = row.get("source_project", "")
+            rows.append({
+                "program": row["program"],
+                "address": row["address"],
+                "name": name,
+                "strength": ("ambiguous" if ambiguity not in ("", "0")
+                             else row.get("confidence", "")),
+                "origin": "vocabulary",
+                "origin_detail": f"{project}: {detail}" if detail else project,
+                "evidence": row.get("evidence_strings", ""),
+                "state": row.get("state", "proposed") if name else "undecided",
             })
 
     rows.sort(key=lambda row: (row["program"], row["address"]))

@@ -90,7 +90,7 @@ the bytes.
 | functions that carry an assert | 246 — the source file and the line, measured |
 | functions with a call graph | 35,703 — the role of the function, measured |
 | functions with a proved name | 6 — and those six carry the placeholder of their address, because nothing yet says what they do |
-| functions with a proposed name | **236** — 156 of them strong, 65 medium, 1 weak |
+| functions with a proposed name | **299** — 236 from the assert messages, 63 from the sibling projects |
 
 The six proved bodies are the first ones, and they are deliberately the
 simplest: a frame, a call, an epilogue. They prove the toolchain and the
@@ -187,6 +187,28 @@ Every proposal is checked: the literal it rests on is searched in the
 measured code of the function and of its callers, and a proposal whose
 literal is nowhere near the function is a proposal that contradicts the
 code. None does.
+
+**The vocabulary of the sibling projects.** The six projects that
+decompiled the PlayStation 2 games of the series carry **16,049 distinct
+names**, 4,824 of them names of functions, and the tool that extracts them
+is [`tools/extract_vocab.py`](../tools/extract_vocab.py). The largest
+source of them was never exploited: the table of symbols of `rac2`, which
+holds **1,958 names the engine itself carries** — `OnDmacBusError`,
+`OnTertiaryVoiceStarted`, `StopFileLoad` — and which were established
+independently on the three titles.
+
+That lot named **63 functions** of the PlayStation 3 builds, against 18
+before it. The gain came almost entirely from one key — the **message**
+the two versions print — and the others were measured to be worth nothing
+on their own: the profile of the strings (+0), the reach in the call graph
+(0), the name of the file (0). The control is measured too: a pair of
+functions picked at random shares a message 0,005 % to 0,225 % of the time,
+and the proposals share one by construction. Three of them are
+demonstrably false positives, and they are marked as such.
+
+**Four of the 63 proposals carry an ambiguous name** — the name of a group
+of functions rather than of one — and none of the 299 is a fact: the
+compiled body still has to reproduce the retail bytes.
 
 The table is in [config/proposals.tsv](../config/proposals.tsv).
 

@@ -70,8 +70,13 @@ BRANCH_MASK = 0xFC000001
 BRANCH_LINK = 0x48000001
 
 # The conditional branches (opcode 16) and the indirect ones (opcode 19).
-CONDITIONAL_MASK = 0xFC000003
-CONDITIONAL = 0x80000000
+#
+# The conditional branch of the PowerPC has the opcode 16, whose top
+# bits are 0x40000000.  The test that read 0x80000000 never matched a
+# conditional branch: it matched the loads with an offset, whose opcode
+# is 32, and the walk then followed the "target" of a load, which is
+# nothing.  The conditional branch is now read by its opcode.
+CONDITIONAL_OPCODE = 16
 INDIRECT_MASK = 0xFC000003
 INDIRECT = 0x4C000000
 
@@ -97,6 +102,39 @@ def branch_target(word: int, address: int) -> int:
     if displacement & 0x02000000:
         displacement -= 0x04000000
     return (address + displacement) & 0xFFFFFFFF
+
+
+def conditional_target(word: int, address: int) -> int:
+    """The target of a conditional branch.
+
+    The displacement of the conditional branch is a signed value in the
+    bits 2-15, counted in bytes — the reading of ``tools/ppu_disasm.py``,
+    and the one the measurement confirmed: the target of the branch
+    0x41DE0014 at 0x147C4 is 0x147D8, a block of the function that
+    holds the branch.
+    """
+    displacement = word & 0xFFFC
+    if displacement & 0x8000:
+        displacement -= 0x10000
+    return (address + displacement) & 0xFFFFFFFF
+
+
+def walk_bound(confirmed: set[int], calls: set[int],
+               entries: set[int]) -> set[int]:
+    """The addresses the walk of the control flow must stop on.
+
+    The bound holds the **entries of the functions**: the confirmed
+    functions, and the targets of a call that the control flow cannot
+    fall into.  A target of a call is not always a function — a word of
+    a table of the text segment, decoded as a call, names an address
+    that no function starts at — and stopping on it cuts the extent of
+    the function that reaches it in two.
+
+    The criterion is the one of the *entry* signal: the instruction that
+    precedes the address does not fall through, so the address opens a
+    new block, and a function opens with a new block.
+    """
+    return confirmed | (calls & entries)
 
 
 @dataclass(frozen=True)
@@ -369,7 +407,7 @@ def entry_evidence(elf: PpuElf) -> tuple[dict[int, list[str]], set[int]]:
 
     # The prologue alone: the walk has to end on a return for the address
     # to be a function and not a frame in the middle of one.
-    bound = confirmed | calls
+    bound = walk_bound(confirmed, calls, entries)
     for address in sorted(universe - confirmed):
         if len(evidence[address]) != 1:
             continue
@@ -529,9 +567,9 @@ def function_body(elf: PpuElf, start: int, limit: int = 200000,
                     break
                 pending.append(target)
                 break
-            if word & CONDITIONAL_MASK == CONDITIONAL:
+            if word >> 26 == CONDITIONAL_OPCODE:
                 # a conditional branch: both paths
-                target = branch_target(word, address)
+                target = conditional_target(word, address)
                 if start < target < base + size and target not in visited:
                     pending.append(target)
                 address += 4
@@ -570,7 +608,15 @@ def cmd_entries(elf: PpuElf, args: argparse.Namespace) -> int:
 def cmd_bounds(elf: PpuElf, args: argparse.Namespace) -> int:
     rows = []
     catalogue = build_catalogue(elf, wide=getattr(args, "wide", False))
-    entries = {address for address, _kind, _evidence in catalogue}
+    if getattr(args, "wide", False):
+        # the bound of the walk: the entries of the functions
+        confirmed = {address for address, kind, _evidence in catalogue
+                     if kind == "both"}
+        entries = walk_bound(confirmed,
+                             {c.address for c in call_targets(elf)},
+                             {c.address for c in entry_candidates(elf)})
+    else:
+        entries = {address for address, _kind, _evidence in catalogue}
     for address, kind, evidence in catalogue:
         if getattr(args, "confirmed", False) and evidence != "both":
             continue

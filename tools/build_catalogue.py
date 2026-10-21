@@ -31,7 +31,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ppu_elf import PpuElf  # noqa: E402
 from ppu_funcs import (  # noqa: E402
-    build_catalogue, call_targets, entry_evidence, function_body,
+    build_catalogue, call_targets, entry_candidates, entry_evidence,
+    function_body, walk_bound,
 )
 
 # The programs of the release, and the name each function gets in the
@@ -77,7 +78,9 @@ def main() -> int:
                         for address, _k, evidence in catalogue}
         else:
             evidence, confirmed = entry_evidence(elf)
-            entries = confirmed | {c.address for c in call_targets(elf)}
+            entries = walk_bound(confirmed,
+                                 {c.address for c in call_targets(elf)},
+                                 {c.address for c in entry_candidates(elf)})
 
         kept = 0
         candidates = 0

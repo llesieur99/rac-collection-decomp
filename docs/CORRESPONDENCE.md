@@ -53,12 +53,12 @@ The tool is [`tools/build_correspondence.py`](../tools/build_correspondence.py).
 
 | Pair | Functions | Matched | Same size | Same bytes | Median identity |
 |---|---|---|---|---|---|
-| `rc1` ↔ `NPUA80643` | 9,243 | **9,211** (99 %) | 9,211 | 56 % | **100 %** |
-| `rc2` ↔ `NPUA80644` | 20,058 | **20,010** (99 %) | 20,010 | 30 % | 94 % |
-| `rc3` ↔ `NPUA80645` | 17,342 | **17,242** (99 %) | 17,242 | 39 % | 95 % |
+| `rc1` ↔ `NPUA80643` | 9,297 | **9,268** (99 %) | 9,268 | 56 % | **100 %** |
+| `rc2` ↔ `NPUA80644` | 20,262 | **20,218** (99 %) | 20,218 | 30 % | 94 % |
+| `rc3` ↔ `NPUA80645` | 17,547 | **17,472** (99 %) | 17,472 | 39 % | 95 % |
 
-The two builds of one game hold **the same number of functions** — 9,243 and
-9,235, 20,058 and 20,051, 17,342 and 17,338 — and the tool matches 99 % of
+The two builds of one game hold **the same number of functions** — 9,297 and
+9,297, 20,262 and 20,262, 17,547 and 17,547 — and the tool matches 99 % of
 them, every matched pair having **exactly the same size**.
 
 The addresses, on the other hand, are not the same: the shift is constant
@@ -70,9 +70,9 @@ pieces of the program elsewhere, and it is why an address is not a name.
 
 | Pair | Matched | Same size | Same bytes | Median identity |
 |---|---|---|---|---|
-| `rc1` ↔ `rc2` | 5,259 of `rc1`'s 9,243 (56 %) | 5,259 | 61 % | **100 %** |
-| `rc2` ↔ `rc3` | 7,979 of `rc2`'s 20,058 (39 %) | 7,979 | 44 % | 96 % |
-| `rc1` ↔ `rc3` | 5,269 of `rc1`'s 9,243 (57 %) | 5,269 | 60 % | **100 %** |
+| `rc1` ↔ `rc2` | 5,205 of `rc1`'s 9,297 (56 %) | 5,205 | 61 % | **100 %** |
+| `rc2` ↔ `rc3` | 7,634 of `rc2`'s 20,262 (39 %) | 7,634 | 44 % | 96 % |
+| `rc1` ↔ `rc3` | 5,209 of `rc1`'s 9,297 (57 %) | 5,209 | 60 % | **100 %** |
 
 **5,151 functions of `rc1` have a counterpart in the three other builds at
 once**: the standalone title, `rc2` and `rc3`. They are the engine's own code,

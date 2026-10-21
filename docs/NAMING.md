@@ -85,8 +85,8 @@ the bytes.
 
 | | Count |
 |---|---|
-| functions bounded | 50,877 |
-| functions that touch a string | 2,679 — the subject of the function, measured |
+| functions bounded | 51,463 |
+| functions that touch a string | 3,020 — the subject of the function, measured |
 | functions that carry an assert | 246 — the source file and the line, measured |
 | functions with a call graph | 35,703 — the role of the function, measured |
 | functions with a proved name | 6 — and those six carry the placeholder of their address, because nothing yet says what they do |

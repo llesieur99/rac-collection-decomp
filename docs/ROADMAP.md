@@ -82,15 +82,15 @@ the calls, the entries of the control flow and the returns of the walk — and
 only the addresses that two of them agree on. The end of a function is the
 return that no path falls through from.
 
-**The result.** 50,877 functions, of which 42,381 end on a return, and 2,901
+**The result.** 51,463 functions, of which 47,215 end on a return, and 2,315
 addresses that are still candidates:
 
 | Program | Functions | Ending on a return |
 |---|---|---|
-| `EBOOT` — the collection launcher | 4,234 | 3,407 |
-| `RC1` — Ratchet & Clank (2002) | 9,243 | 7,576 |
-| `RC2` — Going Commando | 20,058 | 16,754 |
-| `RC3` — Up Your Arsenal | 17,342 | 14,644 |
+| `EBOOT` - the collection launcher | 4,357 | 3,787 |
+| `RC1` - Ratchet & Clank (2002) | 9,297 | 8,122 |
+| `RC2` - Going Commando | 20,262 | 19,056 |
+| `RC3` - Up Your Arsenal | 17,547 | 16,250 |
 
 The names are not known yet: every function carries the placeholder of its
 address, and its state is `bounded`. See [CATALOGUE.md](CATALOGUE.md).

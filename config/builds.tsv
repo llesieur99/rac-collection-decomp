@@ -1,7 +1,7 @@
 game	build_a	build_b	functions_a	functions_b	text_a	text_b	matched	share	same_size	identical_median	identical_min	delta_median	delta_blocks	methods
-collection-RC1	collection-RC1	NPUA80643	9243	9235	7583720	7583080	9211	99	9211	100.0	45.7	-536	385	ops+imm+size=4645;ops+imm+size?=993;ops+size=3371;ops+size?=202
-collection-RC2	collection-RC2	NPUA80644	20058	20051	19691880	19691240	20010	99	20010	94.0	23.5	-84704.0	719	ops+imm+size=5456;ops+imm+size?=1349;ops+size=6064;ops+size?=7141
-collection-RC3	collection-RC3	NPUA80645	17342	17338	12267240	12264552	17242	99	17242	95.2	33.3	-7968.0	558	ops+imm+size=6647;ops+imm+size?=1468;ops+size=8263;ops+size?=863;shape+size=1
-collection-RC1	collection-RC1	collection-RC2	9243	20058	7583720	19691880	5259	56	5259	100.0	0.0	12090584	832	ops+imm+size=3202;ops+imm+size?=1127;ops+size=692;ops+size?=217;shape+size=19;shape+size?=2
-collection-RC2	collection-RC2	collection-RC3	20058	17342	19691880	12267240	7979	39	7979	96.5	0.0	-7604112	2463	ops+imm+size=3637;ops+imm+size?=1298;ops+size=2148;ops+size?=821;shape+size=67;shape+size?=8
-collection-RC1	collection-RC1	collection-RC3	9243	17342	7583720	12267240	5269	57	5269	100.0	0.0	4487796	900	ops+imm+size=3137;ops+imm+size?=1134;ops+size=595;ops+size?=367;shape+size=27;shape+size?=9
+collection-RC1	collection-RC1	NPUA80643	9297	9293	7583720	7583080	9268	99	9268	100.0	45.7	-536.0	325	ops+imm+size=4344;ops+imm+size?=830;ops+size=3898;ops+size?=194;shape+size=2
+collection-RC2	collection-RC2	NPUA80644	20262	20261	19691880	19691240	20218	99	20218	93.8	23.5	-84704.0	465	ops+imm+size=4937;ops+imm+size?=1155;ops+size=7772;ops+size?=6352;shape+size=2
+collection-RC3	collection-RC3	NPUA80645	17547	17545	12267240	12264552	17472	99	17472	94.5	33.3	-7968.0	501	ops+imm+size=5848;ops+imm+size?=1288;ops+size=9489;ops+size?=845;shape+size=2
+collection-RC1	collection-RC1	collection-RC2	9297	20262	7583720	19691880	5205	55	5205	100.0	0.0	12090584	582	ops+imm+size=3276;ops+imm+size?=988;ops+size=763;ops+size?=170;shape+size=7;shape+size?=1
+collection-RC2	collection-RC2	collection-RC3	20262	17547	19691880	12267240	7634	37	7634	96.7	0.0	-7604112.0	1983	ops+imm+size=3547;ops+imm+size?=1147;ops+size=2167;ops+size?=695;shape+size=73;shape+size?=5
+collection-RC1	collection-RC1	collection-RC3	9297	17547	7583720	12267240	5209	56	5209	100.0	0.0	4487796	713	ops+imm+size=3168;ops+imm+size?=1002;ops+size=687;ops+size?=340;shape+size=10;shape+size?=2

@@ -32,7 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ppu_elf import PpuElf  # noqa: E402
 from ppu_funcs import (  # noqa: E402
     BLR, PROLOGUE_FRAME, PROLOGUE_FRAME_LR, entry_evidence, function_body,
-    prologue_candidates, prologue_forms, signals, text_code,
+    prologue_candidates, prologue_forms, signals, text_code, walk_bound,
 )
 
 # The programs of the release.
@@ -120,9 +120,8 @@ def catalogue_of(elf: PpuElf, base: int, count: int, words, forms, calls,
     if wide:
         evidence, confirmed = entry_evidence(elf)
         universe = set(evidence)
-        # the bound of the walk: the entries of the functions, and the
-        # targets of the calls
-        bound = confirmed | calls
+        # the bound of the walk: the entries of the functions
+        bound = walk_bound(confirmed, calls, entries)
     else:
         narrow = {c.address for c in prologue_candidates(elf)}
         universe = narrow | calls

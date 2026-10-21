@@ -26,7 +26,7 @@ compiled body.
 | Measure the link map | **done** — the SCE modules, per executable |
 | Find the related titles | **done** — `NPUA80644`, `NPUA80645`, `NPUA80965` |
 | Validate the rebuild | **done** — against the published hash of the sibling project |
-| Recover the function boundaries | **done** — 50,877 functions, 42,381 ending on a return, 2,901 candidates |
+| Recover the function boundaries | **done** — 51,463 functions, 47,215 ending on a return, 2,315 candidates |
 | Match the builds to each other | **done** — 99 % of the functions, function by function |
 | Qualify a PPU compiler | **provisionally** — 6 bodies byte-exact, 4 runtime functions, 2 toolchains |
 | Name the functions | **not started** |
@@ -65,9 +65,9 @@ compiled body.
   uses.
 * **The boundaries of the functions are known**: four independent signals —
   the prologue of the SDK, the targets of the calls, the entries of the
-  control flow and the returns of the walk — agree, two by two, on 50,877
-  functions, of which 42,381 end on a return that no path falls through
-  from; 2,901 addresses are still candidates. The names are not known yet.
+  control flow and the returns of the walk — agree, two by two, on 51,463
+  functions, of which 47,215 end on a return that no path falls through
+  from; 2,315 addresses are still candidates. The names are not known yet.
   See [CATALOGUE.md](CATALOGUE.md).
 * **The builds correspond to each other, function by function.** The
   collection's copy of a game and the standalone PlayStation Network title

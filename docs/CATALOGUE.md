@@ -105,6 +105,41 @@ Two bounds keep the walk honest, and both were needed:
 The tool reports how the walk ended: `return`, `branch`, `entry`, `indirect`
 or `limit`.
 
+### The conditional branch that was never read
+
+The walk followed **no conditional branch at all**, and the reason was a
+single wrong constant. The test
+
+```python
+word & 0xFC000003 == 0x80000000
+```
+
+does not recognise a conditional branch: the opcode of `bc` is **16**, whose
+top bits are `0x40000000`, and `0x80000000` is the opcode **32** — the
+loads. The test matched 225,275 words of RC2, and **not one of them was a
+conditional branch**.
+
+The walk therefore followed the *target of a load* instead: an address read
+out of an immediate, which lands in the **jump tables** of the text segment.
+A word of a table, decoded as a call, named an address that no function
+starts at, and the bound stopped the walk there. The extents of 368
+functions were cut in two that way.
+
+The fix reads the branch by its opcode, and the bound became sharper: a
+target of a call stops the walk only when the flow **cannot fall into it** —
+the same criterion as the *entry* signal, which gives **no false positive**
+on the 3,299 targets that are not confirmed functions.
+
+The coverage of RC2 went from 25,8 % of the text to **90,7 %**, the owned
+code from 55,6 % to 92,1 %, the number of overlapping functions stayed at
+**zero**, and the ends that are not proven went *down*, from 1,013 to 479.
+The control outside the project held: 99,8 % of the matched functions still
+have the same size in the two builds.
+
+What the fix does **not** explain is the rest: 100 % of the returns that
+are still not owned fall in a *hole* — a function that was never identified
+— and not in a truncated extent.
+
 ## The population
 
 The catalogue was measured, but the population was not. Every function ends
@@ -115,25 +150,25 @@ number of the functions.
 
 | Program | The text | `blr` | The conditional returns | The returns | The functions of the catalogue |
 |---|---|---|---|---|---|
-| `EBOOT` | 1,994,728 | 5,586 | 54 | 5,640 | 4,234 |
-| `RC1` | 7,583,720 | 12,396 | 139 | 12,535 | 9,243 |
-| `RC2` | 19,691,880 | 25,617 | 139 | 25,756 | 20,058 |
-| `RC3` | 12,267,240 | 22,084 | 140 | 22,224 | 17,342 |
-| **Total** | **41,537,568** | **75,683** | **472** | **76,155** | **50,877** |
+| `EBOOT` | 1,994,728 | 5,586 | 54 | 5,640 | 4,357 |
+| `RC1` | 7,583,720 | 12,396 | 139 | 12,535 | 9,297 |
+| `RC2` | 19,691,880 | 25,617 | 139 | 25,756 | 20,262 |
+| `RC3` | 12,267,240 | 22,084 | 140 | 22,224 | 17,547 |
+| **Total** | **41,537,568** | **75,683** | **472** | **76,155** | **51,463** |
 
-The narrow catalogue held 9,884 functions for `RC2` against the 25,617
+The narrow catalogue held 20,262 functions for `RC2` against the 25,617
 returns of the program: it knew **38 %** of the return sites. The extended
-one holds 20,058 functions and owns 20,017 of the returns: **78 %**.
+one holds 20,262 functions and owns 20,017 of the returns: **78 %**.
 
 ## The result
 
 | Program | Functions | Of which the end is a return | Candidates |
 |---|---|---|---|
-| `EBOOT` — the collection launcher | 4,234 | 3,407 | 255 |
-| `RC1` — Ratchet & Clank (2002) | 9,243 | 7,576 | 663 |
-| `RC2` — Going Commando | 20,058 | 16,754 | 1,090 |
-| `RC3` — Up Your Arsenal | 17,342 | 14,644 | 893 |
-| **Total** | **50,877** | **42,381** | **2,901** |
+| `EBOOT` — the collection launcher | 4,357 | 3,787 | 132 |
+| `RC1` — Ratchet & Clank (2002) | 9,297 | 8,122 | 609 |
+| `RC2` — Going Commando | 20,262 | 19,056 | 886 |
+| `RC3` — Up Your Arsenal | 17,547 | 16,250 | 688 |
+| **Total** | **51,463** | **47,215** | **2,315** |
 
 The names are not known yet, so every function carries the placeholder of its
 address. The state of every confirmed one is `bounded`: the extent is known
@@ -149,11 +184,15 @@ them all.
 
 | Program | The extent, before | The extent, after | The code owned, before | The code owned, after |
 |---|---|---|---|---|
-| `EBOOT` | 245,056 (12.3 %) | 589,944 (29.6 %) | 141,081 (7.1 %) | 260,461 (13.1 %) |
-| `RC1` | 923,776 (12.2 %) | 1,974,084 (26.0 %) | 531,237 (7.0 %) | 936,779 (12.4 %) |
-| `RC2` | 3,258,292 (16.6 %) | 5,078,832 (25.8 %) | 2,345,425 (11.9 %) | 2,737,662 (13.9 %) |
-| `RC3` | 2,626,700 (21.4 %) | 4,456,876 (36.3 %) | 1,355,267 (11.1 %) | 1,916,211 (15.6 %) |
-| **Total** | **7,053,824 (17.0 %)** | **12,099,736 (29.1 %)** | **4,373,010 (10.5 %)** | **5,851,113 (14.1 %)** |
+| `EBOOT` | 245,056 (12.3 %) | 1,073,764 (53.8 %) | 141,081 (7.1 %) | 324,468 (16.3 %) |
+| `RC1` | 923,776 (12.2 %) | 6,259,736 (82.5 %) | 531,237 (7.0 %) | 1,633,586 (21.5 %) |
+| `RC2` | 3,258,292 (16.6 %) | 17,857,248 (90.7 %) | 2,345,425 (11.9 %) | 4,533,013 (23.0 %) |
+| `RC3` | 2,626,700 (21.4 %) | 10,595,468 (86.4 %) | 1,355,267 (11.1 %) | 2,717,904 (22.2 %) |
+| **Total** | **7,053,824 (17.0 %)** | **35,786,216 (86.2 %)** | **4,373,010 (10.5 %)** | **9,208,971 (22.2 %)** |
+
+The "before" column is the narrow method; the "after" column is the wide
+method **with the conditional branch read by its opcode** — the fix described
+above is what took the extent of `RC2` from 25,8 % to 90,7 %.
 
 The percentages are of the text segment of the program. It holds more than
 code — the tables of the engine and of the game are in it — so they are a

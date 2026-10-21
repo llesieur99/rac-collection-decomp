@@ -97,8 +97,8 @@ classic 32-bit PowerPC:
   scattered — a jump table, a cold block the compiler moved — owns the
   instructions of those blocks too.
 
-The result is in [config/evidence.tsv](../config/evidence.tsv): **2,679
-functions** of the release touch a string, out of the 50,877 functions of the
+The result is in [config/evidence.tsv](../config/evidence.tsv): **3,020
+functions** of the release touch a string, out of the 51,463 functions of the
 catalogue.
 
 | Program | Functions with a string |

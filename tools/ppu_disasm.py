@@ -156,7 +156,7 @@ def decode(word: int, address: int) -> str:
         # register is in the split field of the 64-bit form, where the SCE
         # encodes it in a way this reader does not decode; the SCE's own
         # binutils prints it, and tools/cr_census.py counts it.
-        return f"cmpwi r{reg(rA)},{simm}"
+        return f"cmpwi {reg(rA)},{simm}"
     if opcode == 10:
         return f"cmpli cr0,{reg(rA)},{uimm}"
 

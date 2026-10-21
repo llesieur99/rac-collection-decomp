@@ -54,8 +54,26 @@ Before handing over:
 
 ## The current wave
 
-There is no wave in progress. The work has not started: the compiler has not
-been qualified, so no boundary is known yet. See `docs/ROADMAP.md` for the
-ordered steps and what each of them needs.
+**Wave 1 — the naming wave.** The bounding stage is done: 50,877 functions of
+the four programs are confirmed, and 2,901 addresses are still candidates.
+The naming evidence is measured: 2,679 functions touch a string, 246 carry an
+assert message that names their source file and line, and 14 names have
+already been proposed through the PlayStation 2 decompilation.
 
-When the first wave starts, this section is where its scope is announced.
+The wave is **seven lots, one writer each**, all of them in
+`work/lots/wave1-*/`:
+
+| Lot | Scope | Program |
+|---|---|---|
+| `wave1-lobby` | the names of the lobby code, which carries the asserts | `RC3` |
+| `wave1-engine` | the names of the functions the three games share | `RC1`, `RC2`, `RC3` |
+| `wave1-candidates` | the 2,901 addresses that are still candidates | all four |
+| `wave1-extents` | the function extents the walk truncates | all four |
+| `wave1-compiler` | the revision `3538` of the SDK, never published | — |
+| `wave1-toolchain` | the SDK 3.7.0 build, and the comparison of a byte | `EBOOT` |
+| `wave1-ps2join` | the exact join of the two versions, on the (file, line) triplet | all four |
+
+The lot directories are private to their writer, and only the root
+integrates. A lot that produces names writes them in `config/proposals.tsv`
+through the tool that measures them; a lot that produces boundaries writes
+them in `config/functions.tsv` through the tool that measures them.

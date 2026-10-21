@@ -10,8 +10,8 @@ baserom/
 work/pkg/
 work/eboot/
 work/elf/
-work/analysis/
-work/lots/
+work/analysis/*
+work/lots/*
 work/gate/
 work/*.pkg
 work/*.rap

@@ -1,5 +1,8 @@
 # The state of the project
 
+> Current reconciliation: [24 November 2026](STATUS-2026-11-24.md).
+> Earlier stages below are preserved; the reconciliation identifies superseded next steps.
+
 This is the anchor. It says where the project stands, what is measured, what
 is assumed, and what to do next. When it goes out of date, the project loses
 its anchor — update it in the same commit as the change it describes.
